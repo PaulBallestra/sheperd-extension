@@ -1,0 +1,379 @@
+# Shepherd Tab Manager - Comprehensive .gitignore
+# Chrome Extension + Future SaaS Platform
+
+# =============================================================================
+# CHROME EXTENSION SPECIFIC
+# =============================================================================
+
+# Extension build artifacts
+dist/
+build/
+*.crx
+*.pem
+*.zip
+
+# Extension store assets (keep source icons, ignore processed)
+*.key
+web-store-assets/
+store-screenshots/
+promotional-images/
+
+# =============================================================================
+# DEVELOPMENT ENVIRONMENT
+# =============================================================================
+
+# Environment variables and secrets
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+*.env
+
+# Local configuration
+config.local.json
+settings.local.json
+
+# API keys and credentials (never commit these!)
+keys/
+secrets/
+credentials/
+api-keys.json
+*.key
+*.pem
+*.p12
+*.pfx
+
+# =============================================================================
+# OPERATING SYSTEM FILES
+# =============================================================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Linux
+*~
+.directory
+.fuse_hidden*
+.nfs*
+
+# =============================================================================
+# CODE EDITORS & IDEs
+# =============================================================================
+
+# Visual Studio Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# Cursor AI Editor
+.cursor/
+*.cursor-*
+
+# JetBrains IDEs
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# Vim
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# =============================================================================
+# NODE.JS & NPM (Future Phase 2 - React Dashboard)
+# =============================================================================
+
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Package managers
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Runtime and caches
+.npm
+.cache/
+.parcel-cache/
+.temp/
+.tmp/
+
+# Next.js (for Phase 2 dashboard)
+.next/
+out/
+build/
+
+# Nuxt.js
+.nuxt/
+dist/
+
+# Gatsby
+.cache/
+public/
+
+# Vuepress
+.vuepress/dist
+
+# =============================================================================
+# GO LANG (Future Phase 2 - Backend API)
+# =============================================================================
+
+# Go build artifacts
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+go.work
+
+# Go modules
+vendor/
+*.mod
+*.sum
+
+# Go coverage
+*.cover
+*.prof
+
+# Go build cache
+.go-build-cache/
+
+# =============================================================================
+# DATABASES & DATA
+# =============================================================================
+
+# SQLite databases
+*.db
+*.sqlite
+*.sqlite3
+
+# PostgreSQL dumps
+*.sql
+*.dump
+
+# Database migration files (keep schema, ignore data)
+migrations/data/
+seeds/data/
+
+# =============================================================================
+# DOCKER & CONTAINERS
+# =============================================================================
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+.docker/
+
+# =============================================================================
+# TESTING & COVERAGE
+# =============================================================================
+
+# Test results
+coverage/
+*.lcov
+.nyc_output/
+test-results/
+test-reports/
+coverage.out
+
+# Jest
+jest.config.local.js
+
+# Cypress
+cypress/videos/
+cypress/screenshots/
+cypress/downloads/
+
+# =============================================================================
+# LOGS & MONITORING
+# =============================================================================
+
+# Application logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Runtime logs
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Diagnostic reports
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# =============================================================================
+# TEMPORARY & CACHE FILES
+# =============================================================================
+
+# Temporary directories
+tmp/
+temp/
+.temp/
+.tmp/
+
+# Cache directories
+.cache/
+.parcel-cache/
+.eslintcache
+.stylelintcache
+
+# =============================================================================
+# ANALYTICS & TRACKING
+# =============================================================================
+
+# Analytics data (keep reports, ignore raw data)
+analytics/raw-data/
+metrics/raw/
+usage-data/
+
+# =============================================================================
+# DOCUMENTATION BUILDS
+# =============================================================================
+
+# Documentation builds (keep source, ignore generated)
+docs/build/
+docs/dist/
+site/
+
+# =============================================================================
+# DEPLOYMENT & CI/CD
+# =============================================================================
+
+# Deployment artifacts
+deploy/
+release/
+*.tar.gz
+*.tgz
+
+# CI/CD temporary files
+.github/workflows/*.local.yml
+
+# =============================================================================
+# CHROME EXTENSION DEVELOPMENT
+# =============================================================================
+
+# Chrome extension development files
+.reload-extension
+chrome-extension-dev/
+
+# Extension testing
+test-extension/
+dev-extension/
+
+# Extension packaging
+*.crx.backup
+extension.zip
+
+# =============================================================================
+# FUTURE PHASE 2 - SAAS PLATFORM SPECIFIC
+# =============================================================================
+
+# Stripe & Payment processing
+stripe-keys/
+payment-logs/
+
+# Email templates (compiled)
+email-templates/compiled/
+
+# CDN assets
+cdn-assets/
+static-assets/processed/
+
+# Monitoring & APM
+monitoring/
+apm-data/
+
+# =============================================================================
+# CUSTOM PROJECT FILES
+# =============================================================================
+
+# Project-specific ignores
+TODO.local.md
+NOTES.private.md
+dev-notes/
+scratch/
+
+# Local scripts
+scripts/local/
+tools/private/
+
+# Design assets working files
+design/working/
+*.sketch
+*.fig
+*.psd
+*.ai
+
+# =============================================================================
+# KEEP THESE FILES (explicit exceptions)
+# =============================================================================
+
+# Keep essential config files
+!.gitignore
+!.gitattributes
+!package.json
+!go.mod
+!Dockerfile
+!docker-compose.yml
+!README.md
+!LICENSE
+
+# Keep source icons and assets
+!src/assets/icons/
+!icons/
+!images/
+
+# Keep documentation
+!docs/
+!*.md
+
+# Keep CI/CD configs
+!.github/workflows/
+!.gitlab-ci.yml

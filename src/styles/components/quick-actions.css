@@ -1,0 +1,228 @@
+/* src/styles/components/quick-actions.css */
+/* Quick Actions Component Styles */
+
+.quick-actions {
+  background: var(--background-secondary);
+  border-top: 1px solid var(--border-light);
+  padding: var(--space-lg);
+  margin-top: auto;
+}
+
+/* Quick Actions Header */
+.quick-actions-header {
+  margin-bottom: var(--space-md);
+  text-align: center;
+}
+
+.quick-actions-header h3 {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-xs);
+}
+
+.quick-actions-subtitle {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+/* Quick Actions Buttons */
+.quick-actions-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-sm);
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--background);
+  color: var(--text-primary);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+.action-btn:hover {
+  background: var(--background-secondary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.action-btn:active {
+  transform: translateY(0);
+}
+
+.action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.action-btn:disabled:hover {
+  background: var(--background);
+  box-shadow: none;
+}
+
+/* Button Variants */
+.action-btn.secondary {
+  border-color: var(--shepherd-primary);
+  color: var(--shepherd-primary);
+}
+
+.action-btn.secondary:hover:not(:disabled) {
+  background: var(--shepherd-primary);
+  color: white;
+}
+
+.action-btn.danger {
+  border-color: var(--shepherd-danger);
+  color: var(--shepherd-danger);
+}
+
+.action-btn.danger:hover:not(:disabled) {
+  background: var(--shepherd-danger);
+  color: white;
+}
+
+/* Button Elements */
+.btn-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.btn-text {
+  flex: 1;
+  text-align: center;
+}
+
+.btn-badge {
+  background: var(--background-tertiary);
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 10px;
+  min-width: 20px;
+  text-align: center;
+}
+
+.action-btn.secondary .btn-badge {
+  background: rgba(102, 126, 234, 0.1);
+  color: var(--shepherd-primary);
+}
+
+.action-btn.danger .btn-badge {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--shepherd-danger);
+}
+
+/* Loading State */
+.action-btn.loading {
+  pointer-events: none;
+}
+
+.action-btn.loading .btn-icon {
+  animation: spin 1s linear infinite;
+}
+
+.action-btn.loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  animation: loading-sweep 1.5s infinite;
+}
+
+@keyframes loading-sweep {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* Feedback Messages */
+.quick-actions-feedback {
+  position: absolute;
+  top: var(--space-sm);
+  left: var(--space-sm);
+  right: var(--space-sm);
+  padding: var(--space-sm);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  text-align: center;
+  transform: translateY(-20px);
+  opacity: 0;
+  transition: all var(--transition-normal);
+  z-index: 10;
+}
+
+.quick-actions-feedback.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.quick-actions-feedback.success {
+  background: var(--shepherd-success);
+  color: white;
+}
+
+.quick-actions-feedback.warning {
+  background: var(--shepherd-warning);
+  color: white;
+}
+
+.quick-actions-feedback.error {
+  background: var(--shepherd-danger);
+  color: white;
+}
+
+.quick-actions-feedback.info {
+  background: var(--shepherd-info);
+  color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 380px) {
+  .quick-actions {
+    padding: var(--space-md);
+  }
+  
+  .quick-actions-buttons {
+    grid-template-columns: 1fr;
+    gap: var(--space-sm);
+  }
+  
+  .action-btn {
+    padding: var(--space-md);
+    font-size: var(--font-size-sm);
+  }
+}
+
+/* Special Grid Layout for 4 buttons */
+@media (min-width: 381px) {
+  .quick-actions-buttons {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+  
+  /* Make "Close All Except Active" span full width */
+  .action-btn:nth-child(4) {
+    grid-column: 1 / -1;
+  }
+} 
