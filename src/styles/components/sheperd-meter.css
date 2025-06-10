@@ -1,206 +1,59 @@
 /* src/styles/components/Sheperd-meter.css */
+
+
 /* Sheperd Meter Component Styles */
 
 .sheperd-meter {
-  background: var(--background-secondary);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-lg);
-  padding: var(--space-lg);
-  margin: var(--space-md) var(--space-lg);
-  text-align: center;
-  transition: all var(--transition-normal);
+    background: var(--background-secondary);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    margin: var(--space-md) var(--space-lg);
+    text-align: center;
+    transition: all var(--transition-normal);
 }
 
-.sheperd-meter:hover {
-  box-shadow: var(--shadow-md);
-}
-
-/* Meter Header */
 .meter-header {
-  margin-bottom: var(--space-md);
+    margin-bottom: var(--space-md);
 }
 
 .meter-title {
-  font-size: var(--font-size-base);
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: var(--space-xs);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--space-xs);
 }
 
 .meter-subtitle {
-  font-size: var(--font-size-xs);
-  color: var(--text-secondary);
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
 }
 
-/* Meter Display */
 .meter-display {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-md);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-md);
 }
 
 .meter-icon {
-  font-size: 48px;
-  line-height: 1;
-  transition: all var(--transition-normal);
+    font-size: 48px;
+    line-height: 1;
 }
 
 .meter-count {
-  font-size: 32px;
-  font-weight: 700;
-  line-height: 1;
-  transition: all var(--transition-normal);
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1;
 }
 
 .meter-message {
-  font-size: var(--font-size-sm);
-  font-weight: 500;
-  transition: all var(--transition-normal);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
 }
 
 .meter-description {
-  font-size: var(--font-size-xs);
-  color: var(--text-secondary);
-  margin-top: var(--space-xs);
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    margin-top: var(--space-xs);
 }
-
-/* Level-specific styling */
-.sheperd-meter.excellent {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
-  border-color: rgba(16, 185, 129, 0.2);
-}
-
-.sheperd-meter.excellent .meter-count,
-.sheperd-meter.excellent .meter-message {
-  color: var(--meter-excellent);
-}
-
-.sheperd-meter.good {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));
-  border-color: rgba(59, 130, 246, 0.2);
-}
-
-.sheperd-meter.good .meter-count,
-.sheperd-meter.good .meter-message {
-  color: var(--meter-good);
-}
-
-.sheperd-meter.busy {
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05));
-  border-color: rgba(245, 158, 11, 0.2);
-}
-
-.sheperd-meter.busy .meter-count,
-.sheperd-meter.busy .meter-message {
-  color: var(--meter-busy);
-}
-
-.sheperd-meter.chaotic {
-  background: linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(249, 115, 22, 0.05));
-  border-color: rgba(249, 115, 22, 0.2);
-}
-
-.sheperd-meter.chaotic .meter-count,
-.sheperd-meter.chaotic .meter-message {
-  color: var(--meter-chaotic);
-}
-
-.sheperd-meter.apocalyptic {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
-  border-color: rgba(239, 68, 68, 0.2);
-}
-
-.sheperd-meter.apocalyptic .meter-count,
-.sheperd-meter.apocalyptic .meter-message {
-  color: var(--meter-apocalyptic);
-}
-
-/* Animations */
-.meter-count.updating {
-  animation: countUpdate 0.5s ease;
-}
-
-@keyframes countUpdate {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
-}
-
-.meter-icon.celebrating {
-  animation: celebrate 1s ease;
-}
-
-@keyframes celebrate {
-  0%, 100% { transform: scale(1) rotate(0deg); }
-  25% { transform: scale(1.1) rotate(-5deg); }
-  50% { transform: scale(1.2) rotate(0deg); }
-  75% { transform: scale(1.1) rotate(5deg); }
-}
-
-/* High tab count warning animations */
-.sheperd-meter.chaotic .meter-icon,
-.sheperd-meter.apocalyptic .meter-icon {
-  animation: warning-pulse 2s infinite;
-}
-
-@keyframes warning-pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-}
-
-/* Progress Bar (optional enhancement) */
-.meter-progress {
-  width: 100%;
-  height: 4px;
-  background: var(--border-light);
-  border-radius: 2px;
-  overflow: hidden;
-  margin-top: var(--space-md);
-}
-
-.meter-progress-fill {
-  height: 100%;
-  border-radius: 2px;
-  transition: all var(--transition-normal);
-}
-
-.excellent .meter-progress-fill {
-  background: var(--meter-excellent);
-  width: 20%;
-}
-
-.good .meter-progress-fill {
-  background: var(--meter-good);
-  width: 40%;
-}
-
-.busy .meter-progress-fill {
-  background: var(--meter-busy);
-  width: 60%;
-}
-
-.chaotic .meter-progress-fill {
-  background: var(--meter-chaotic);
-  width: 80%;
-}
-
-.apocalyptic .meter-progress-fill {
-  background: var(--meter-apocalyptic);
-  width: 100%;
-}
-
-/* Interactive States */
-.sheperd-meter.clickable {
-  cursor: pointer;
-}
-
-.sheperd-meter.clickable:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-lg);
-}
-
-.sheperd-meter.clickable:active {
-  transform: translateY(0);
-  box-shadow: var(--shadow-sm);
-} 

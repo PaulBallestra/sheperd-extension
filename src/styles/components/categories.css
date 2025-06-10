@@ -1,6 +1,44 @@
 /* src/styles/components/categories.css */
 
 
+/* Category Colors */
+
+.category[data-category="development"] .category-header {
+    border-left-color: var(--category-development);
+    border-color: var(--category-development);
+}
+
+.category[data-category="social"] .category-header {
+    border-left-color: var(--category-social);
+    border-color: var(--category-social);
+}
+
+.category[data-category="shopping"] .category-header {
+    border-left-color: var(--category-shopping);
+    border-color: var(--category-shopping);
+}
+
+.category[data-category="entertainment"] .category-header {
+    border-left-color: var(--category-entertainment);
+    border-color: var(--category-entertainment);
+}
+
+.category[data-category="work"] .category-header {
+    border-left-color: var(--category-work);
+    border-color: var(--category-work);
+}
+
+.category[data-category="research"] .category-header {
+    border-left-color: var(--category-research);
+    border-color: var(--category-research);
+}
+
+.category[data-category="other"] .category-header {
+    border-left-color: var(--category-other);
+    border-color: var(--category-other);
+}
+
+
 /* Categories Component Styles */
 
 .categories-container {
@@ -20,7 +58,6 @@
 
 .category:hover {
     box-shadow: var(--shadow-md);
-    border-color: var(--sheperd-primary);
 }
 
 .category-header {
