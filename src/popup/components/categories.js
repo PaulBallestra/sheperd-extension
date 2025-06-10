@@ -290,7 +290,7 @@ export class CategoriesComponent {
     
     return `
       <div class="tab-item ${tab.isDuplicate ? 'duplicate' : ''}" data-tab-id="${tab.id}" title="${url}">
-        <img class="tab-favicon" src="${favicon}" alt="" onerror="this.src='${this.getDefaultFavicon()}'">
+        <img class="tab-favicon" src="${favicon}" alt="${title}" onerror="this.src='${this.getDefaultFavicon()}'">
         <span class="tab-title">${title}</span>
         ${tab.isDuplicate ? '<span class="tab-duplicate">🔄</span>' : ''}
         <span class="tab-actions">

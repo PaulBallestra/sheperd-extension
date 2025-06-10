@@ -7,6 +7,7 @@ import { tabCategorizer } from '../utils/categorizer.js';
 
 import { headerComponent } from './components/header.js';
 import { shepherdMeterComponent } from './components/shepherd-meter.js';
+import { analyticsComponent } from './components/analytics.js';
 import { categoriesComponent } from './components/categories.js';
 import { quickActionsComponent } from './components/quick-actions.js';
 
@@ -25,6 +26,7 @@ class ShepherdPopupApp {
     this.components = {
       header: headerComponent,
       shepherdMeter: shepherdMeterComponent,
+      analytics: analyticsComponent,
       categories: categoriesComponent,
       quickActions: quickActionsComponent
     };
@@ -196,6 +198,11 @@ class ShepherdPopupApp {
       }
     });
 
+    // Performance optimization handler
+    document.addEventListener(SHEPHERD_EVENTS.OPTIMIZE_PERFORMANCE, async (event) => {
+      await this.handlePerformanceOptimization(event.detail);
+    });
+
     // Keyboard shortcuts
     document.addEventListener('keydown', (event) => {
       this.handleKeyboardShortcuts(event);
@@ -246,6 +253,7 @@ class ShepherdPopupApp {
     this.components.header.render(mainContainer);
     this.components.shepherdMeter.render(mainContainer);
     this.components.categories.render(mainContainer);
+    this.components.analytics.render(mainContainer);
     this.components.quickActions.render(mainContainer);
   }
 
@@ -351,6 +359,65 @@ class ShepherdPopupApp {
         }
       }
     }, 30000);
+  }
+
+  /**
+   * Handle performance optimization requests
+   * @param {Object} optimizationData - Optimization request data
+   */
+  async handlePerformanceOptimization(optimizationData) {
+    try {
+      console.log('🔥 Performing tab optimization:', optimizationData);
+      
+      this.showLoading(true, 'Optimizing performance...');
+      
+      // Get all tabs for analysis
+      const allTabs = await tabsManager.getAllTabs();
+      
+      // Identify tabs to optimize based on heavy domains and loaded state
+      const heavyDomains = new Set([
+        'youtube.com', 'netflix.com', 'figma.com', 'canva.com',
+        'docs.google.com', 'sheets.google.com', 'slides.google.com',
+        'facebook.com', 'instagram.com', 'twitter.com', 'x.com',
+        'discord.com', 'twitch.tv', 'spotify.com', 'soundcloud.com',
+        'github.com', 'gitlab.com', 'codesandbox.io', 'replit.com'
+      ]);
+
+      // Find tabs to optimize
+      const tabsToOptimize = allTabs.filter(tab => {
+        if (tab.active) return false; // Don't close active tab
+        
+        const url = new URL(tab.url || '');
+        const isHeavyDomain = heavyDomains.has(url.hostname);
+        const isOldTab = (Date.now() - (tab.lastAccessed || Date.now())) > (24 * 60 * 60 * 1000); // 24h
+        
+        return isHeavyDomain || isOldTab;
+      }).slice(0, 10); // Limit to 10 tabs for safety
+
+      if (tabsToOptimize.length === 0) {
+        this.showLoading(false);
+        return;
+      }
+
+      // Close optimization candidate tabs
+      const tabIds = tabsToOptimize.map(tab => tab.id);
+      await tabsManager.closeTabs(tabIds);
+      
+      // Refresh data
+      await this.loadTabs();
+      
+      // Show success message
+      console.log(`✅ Optimized performance by closing ${tabsToOptimize.length} tabs`);
+      
+    } catch (error) {
+      console.error('❌ Performance optimization failed:', error);
+      this.handleError({ 
+        action: 'optimize_performance', 
+        error: 'Failed to optimize performance' 
+      });
+    } finally {
+      this.showLoading(false);
+    }
   }
 
   /**

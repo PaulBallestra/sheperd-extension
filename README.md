@@ -34,17 +34,25 @@
 - 🔗 **Domain clustering** - Groups related sites intelligently
 - 🔍 **Duplicate detection** - Highlights your 7 identical Amazon tabs
 
+### 🔥 **Performance Analytics (UNIQUE FEATURE!)**
+- 📊 **Real-time resource monitoring** - See actual performance impact
+- 🎯 **Smart optimization suggestions** - "Close 5 tabs to save 200MB RAM"
+- 🧠 **Domain intelligence** - Knows which sites are resource-heavy
+- ⚡ **One-click optimization** - Instant performance improvements
+- 🔋 **Loaded vs total tracking** - See which tabs are actually using resources
+
 ### ⚡ Bulk Actions That Actually Work
 - 🗂️ **Close entire categories** with one click
 - 📑 **Bookmark organized collections** to folders
 - 💤 **Suspend resource-heavy tabs** to save memory
 - 🧹 **Bulk close old/duplicate tabs** with smart suggestions
+- 🎯 **Performance-based actions** - Close heaviest tabs first
 
-### 📊 Tab Shame Metrics (Gamification)
-- 📈 **Real-time tab count** with shame-o-meter
-- 📅 **Weekly/monthly reports** - "You closed 1,247 tabs this month! 🎉"
-- 🎯 **Productivity insights** - Track your browsing patterns
-- 🏆 **Sharing** - Flex your tab-closing achievements
+### 📊 Shepherd Level Metrics (Gamification)
+- 📈 **Real-time tab count** with 5-level shepherd meter
+- 🎯 **Performance impact scoring** - Light/Medium/Heavy system
+- 📅 **Smart recommendations** - Personalized optimization tips
+- 🏆 **Achievement system** - Celebrate good tab hygiene
 
 ---
 
@@ -54,13 +62,23 @@
 | Feature | Status | Description |
 |---------|--------|-------------|
 | 🏷️ Smart Categorization | ✅ | Work, Social, Shopping, Dev, Entertainment, Other |
-| 📊 Live Tab Count | ✅ | Visual shame meter with real-time updates |
+| 📊 Live Tab Count | ✅ | Visual shepherd meter with real-time updates |
+| 📈 **Performance Analytics** | 🔥 **NEW** | **Smart resource monitoring & optimization suggestions** |
 | 📁 Category View | ✅ | Expandable categories with tab previews |
 | 🗑️ One-Click Closure | ✅ | Category closure with confirmation |
 | 🎯 Individual Management | ✅ | Close, switch, bookmark individual tabs |
 | 🔍 Duplicate Detection | ✅ | Bulk removal of duplicate tabs |
 | 🎨 Modern UI | ✅ | Clean, 2024-standard interface |
-| ⚡ Performance | ✅ | Optimized for 50+ tabs |
+| ⚡ Performance | ✅ | Optimized for 100+ tabs with smart algorithms |
+
+### 🔥 Performance Analytics System (NEW!)
+| Metric | Details | Smart Actions |
+|--------|---------|---------------|
+| 📊 **Resource Impact** | Light/Medium/Heavy performance scoring | One-click optimization suggestions |
+| 🔋 **Loaded vs Total** | Active resource usage tracking (12/47 loaded) | Smart tab suspension recommendations |
+| 🎯 **Domain Intelligence** | Heavy sites detection (YouTube, Figma, etc.) | Category-based resource estimates |
+| ⚡ **Quick Optimization** | "Close 5 idle tabs to save ~200MB RAM" | Instant performance improvements |
+| 🧠 **Smart Recommendations** | Context-aware suggestions based on usage | Personalized tab management tips |
 
 ### Tab Shame System
 | Tab Count | Status | Message |
@@ -94,6 +112,7 @@
 │   ├── components/              # Reusable UI components
 │   │   ├── header.js           # Header with real-time stats
 │   │   ├── shepherd-meter.js   # Level-based tab meter
+│   │   ├── analytics.js        # 🔥 Performance analytics & optimization
 │   │   ├── categories.js       # Tab categorization & management
 │   │   └── quick-actions.js    # Bulk operations
 │   ├── popup.js                # Main app orchestrator
@@ -164,6 +183,7 @@ shepherd-extension/
 │   │   ├── components/        # Reusable UI components
 │   │   │   ├── header.js      # Header with stats & branding
 │   │   │   ├── shepherd-meter.js # Tab level meter (renamed from shame)
+│   │   │   ├── analytics.js   # 🔥 Performance analytics & optimization
 │   │   │   ├── categories.js  # Category management & display
 │   │   │   └── quick-actions.js # Bulk operations buttons
 │   │   ├── popup.js          # Main application orchestrator
@@ -173,6 +193,7 @@ shepherd-extension/
 │       └── components/        # Component-specific stylesheets
 │           ├── header.css     # Header component styles
 │           ├── shepherd-meter.css # Meter component styles
+│           ├── analytics.css  # 🔥 Performance analytics styles
 │           ├── categories.css # Categories component styles
 │           ├── quick-actions.css # Quick actions styles
 │           ├── buttons.css    # Shared button styles
@@ -247,13 +268,15 @@ shepherd-platform/
 
 ## 🚧 Roadmap & Future Features
 
-### Phase 1: MVP Extension (Current) - ✅ **COMPLETE**
-- ✅ Smart tab categorization
-- ✅ Bulk category management
-- ✅ Tab shame metrics
-- ✅ Duplicate detection
-- ✅ Clean, modern UI
-- ✅ Performance optimization
+### Phase 1: MVP Extension (Current) - 🔥 **ENHANCED WITH ANALYTICS**
+- ✅ Smart tab categorization with expanded categories
+- ✅ Bulk category management & optimization
+- ✅ Shepherd level metrics (renamed from shame)
+- 🔥 **NEW: Performance Analytics & Resource Monitoring**
+- 🔥 **NEW: Smart optimization suggestions & actions**
+- ✅ Duplicate detection with smart algorithms
+- ✅ Clean, modern UI with performance insights
+- ✅ Optimized for 100+ tabs with analytics
 - ✅ Chrome Web Store ready
 
 ### Phase 2: SaaS Platform (Q2 2024)

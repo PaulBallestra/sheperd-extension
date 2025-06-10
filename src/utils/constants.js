@@ -395,7 +395,6 @@ export const TAB_CATEGORIES = {
   }
 };
 
-
 export const SHEPHERD_METER_LEVELS = {
   EXCELLENT: {
     range: [0, 10],
@@ -445,8 +444,10 @@ export const SHEPHERD_ACTIONS = {
 
 export const SHEPHERD_EVENTS = {
   TABS_UPDATED: 'tabs_updated',
+  CATEGORIES_UPDATED: 'categories_updated',
   CATEGORY_EXPANDED: 'category_expanded',
   CATEGORY_COLLAPSED: 'category_collapsed',
+  OPTIMIZE_PERFORMANCE: 'optimize_performance',
   ERROR_OCCURRED: 'error_occurred',
   LOADING_STARTED: 'loading_started',
   LOADING_FINISHED: 'loading_finished'
