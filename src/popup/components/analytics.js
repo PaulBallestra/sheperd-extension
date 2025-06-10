@@ -229,11 +229,11 @@ export class AnalyticsComponent {
     if (this.totalTabs > 50 || heavyTabCount > 5) {
       score = "heavy";
       emoji = "🔴";
-      details = "High system impact detected";
+      details = "System impact: High";
     } else if (this.totalTabs > 25 || heavyTabCount > 2 || loadedRatio > 0.7) {
       score = "medium";
       emoji = "🟡";
-      details = "Moderate system impact";
+      details = "System impact: Moderate";
     }
 
     return { score, emoji, details };
