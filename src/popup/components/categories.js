@@ -374,8 +374,9 @@ export class CategoriesComponent {
    * @returns {string} - Tab HTML string
    */
   createTabElement(tab) {
-    const favicon = tab.favIconUrl || this.getDefaultFavicon();
-    const title = this.escapeHtml(tab.title || "Untitled");
+    const favicon = this.getTabFavicon(tab);
+    const title = this.getTabTitle(tab);
+    const altTitle = tab.title || "Untitled";
     const url = this.escapeHtml(tab.url || "");
 
     return `
@@ -383,19 +384,19 @@ export class CategoriesComponent {
         tab.isDuplicate ? "duplicate" : ""
       }" data-tab-id="${tab.id}" title="${url}">
         <div class="tab-title-container">
-          <img class="tab-favicon" src="${favicon}" alt="${title}" data-default-favicon="${favicon}" onerror="this.src='${favicon}'">
+          <img width="12" height="12" class="tab-favicon" src="${favicon}" alt="${altTitle}" data-default-favicon="${favicon}" onerror="this.src='${favicon}'">
           <span class="tab-title">${title}</span>
         </div>
         <div class="tab-actions">
           ${tab.isDuplicate ? `<span class="tab-duplicate" title="Duplicate tab">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg width="12" height="12" max-width="12" max-height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M12 2L13.09 8.26L19 7L17.74 13.26L22 15L15.74 16.09L17 22L10.74 20.74L9 25L7.91 18.74L2 20L3.26 13.74L-1 12L5.26 10.91L4 5L10.26 6.26L12 2Z" fill="currentColor"/>
             </svg>
           </span>` : ""}
           <button class="tab-close-btn" title="Close this tab" data-tab-id="${
             tab.id
           }">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg width="12" height="12" max-width="12" max-height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </button>
@@ -440,21 +441,222 @@ export class CategoriesComponent {
   }
 
   /**
+   * Get appropriate favicon for a tab
+   * @param {Object} tab - Tab object
+   * @returns {string} - Favicon URL or data URL
+   */
+  getTabFavicon(tab) {
+    const url = tab.url || '';
+    
+    // Handle browser internal pages
+    if (this.isBrowserInternalUrl(url)) {
+      return this.getBrowserInternalFavicon(url);
+    }
+    
+    return tab.favIconUrl || this.getDefaultFavicon();
+  }
+
+  /**
+   * Get clean title for a tab
+   * @param {Object} tab - Tab object
+   * @returns {string} - Clean, truncated title
+   */
+  getTabTitle(tab) {
+    const url = tab.url || '';
+    const rawTitle = tab.title || "Untitled";
+    
+    // Handle browser internal pages
+    if (this.isBrowserInternalUrl(url)) {
+      return this.getBrowserInternalTitle(url, rawTitle);
+    }
+    
+    // Clean and truncate regular titles
+    const cleanTitle = this.escapeHtml(rawTitle);
+    return this.truncateTitle(cleanTitle);
+  }
+
+  /**
+   * Check if URL is a browser internal page
+   * @param {string} url - Tab URL
+   * @returns {boolean} - True if internal browser page
+   */
+  isBrowserInternalUrl(url) {
+    const internalProtocols = [
+      'chrome://',
+      'chrome-extension://',
+      'edge://',
+      'moz-extension://',
+      'about:',
+      'opera://',
+      'vivaldi://',
+      'brave://'
+    ];
+    
+    return internalProtocols.some(protocol => url.startsWith(protocol));
+  }
+
+  /**
+   * Get clean title for browser internal pages
+   * @param {string} url - Tab URL
+   * @param {string} rawTitle - Original title
+   * @returns {string} - Clean title
+   */
+  getBrowserInternalTitle(url, rawTitle) {
+    const titleMappings = {
+      // Chrome
+      'chrome://extensions/': 'Extensions',
+      'chrome://bookmarks/': 'Bookmarks Manager',
+      'chrome://history/': 'History',
+      'chrome://settings/': 'Settings',
+      'chrome://newtab/': 'New Tab',
+      'chrome://downloads/': 'Downloads',
+      'chrome://flags/': 'Chrome Flags',
+      'chrome://version/': 'About Chrome',
+      'chrome://inspect/': 'DevTools',
+      'chrome://chrome-urls/': 'Chrome URLs',
+      
+      // Edge
+      'edge://extensions/': 'Extensions',
+      'edge://settings/': 'Settings',
+      'edge://history/': 'History',
+      'edge://downloads/': 'Downloads',
+      'edge://newtab/': 'New Tab',
+      'edge://flags/': 'Edge Flags',
+      
+      // Firefox
+      'about:preferences': 'Preferences',
+      'about:addons': 'Add-ons Manager',
+      'about:downloads': 'Downloads',
+      'about:history': 'History',
+      'about:newtab': 'New Tab',
+      'about:blank': 'Blank Page',
+      
+      // Opera/Vivaldi/Brave
+      'opera://settings/': 'Settings',
+      'vivaldi://settings/': 'Settings',
+      'brave://settings/': 'Settings'
+    };
+
+    // Try exact match first
+    if (titleMappings[url]) {
+      return titleMappings[url];
+    }
+
+    // Try partial matches for URLs with parameters
+    for (const [pattern, title] of Object.entries(titleMappings)) {
+      if (url.startsWith(pattern)) {
+        return title;
+      }
+    }
+
+    // Fallback: extract meaningful part from URL
+    try {
+      const urlObj = new URL(url);
+      const pathParts = urlObj.pathname.split('/').filter(part => part);
+      if (pathParts.length > 0) {
+        const lastPart = pathParts[pathParts.length - 1];
+        return this.capitalizeFirstLetter(lastPart.replace(/[-_]/g, ' '));
+      }
+    } catch (e) {
+      // Invalid URL, use raw title
+    }
+
+    // Final fallback: clean the raw title
+    return this.truncateTitle(this.escapeHtml(rawTitle));
+  }
+
+  /**
+   * Get favicon for browser internal pages
+   * @param {string} url - Tab URL
+   * @returns {string} - Favicon data URL
+   */
+  getBrowserInternalFavicon(url) {
+    // Create properly encoded SVG data URLs
+    const createSvgDataUrl = (color, letter) => {
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="${color}"/><text x="8" y="12" text-anchor="middle" fill="white" font-size="10" font-weight="bold">${letter}</text></svg>`;
+      return `data:image/svg+xml;base64,${btoa(svg)}`;
+    };
+    
+    // Browser-specific favicons
+    if (url.startsWith('chrome://')) {
+      return createSvgDataUrl('#4285f4', 'C');
+    }
+    
+    if (url.startsWith('edge://')) {
+      return createSvgDataUrl('#0078d4', 'E');
+    }
+    
+    if (url.startsWith('about:') || url.startsWith('moz-extension://')) {
+      return createSvgDataUrl('#ff9500', 'F');
+    }
+    
+    if (url.startsWith('opera://')) {
+      return createSvgDataUrl('#ff1b2d', 'O');
+    }
+    
+    if (url.startsWith('vivaldi://')) {
+      return createSvgDataUrl('#ef3939', 'V');
+    }
+    
+    if (url.startsWith('brave://')) {
+      return createSvgDataUrl('#fb542b', 'B');
+    }
+
+    // Default browser icon for unknown internal pages
+    return createSvgDataUrl('#666', '?');
+  }
+
+  /**
+   * Truncate title to reasonable length
+   * @param {string} title - Title to truncate
+   * @param {number} maxLength - Maximum length (default: 50)
+   * @returns {string} - Truncated title
+   */
+  truncateTitle(title, maxLength = 50) {
+    if (!title || title.length <= maxLength) {
+      return title;
+    }
+    
+    return title.substring(0, maxLength - 3) + '...';
+  }
+
+  /**
+   * Capitalize first letter of a string
+   * @param {string} str - String to capitalize
+   * @returns {string} - Capitalized string
+   */
+  capitalizeFirstLetter(str) {
+    if (!str) return str;
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  /**
    * Get default favicon for tabs without one
    * @returns {string} - Default favicon data URL
    */
   getDefaultFavicon() {
-    return 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><rect width="16" height="16" fill="%23ddd" rx="2"/><text x="8" y="12" text-anchor="middle" fill="%23999" font-size="10">📄</text></svg>';
+    const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><rect width="16" height="16" fill="#ddd" rx="2"/><text x="8" y="12" text-anchor="middle" fill="#999" font-size="10">📄</text></svg>';
+    return `data:image/svg+xml;base64,${btoa(svg)}`;
   }
 
   /**
-   * Escape HTML to prevent XSS
-   * @param {string} text - Text to escape
-   * @returns {string} - Escaped text
+   * Clean and escape HTML to prevent XSS while improving readability
+   * @param {string} text - Text to clean and escape
+   * @returns {string} - Cleaned and escaped text
    */
   escapeHtml(text) {
+    if (!text || typeof text !== 'string') {
+      return '';
+    }
+    
+    // Remove HTML tags and decode HTML entities for a cleaner display
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = text;
+    const cleanText = tempDiv.textContent || tempDiv.innerText || '';
+    
+    // Escape the cleaned text for safe display
     const div = document.createElement("div");
-    div.textContent = text;
+    div.textContent = cleanText;
     return div.innerHTML;
   }
 

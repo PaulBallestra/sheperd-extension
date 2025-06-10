@@ -83,7 +83,6 @@ body {
     font-size: var(--font-size-base);
     color: var(--text-primary);
     background: var(--background);
-    border-radius: 32px;
     overflow-y: auto;
     line-height: 1.5;
 }
@@ -102,6 +101,7 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    border-radius: 32px;
 }
 
 
