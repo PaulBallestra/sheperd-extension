@@ -1,7 +1,7 @@
 // src/popup/components/categories.js
 // Categories Component - Manages tab category display and interactions
 
-import { Sheperd_EVENTS, Sheperd_ACTIONS } from "../../utils/constants.js";
+import { SHEPERD_EVENTS, SHEPERD_ACTIONS } from "../../utils/constants.js";
 import { tabCategorizer } from "../../utils/categorizer.js";
 import { tabsManager } from "../../utils/tabs.js";
 
@@ -69,7 +69,7 @@ export class CategoriesComponent {
       if (closeBtn) {
         e.stopPropagation();
         const tabId = parseInt(closeBtn.dataset.tabId);
-        this.handleTabAction(Sheperd_ACTIONS.CLOSE_TAB, tabId);
+        this.handleTabAction(SHEPERD_ACTIONS.CLOSE_TAB, tabId);
       }
     });
 
@@ -78,7 +78,7 @@ export class CategoriesComponent {
       const tabItem = e.target.closest(".tab-item");
       if (tabItem && !e.target.closest(".tab-close-btn")) {
         const tabId = parseInt(tabItem.dataset.tabId);
-        this.handleTabAction(Sheperd_ACTIONS.SWITCH_TO_TAB, tabId);
+        this.handleTabAction(SHEPERD_ACTIONS.SWITCH_TO_TAB, tabId);
       }
     });
 
@@ -97,7 +97,7 @@ export class CategoriesComponent {
     ); // Use capture phase for error events
 
     // Listen for tabs updates
-    document.addEventListener(Sheperd_EVENTS.TABS_UPDATED, (event) => {
+    document.addEventListener(SHEPERD_EVENTS.TABS_UPDATED, (event) => {
       this.updateCategories(event.detail.categorizedTabs);
     });
   }
@@ -124,7 +124,7 @@ export class CategoriesComponent {
       }
     } catch (error) {
       console.error("Category action failed:", error);
-      this.dispatchEvent(Sheperd_EVENTS.ERROR_OCCURRED, {
+      this.dispatchEvent(SHEPERD_EVENTS.ERROR_OCCURRED, {
         error: error.message,
         action,
         category: categoryName,
@@ -140,16 +140,16 @@ export class CategoriesComponent {
   async handleTabAction(action, tabId) {
     try {
       switch (action) {
-        case Sheperd_ACTIONS.SWITCH_TO_TAB:
+        case SHEPERD_ACTIONS.SWITCH_TO_TAB:
           await tabsManager.switchToTab(tabId);
           // Close popup after switching
           window.close();
           break;
-        case Sheperd_ACTIONS.CLOSE_TAB:
+        case SHEPERD_ACTIONS.CLOSE_TAB:
           await tabsManager.closeTabs([tabId]);
           // Update badge and refresh categories
           await tabsManager.requestBadgeUpdate();
-          this.dispatchEvent(Sheperd_EVENTS.TABS_UPDATED, {
+          this.dispatchEvent(SHEPERD_EVENTS.TABS_UPDATED, {
             action: "tab_closed",
             tabId: tabId,
           });
@@ -159,7 +159,7 @@ export class CategoriesComponent {
       }
     } catch (error) {
       console.error("Tab action failed:", error);
-      this.dispatchEvent(Sheperd_EVENTS.ERROR_OCCURRED, {
+      this.dispatchEvent(SHEPERD_EVENTS.ERROR_OCCURRED, {
         error: error.message,
         action,
         tabId,
@@ -178,7 +178,7 @@ export class CategoriesComponent {
     );
     if (!confirmed) return;
 
-    this.dispatchEvent(Sheperd_EVENTS.LOADING_STARTED, {
+    this.dispatchEvent(SHEPERD_EVENTS.LOADING_STARTED, {
       action: "closing_category",
     });
 
@@ -189,13 +189,13 @@ export class CategoriesComponent {
       // Update badge
       await tabsManager.requestBadgeUpdate();
 
-      this.dispatchEvent(Sheperd_EVENTS.TABS_UPDATED, {
+      this.dispatchEvent(SHEPERD_EVENTS.TABS_UPDATED, {
         action: "category_closed",
         category: categoryName,
         count: tabs.length,
       });
     } finally {
-      this.dispatchEvent(Sheperd_EVENTS.LOADING_FINISHED);
+      this.dispatchEvent(SHEPERD_EVENTS.LOADING_FINISHED);
     }
   }
 
@@ -205,7 +205,7 @@ export class CategoriesComponent {
    * @param {Array} tabs - Category tabs
    */
   async bookmarkCategoryTabs(categoryName, tabs) {
-    this.dispatchEvent(Sheperd_EVENTS.LOADING_STARTED, {
+    this.dispatchEvent(SHEPERD_EVENTS.LOADING_STARTED, {
       action: "bookmarking_category",
     });
 
@@ -220,7 +220,7 @@ export class CategoriesComponent {
         );
       }
     } finally {
-      this.dispatchEvent(Sheperd_EVENTS.LOADING_FINISHED);
+      this.dispatchEvent(SHEPERD_EVENTS.LOADING_FINISHED);
     }
   }
 
@@ -248,7 +248,7 @@ export class CategoriesComponent {
         toggleIcon.textContent = "▼";
       }
 
-      this.dispatchEvent(Sheperd_EVENTS.CATEGORY_COLLAPSED, {
+      this.dispatchEvent(SHEPERD_EVENTS.CATEGORY_COLLAPSED, {
         category: categoryName,
       });
     } else {
@@ -261,7 +261,7 @@ export class CategoriesComponent {
         toggleIcon.textContent = "▲";
       }
 
-      this.dispatchEvent(Sheperd_EVENTS.CATEGORY_EXPANDED, {
+      this.dispatchEvent(SHEPERD_EVENTS.CATEGORY_EXPANDED, {
         category: categoryName,
       });
     }

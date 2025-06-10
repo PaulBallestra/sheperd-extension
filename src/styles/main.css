@@ -4,12 +4,12 @@
 /* CSS Variables - Design System */
 :root {
   /* Colors */
-  --Sheperd-primary: #667eea;
-  --Sheperd-primary-dark: #5a67d8;
-  --Sheperd-success: #10b981;
-  --Sheperd-warning: #f59e0b;
-  --Sheperd-danger: #ef4444;
-  --Sheperd-info: #3b82f6;
+  --sheperd-primary: #667eea;
+  --sheperd-primary-dark: #5a67d8;
+  --sheperd-success: #10b981;
+  --sheperd-warning: #f59e0b;
+  --sheperd-danger: #ef4444;
+  --sheperd-info: #3b82f6;
   
   /* Category Colors */
   --category-development: #10B981;
@@ -160,7 +160,7 @@ body {
 }
 
 /* Sheperd Meter Component */
-.Sheperd-meter {
+.sheperd-meter {
   background: var(--background-secondary);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-lg);
@@ -233,7 +233,7 @@ body {
 
 .category:hover {
   box-shadow: var(--shadow-md);
-  border-color: var(--Sheperd-primary);
+  border-color: var(--sheperd-primary);
 }
 
 .category-header {
@@ -333,9 +333,9 @@ body {
 }
 
 .category-btn.danger:hover {
-  background: var(--Sheperd-danger);
+  background: var(--sheperd-danger);
   color: white;
-  border-color: var(--Sheperd-danger);
+  border-color: var(--sheperd-danger);
   transform: translateY(-1px);
 }
 
@@ -410,7 +410,7 @@ body {
 
 .analytics:hover {
   box-shadow: var(--shadow-md);
-  border-color: var(--Sheperd-primary);
+  border-color: var(--sheperd-primary);
 }
 
 .analytics-header {
@@ -556,15 +556,15 @@ body {
   height: 100%;
   border-radius: 3px;
   transition: all 0.5s ease;
-  background: linear-gradient(90deg, var(--Sheperd-success) 0%, #48bb78 100%);
+  background: linear-gradient(90deg, var(--sheperd-success) 0%, #48bb78 100%);
 }
 
 .ratio-fill.medium {
-  background: linear-gradient(90deg, var(--Sheperd-warning) 0%, #fbbf24 100%);
+  background: linear-gradient(90deg, var(--sheperd-warning) 0%, #fbbf24 100%);
 }
 
 .ratio-fill.high {
-  background: linear-gradient(90deg, var(--Sheperd-danger) 0%, #f87171 100%);
+  background: linear-gradient(90deg, var(--sheperd-danger) 0%, #f87171 100%);
 }
 
 .analytics-recommendations {
@@ -592,22 +592,22 @@ body {
 }
 
 .recommendation-item.high {
-  border-left: 4px solid var(--Sheperd-danger);
+  border-left: 4px solid var(--sheperd-danger);
   background: rgba(239, 68, 68, 0.05);
 }
 
 .recommendation-item.medium {
-  border-left: 4px solid var(--Sheperd-warning);
+  border-left: 4px solid var(--sheperd-warning);
   background: rgba(245, 158, 11, 0.05);
 }
 
 .recommendation-item.low {
-  border-left: 4px solid var(--Sheperd-info);
+  border-left: 4px solid var(--sheperd-info);
   background: rgba(59, 130, 246, 0.05);
 }
 
 .recommendation-item.info {
-  border-left: 4px solid var(--Sheperd-success);
+  border-left: 4px solid var(--sheperd-success);
   background: rgba(16, 185, 129, 0.05);
 }
 
@@ -648,19 +648,19 @@ body {
 
 .optimize-btn:hover {
   background: var(--background-tertiary);
-  border-color: var(--Sheperd-primary);
+  border-color: var(--sheperd-primary);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
 }
 
 .optimize-btn.active {
-  background: linear-gradient(135deg, var(--Sheperd-primary) 0%, var(--Sheperd-primary-dark) 100%);
-  border-color: var(--Sheperd-primary);
+  background: linear-gradient(135deg, var(--sheperd-primary) 0%, var(--sheperd-primary-dark) 100%);
+  border-color: var(--sheperd-primary);
   color: white;
 }
 
 .optimize-btn.active:hover {
-  background: linear-gradient(135deg, var(--Sheperd-primary-dark) 0%, var(--Sheperd-primary) 100%);
+  background: linear-gradient(135deg, var(--sheperd-primary-dark) 0%, var(--sheperd-primary) 100%);
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(102, 126, 234, 0.25);
 }
@@ -774,22 +774,22 @@ body {
 }
 
 .action-btn.secondary {
-  border-color: var(--Sheperd-primary);
-  color: var(--Sheperd-primary);
+  border-color: var(--sheperd-primary);
+  color: var(--sheperd-primary);
 }
 
 .action-btn.secondary:hover:not(:disabled) {
-  background: var(--Sheperd-primary);
+  background: var(--sheperd-primary);
   color: white;
 }
 
 .action-btn.danger {
-  border-color: var(--Sheperd-danger);
-  color: var(--Sheperd-danger);
+  border-color: var(--sheperd-danger);
+  color: var(--sheperd-danger);
 }
 
 .action-btn.danger:hover:not(:disabled) {
-  background: var(--Sheperd-danger);
+  background: var(--sheperd-danger);
   color: white;
 }
 
@@ -843,7 +843,7 @@ body {
 }
 
 .branding {
-  color: var(--Sheperd-primary);
+  color: var(--sheperd-primary);
   font-weight: 600;
 }
 
@@ -869,13 +869,13 @@ body {
 }
 
 .text-btn.premium {
-  color: var(--Sheperd-primary);
+  color: var(--sheperd-primary);
   font-weight: 600;
 }
 
 .text-btn.premium:hover {
   color: white;
-  background: var(--Sheperd-primary);
+  background: var(--sheperd-primary);
 }
 
 /* Category Colors */
@@ -978,7 +978,7 @@ body {
   width: 32px;
   height: 32px;
   border: 3px solid var(--border);
-  border-top: 3px solid var(--Sheperd-primary);
+  border-top: 3px solid var(--sheperd-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto var(--space-md);
@@ -1031,7 +1031,7 @@ body {
 }
 
 .error-retry-btn {
-  background: var(--Sheperd-primary);
+  background: var(--sheperd-primary);
   color: white;
   border: none;
   padding: var(--space-sm) var(--space-lg);
@@ -1042,7 +1042,7 @@ body {
 }
 
 .error-retry-btn:hover {
-  background: var(--Sheperd-primary-dark);
+  background: var(--sheperd-primary-dark);
 }
 
 /* Responsive Design */

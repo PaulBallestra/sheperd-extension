@@ -1,7 +1,7 @@
 // src/popup/components/quick-actions.js
 // Quick Actions Component - Handles bulk tab operations
 
-import { Sheperd_EVENTS, Sheperd_ACTIONS } from "../../utils/constants.js";
+import { SHEPERD_EVENTS, SHEPERD_ACTIONS } from "../../utils/constants.js";
 import { tabsManager } from "../../utils/tabs.js";
 import { tabCategorizer } from "../../utils/categorizer.js";
 
@@ -85,11 +85,11 @@ export class QuickActionsComponent {
   bindEvents() {
     // Button click handlers
     this.buttons.closeDuplicates.addEventListener("click", () => {
-      this.handleAction(Sheperd_ACTIONS.CLOSE_DUPLICATES);
+      this.handleAction(SHEPERD_ACTIONS.CLOSE_DUPLICATES);
     });
 
     this.buttons.closeOldTabs.addEventListener("click", () => {
-      this.handleAction(Sheperd_ACTIONS.CLOSE_OLD_TABS);
+      this.handleAction(SHEPERD_ACTIONS.CLOSE_OLD_TABS);
     });
 
     this.buttons.bookmarkAll.addEventListener("click", () => {
@@ -101,16 +101,16 @@ export class QuickActionsComponent {
     });
 
     // Listen for tab updates
-    document.addEventListener(Sheperd_EVENTS.TABS_UPDATED, (event) => {
+    document.addEventListener(SHEPERD_EVENTS.TABS_UPDATED, (event) => {
       this.updateButtons(event.detail);
     });
 
     // Listen for loading state changes
-    document.addEventListener(Sheperd_EVENTS.LOADING_STARTED, () => {
+    document.addEventListener(SHEPERD_EVENTS.LOADING_STARTED, () => {
       this.setLoadingState(true);
     });
 
-    document.addEventListener(Sheperd_EVENTS.LOADING_FINISHED, () => {
+    document.addEventListener(SHEPERD_EVENTS.LOADING_FINISHED, () => {
       this.setLoadingState(false);
     });
   }
@@ -123,13 +123,13 @@ export class QuickActionsComponent {
     if (this.isLoading) return;
 
     try {
-      this.dispatchEvent(Sheperd_EVENTS.LOADING_STARTED, { action });
+      this.dispatchEvent(SHEPERD_EVENTS.LOADING_STARTED, { action });
 
       switch (action) {
-        case Sheperd_ACTIONS.CLOSE_DUPLICATES:
+        case SHEPERD_ACTIONS.CLOSE_DUPLICATES:
           await this.closeDuplicateTabs();
           break;
-        case Sheperd_ACTIONS.CLOSE_OLD_TABS:
+        case SHEPERD_ACTIONS.CLOSE_OLD_TABS:
           await this.closeOldTabs();
           break;
         case "bookmark_all":
@@ -143,12 +143,12 @@ export class QuickActionsComponent {
       }
     } catch (error) {
       console.error("Quick action failed:", error);
-      this.dispatchEvent(Sheperd_EVENTS.ERROR_OCCURRED, {
+      this.dispatchEvent(SHEPERD_EVENTS.ERROR_OCCURRED, {
         error: error.message,
         action,
       });
     } finally {
-      this.dispatchEvent(Sheperd_EVENTS.LOADING_FINISHED);
+      this.dispatchEvent(SHEPERD_EVENTS.LOADING_FINISHED);
     }
   }
 
@@ -176,7 +176,7 @@ export class QuickActionsComponent {
       `✅ Closed ${duplicateIds.length} duplicate tabs!`,
       "success"
     );
-    this.dispatchEvent(Sheperd_EVENTS.TABS_UPDATED, {
+    this.dispatchEvent(SHEPERD_EVENTS.TABS_UPDATED, {
       action: "duplicates_closed",
       count: duplicateIds.length,
     });
@@ -207,7 +207,7 @@ export class QuickActionsComponent {
     await tabsManager.requestBadgeUpdate();
 
     this.showFeedback(`✅ Closed ${oldTabs.length} old tabs!`, "success");
-    this.dispatchEvent(Sheperd_EVENTS.TABS_UPDATED, {
+    this.dispatchEvent(SHEPERD_EVENTS.TABS_UPDATED, {
       action: "old_tabs_closed",
       count: oldTabs.length,
     });
@@ -261,7 +261,7 @@ export class QuickActionsComponent {
     await tabsManager.requestBadgeUpdate();
 
     this.showFeedback(`✅ Closed ${inactiveTabs.length} tabs!`, "success");
-    this.dispatchEvent(Sheperd_EVENTS.TABS_UPDATED, {
+    this.dispatchEvent(SHEPERD_EVENTS.TABS_UPDATED, {
       action: "inactive_tabs_closed",
       count: inactiveTabs.length,
     });

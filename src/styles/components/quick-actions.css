@@ -74,22 +74,22 @@
 
 /* Button Variants */
 .action-btn.secondary {
-  border-color: var(--Sheperd-primary);
-  color: var(--Sheperd-primary);
+  border-color: var(--sheperd-primary);
+  color: var(--sheperd-primary);
 }
 
 .action-btn.secondary:hover:not(:disabled) {
-  background: var(--Sheperd-primary);
+  background: var(--sheperd-primary);
   color: white;
 }
 
 .action-btn.danger {
-  border-color: var(--Sheperd-danger);
-  color: var(--Sheperd-danger);
+  border-color: var(--sheperd-danger);
+  color: var(--sheperd-danger);
 }
 
 .action-btn.danger:hover:not(:disabled) {
-  background: var(--Sheperd-danger);
+  background: var(--sheperd-danger);
   color: white;
 }
 
@@ -117,12 +117,12 @@
 
 .action-btn.secondary .btn-badge {
   background: rgba(102, 126, 234, 0.1);
-  color: var(--Sheperd-primary);
+  color: var(--sheperd-primary);
 }
 
 .action-btn.danger .btn-badge {
   background: rgba(239, 68, 68, 0.1);
-  color: var(--Sheperd-danger);
+  color: var(--sheperd-danger);
 }
 
 /* Loading State */
@@ -178,22 +178,22 @@
 }
 
 .quick-actions-feedback.success {
-  background: var(--Sheperd-success);
+  background: var(--sheperd-success);
   color: white;
 }
 
 .quick-actions-feedback.warning {
-  background: var(--Sheperd-warning);
+  background: var(--sheperd-warning);
   color: white;
 }
 
 .quick-actions-feedback.error {
-  background: var(--Sheperd-danger);
+  background: var(--sheperd-danger);
   color: white;
 }
 
 .quick-actions-feedback.info {
-  background: var(--Sheperd-info);
+  background: var(--sheperd-info);
   color: white;
 }
 

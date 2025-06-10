@@ -1,12 +1,12 @@
 // src/popup/popup.js
 // Main Popup Application - Orchestrates all components
 
-import { Sheperd_EVENTS, Sheperd_CONFIG } from "../utils/constants.js";
+import { SHEPERD_EVENTS, Sheperd_CONFIG } from "../utils/constants.js";
 import { tabsManager } from "../utils/tabs.js";
 import { tabCategorizer } from "../utils/categorizer.js";
 
 import { headerComponent } from "./components/header.js";
-import { SheperdMeterComponent } from "./components/Sheperd-meter.js";
+import { sheperdMeterComponent } from "./components/sheperd-meter.js";
 import { analyticsComponent } from "./components/analytics.js";
 import { categoriesComponent } from "./components/categories.js";
 import { quickActionsComponent } from "./components/quick-actions.js";
@@ -25,7 +25,7 @@ class SheperdPopupApp {
     // Component references
     this.components = {
       header: headerComponent,
-      SheperdMeter: SheperdMeterComponent,
+      sheperdMeter: sheperdMeterComponent,
       analytics: analyticsComponent,
       categories: categoriesComponent,
       quickActions: quickActionsComponent,
@@ -84,7 +84,7 @@ class SheperdPopupApp {
 
     // Create main container
     const mainContainer = document.createElement("div");
-    mainContainer.className = "Sheperd-popup";
+    mainContainer.className = "sheperd-popup";
 
     // Create footer
     this.createFooter();
@@ -179,21 +179,21 @@ class SheperdPopupApp {
       });
 
     // Global error handler
-    document.addEventListener(Sheperd_EVENTS.ERROR_OCCURRED, (event) => {
+    document.addEventListener(SHEPERD_EVENTS.ERROR_OCCURRED, (event) => {
       this.handleError(event.detail);
     });
 
     // Loading state handlers
-    document.addEventListener(Sheperd_EVENTS.LOADING_STARTED, (event) => {
+    document.addEventListener(SHEPERD_EVENTS.LOADING_STARTED, (event) => {
       this.showLoading(true, event.detail.message);
     });
 
-    document.addEventListener(Sheperd_EVENTS.LOADING_FINISHED, () => {
+    document.addEventListener(SHEPERD_EVENTS.LOADING_FINISHED, () => {
       this.showLoading(false);
     });
 
     // Tab update handler
-    document.addEventListener(Sheperd_EVENTS.TABS_UPDATED, async (event) => {
+    document.addEventListener(SHEPERD_EVENTS.TABS_UPDATED, async (event) => {
       if (event.detail.action !== "refresh") {
         await this.loadTabs(); // Refresh data after tab operations
       }
@@ -201,7 +201,7 @@ class SheperdPopupApp {
 
     // Performance optimization handler
     document.addEventListener(
-      Sheperd_EVENTS.OPTIMIZE_PERFORMANCE,
+      SHEPERD_EVENTS.OPTIMIZE_PERFORMANCE,
       async (event) => {
         await this.handlePerformanceOptimization(event.detail);
       }
@@ -228,7 +228,7 @@ class SheperdPopupApp {
       this.categorizedTabs = tabCategorizer.categorizeTabs(this.currentTabs);
 
       // Dispatch update event
-      this.dispatchEvent(Sheperd_EVENTS.TABS_UPDATED, {
+      this.dispatchEvent(SHEPERD_EVENTS.TABS_UPDATED, {
         tabs: this.currentTabs,
         categorizedTabs: this.categorizedTabs,
         count: this.currentTabs.length,
@@ -250,7 +250,7 @@ class SheperdPopupApp {
    * Render all components to the main container
    */
   renderComponents() {
-    const mainContainer = document.querySelector(".Sheperd-popup");
+    const mainContainer = document.querySelector(".sheperd-popup");
     if (!mainContainer) return;
 
     // Clear existing content
@@ -258,7 +258,7 @@ class SheperdPopupApp {
 
     // Render components in order
     this.components.header.render(mainContainer);
-    this.components.SheperdMeter.render(mainContainer);
+    this.components.sheperdMeter.render(mainContainer);
     this.components.categories.render(mainContainer);
     this.components.analytics.render(mainContainer);
     this.components.quickActions.render(mainContainer);

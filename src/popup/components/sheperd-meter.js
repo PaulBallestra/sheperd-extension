@@ -1,7 +1,7 @@
 // src/popup/components/Sheperd-meter.js
 // Sheperd Meter Component - Displays tab chaos level with visual feedback
 
-import { Sheperd_EVENTS } from "../../utils/constants.js";
+import { SHEPERD_EVENTS } from "../../utils/constants.js";
 import { tabCategorizer } from "../../utils/categorizer.js";
 
 /**
@@ -32,24 +32,24 @@ export class SheperdMeterComponent {
    */
   createElement() {
     this.element = document.createElement("div");
-    this.element.className = "Sheperd-meter";
+    this.element.className = "sheperd-meter";
 
     this.element.innerHTML = `
-      <div class="Sheperd-text">
-        <span id="Sheperd-message">Looking good! 👍</span>
+      <div class="sheperd-text">
+        <span id="sheperd-message">Looking good! 👍</span>
       </div>
-      <div class="Sheperd-bar">
-        <div id="Sheperd-fill"></div>
+      <div class="sheperd-bar">
+        <div id="sheperd-fill"></div>
       </div>
-      <div class="Sheperd-tip">
-        <span id="Sheperd-tip-text">Keep it up! You're managing your tabs well.</span>
+      <div class="sheperd-tip">
+        <span id="sheperd-tip-text">Keep it up! You're managing your tabs well.</span>
       </div>
     `;
 
     // Cache references to key elements
-    this.messageElement = this.element.querySelector("#Sheperd-message");
-    this.fillElement = this.element.querySelector("#Sheperd-fill");
-    this.tipElement = this.element.querySelector("#Sheperd-tip-text");
+    this.messageElement = this.element.querySelector("#sheperd-message");
+    this.fillElement = this.element.querySelector("#sheperd-fill");
+    this.tipElement = this.element.querySelector("#sheperd-tip-text");
   }
 
   /**
@@ -57,7 +57,7 @@ export class SheperdMeterComponent {
    */
   bindEvents() {
     // Listen for tab count updates
-    document.addEventListener(Sheperd_EVENTS.TABS_UPDATED, (event) => {
+    document.addEventListener(SHEPERD_EVENTS.TABS_UPDATED, (event) => {
       this.updateMeter(event.detail.count);
     });
 
@@ -285,4 +285,4 @@ export class SheperdMeterComponent {
 }
 
 // Export singleton instance for convenience
-export const SheperdMeterComponent = new SheperdMeterComponent();
+export const sheperdMeterComponent = new SheperdMeterComponent();

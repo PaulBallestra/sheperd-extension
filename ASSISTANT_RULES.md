@@ -113,7 +113,7 @@
 - **Sheperd Meter**: 5 levels (excellent→apocalyptic), animations, celebrations
 - **Categories Component**: Expand/collapse, bulk actions, category-specific colors
 - **Quick Actions**: Smart button states, bulk operations, loading feedback
-- **Event System**: Use Sheperd_EVENTS for component communication
+- **Event System**: Use SHEPERD_EVENTS for component communication
 
 ### **Business Context**
 - **Target Users**: Power users with 20+ tabs

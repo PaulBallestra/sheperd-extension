@@ -679,7 +679,7 @@ export const Sheperd_METER_LEVELS = {
   },
 };
 
-export const Sheperd_ACTIONS = {
+export const SHEPERD_ACTIONS = {
   CLOSE_CATEGORY: "close_category",
   BOOKMARK_CATEGORY: "bookmark_category",
   CLOSE_DUPLICATES: "close_duplicates",
@@ -689,7 +689,7 @@ export const Sheperd_ACTIONS = {
   TOGGLE_CATEGORY: "toggle_category",
 };
 
-export const Sheperd_EVENTS = {
+export const SHEPERD_EVENTS = {
   TABS_UPDATED: "tabs_updated",
   CATEGORIES_UPDATED: "categories_updated",
   CATEGORY_EXPANDED: "category_expanded",

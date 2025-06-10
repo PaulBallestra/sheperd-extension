@@ -1,7 +1,7 @@
 // src/popup/components/header.js
 // Header Component - Displays Sheperd branding and tab count
 
-import { Sheperd_EVENTS } from "../../utils/constants.js";
+import { SHEPERD_EVENTS } from "../../utils/constants.js";
 
 /**
  * Header Component
@@ -47,7 +47,7 @@ export class HeaderComponent {
    */
   bindEvents() {
     // Listen for tab count updates
-    document.addEventListener(Sheperd_EVENTS.TABS_UPDATED, (event) => {
+    document.addEventListener(SHEPERD_EVENTS.TABS_UPDATED, (event) => {
       this.updateTabCount(event.detail.count);
     });
   }

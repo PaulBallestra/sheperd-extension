@@ -1,7 +1,7 @@
 // src/popup/components/analytics.js
 // Analytics Component - Smart Performance Monitoring & Optimization
 
-import { Sheperd_EVENTS } from "../../utils/constants.js";
+import { SHEPERD_EVENTS } from "../../utils/constants.js";
 
 /**
  * Analytics Component
@@ -150,11 +150,11 @@ export class AnalyticsComponent {
    */
   bindEvents() {
     // Listen for tab data updates
-    document.addEventListener(Sheperd_EVENTS.TABS_UPDATED, (event) => {
+    document.addEventListener(SHEPERD_EVENTS.TABS_UPDATED, (event) => {
       this.updateAnalytics(event.detail);
     });
 
-    document.addEventListener(Sheperd_EVENTS.CATEGORIES_UPDATED, (event) => {
+    document.addEventListener(SHEPERD_EVENTS.CATEGORIES_UPDATED, (event) => {
       this.updateCategories(event.detail);
     });
 
@@ -416,7 +416,7 @@ export class AnalyticsComponent {
 
       // Dispatch optimization event
       const optimizationEvent = new CustomEvent(
-        Sheperd_EVENTS.OPTIMIZE_PERFORMANCE,
+        SHEPERD_EVENTS.OPTIMIZE_PERFORMANCE,
         {
           detail: {
             action: "optimize",
