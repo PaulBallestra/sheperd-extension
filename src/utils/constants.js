@@ -188,7 +188,7 @@ export const TAB_CATEGORIES = {
     ]
   },
   
-  'Entertainment & Media': {
+  'Media & Entertainment': {
     icon: '🎬',
     color: '#8B5CF6',
     keywords: [

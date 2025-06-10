@@ -57,6 +57,7 @@
   font-weight: 600;
   color: var(--text-primary);
   text-transform: capitalize;
+  line-height: 1;
 }
 
 .category-count {
@@ -66,7 +67,6 @@
   font-weight: 600;
   padding: 2px 6px;
   border-radius: 10px;
-  margin-left: var(--space-sm);
 }
 
 .tab-duplicate {
@@ -163,7 +163,17 @@
   text-overflow: ellipsis;
 }
 
+.tab-title-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xs);
+}
+
 .tab-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
   opacity: 0;
   transition: opacity var(--transition-fast);
 }

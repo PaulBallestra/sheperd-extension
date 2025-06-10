@@ -106,7 +106,7 @@ export class AnalyticsComponent {
    * Setup collapsible analytics section
    */
   setupToggle() {
-    const toggleBtn = this.element.querySelector('.analytics-toggle');
+    const toggleBtn = this.element.querySelector('.analytics-header');
     const content = this.element.querySelector('.analytics-content');
     const toggleIcon = this.element.querySelector('.toggle-icon');
     

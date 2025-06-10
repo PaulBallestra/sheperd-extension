@@ -181,22 +181,38 @@ export class CategoriesComponent {
   }
 
   /**
-   * Toggle category expansion
+   * Toggle category expansion with smooth animation
    * @param {string} categoryName - Category name
    */
   toggleCategory(categoryName) {
     const categoryEl = this.element.querySelector(`[data-category="${categoryName}"]`);
     if (!categoryEl) return;
 
+    const content = categoryEl.querySelector('.category-content');
+    const toggleIcon = categoryEl.querySelector('.toggle-icon');
     const isExpanded = this.expandedCategories.has(categoryName);
     
     if (isExpanded) {
+      // Collapse
+      content.classList.remove('expanded');
       categoryEl.classList.remove('expanded');
       this.expandedCategories.delete(categoryName);
+      
+      if (toggleIcon) {
+        toggleIcon.textContent = '▼';
+      }
+      
       this.dispatchEvent(SHEPHERD_EVENTS.CATEGORY_COLLAPSED, { category: categoryName });
     } else {
+      // Expand
+      content.classList.add('expanded');
       categoryEl.classList.add('expanded');
       this.expandedCategories.add(categoryName);
+      
+      if (toggleIcon) {
+        toggleIcon.textContent = '▲';
+      }
+      
       this.dispatchEvent(SHEPHERD_EVENTS.CATEGORY_EXPANDED, { category: categoryName });
     }
   }
@@ -247,18 +263,19 @@ export class CategoriesComponent {
     const icon = tabCategorizer.getCategoryIcon(categoryName);
     const color = tabCategorizer.getCategoryColor(categoryName);
     const duplicateCount = tabs.filter(tab => tab.isDuplicate).length;
+    const isExpanded = this.expandedCategories.has(categoryName);
     
     // Restore expanded state
-    if (this.expandedCategories.has(categoryName)) {
+    if (isExpanded) {
       categoryDiv.classList.add('expanded');
     }
 
     categoryDiv.innerHTML = `
-      <div class="category-header" data-category="${categoryName}" style="border-left: 4px solid ${color}">
+      <div class="category-header" data-category="${categoryName}" style="border-color: ${color}">
         <div class="category-title">
           <span class="category-icon">${icon}</span>
           <span class="category-name">${categoryName}</span>
-          <span class="category-count">${tabs.length}</span>
+          
           ${duplicateCount > 0 ? `<span class="tab-duplicate">🔄 ${duplicateCount}</span>` : ''}
         </div>
         <div class="category-actions">
@@ -269,9 +286,15 @@ export class CategoriesComponent {
             ✖️ Close
           </button>
         </div>
+        <div class="category-toggle">
+          <span class="category-count">${tabs.length}</span>
+          <span class="toggle-icon">${isExpanded ? '▲' : '▼'}</span>
+        </div>
       </div>
-      <div class="tab-list">
-        ${tabs.map(tab => this.createTabElement(tab)).join('')}
+      <div class="category-content ${isExpanded ? 'expanded' : ''}">
+        <div class="tab-list">
+          ${tabs.map(tab => this.createTabElement(tab)).join('')}
+        </div>
       </div>
     `;
     
@@ -290,12 +313,14 @@ export class CategoriesComponent {
     
     return `
       <div class="tab-item ${tab.isDuplicate ? 'duplicate' : ''}" data-tab-id="${tab.id}" title="${url}">
-        <img class="tab-favicon" src="${favicon}" alt="${title}" onerror="this.src='${this.getDefaultFavicon()}'">
-        <span class="tab-title">${title}</span>
-        ${tab.isDuplicate ? '<span class="tab-duplicate">🔄</span>' : ''}
-        <span class="tab-actions">
+        <div class="tab-title-container">
+          <img class="tab-favicon" src="${favicon}" alt="${title}" onerror="this.src='${this.getDefaultFavicon()}'">
+          <span class="tab-title">${title}</span>
+        </div>
+        <div class="tab-actions">
+          ${tab.isDuplicate ? '<span class="tab-duplicate">🔄</span>' : ''}
           <button class="tab-close-btn" title="Close this tab" onclick="event.stopPropagation()">×</button>
-        </span>
+        </div>
       </div>
     `;
   }

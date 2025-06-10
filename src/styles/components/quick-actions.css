@@ -4,7 +4,7 @@
 .quick-actions {
   background: var(--background-secondary);
   border-top: 1px solid var(--border-light);
-  padding: var(--space-lg);
+  padding: var(--space-md) var(--space-lg);
   margin-top: auto;
 }
 
