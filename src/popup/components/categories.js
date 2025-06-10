@@ -59,14 +59,34 @@ export class CategoriesComponent {
       }
     });
 
+    // Tab close button clicks
+    this.element.addEventListener('click', (e) => {
+      const closeBtn = e.target.closest('.tab-close-btn');
+      if (closeBtn) {
+        e.stopPropagation();
+        const tabId = parseInt(closeBtn.dataset.tabId);
+        this.handleTabAction(SHEPHERD_ACTIONS.CLOSE_TAB, tabId);
+      }
+    });
+
     // Tab item clicks (switch to tab)
     this.element.addEventListener('click', (e) => {
       const tabItem = e.target.closest('.tab-item');
-      if (tabItem) {
+      if (tabItem && !e.target.closest('.tab-close-btn')) {
         const tabId = parseInt(tabItem.dataset.tabId);
         this.handleTabAction(SHEPHERD_ACTIONS.SWITCH_TO_TAB, tabId);
       }
     });
+
+    // Favicon error handling
+    this.element.addEventListener('error', (e) => {
+      if (e.target.classList.contains('tab-favicon')) {
+        const defaultFavicon = e.target.dataset.defaultFavicon;
+        if (defaultFavicon) {
+          e.target.src = defaultFavicon;
+        }
+      }
+    }, true); // Use capture phase for error events
 
     // Listen for tabs updates
     document.addEventListener(SHEPHERD_EVENTS.TABS_UPDATED, (event) => {
@@ -116,6 +136,15 @@ export class CategoriesComponent {
           await tabsManager.switchToTab(tabId);
           // Close popup after switching
           window.close();
+          break;
+        case SHEPHERD_ACTIONS.CLOSE_TAB:
+          await tabsManager.closeTabs([tabId]);
+          // Update badge and refresh categories
+          await tabsManager.requestBadgeUpdate();
+          this.dispatchEvent(SHEPHERD_EVENTS.TABS_UPDATED, { 
+            action: 'tab_closed',
+            tabId: tabId
+          });
           break;
         default:
           console.warn('Unknown tab action:', action);
@@ -271,7 +300,7 @@ export class CategoriesComponent {
     }
 
     categoryDiv.innerHTML = `
-      <div class="category-header" data-category="${categoryName}" style="border-color: ${color}">
+      <div class="category-header" data-category="${categoryName}" data-category-color="${color}">
         <div class="category-title">
           <span class="category-icon">${icon}</span>
           <span class="category-name">${categoryName}</span>
@@ -298,6 +327,12 @@ export class CategoriesComponent {
       </div>
     `;
     
+    // Apply category color without inline styles (CSP-compliant)
+    const header = categoryDiv.querySelector('.category-header');
+    if (header && color) {
+      header.style.borderLeftColor = color;
+    }
+    
     return categoryDiv;
   }
 
@@ -314,12 +349,12 @@ export class CategoriesComponent {
     return `
       <div class="tab-item ${tab.isDuplicate ? 'duplicate' : ''}" data-tab-id="${tab.id}" title="${url}">
         <div class="tab-title-container">
-          <img class="tab-favicon" src="${favicon}" alt="${title}" onerror="this.src='${this.getDefaultFavicon()}'">
+          <img class="tab-favicon" src="${favicon}" alt="${title}" data-default-favicon="${this.getDefaultFavicon()}">
           <span class="tab-title">${title}</span>
         </div>
         <div class="tab-actions">
           ${tab.isDuplicate ? '<span class="tab-duplicate">🔄</span>' : ''}
-          <button class="tab-close-btn" title="Close this tab" onclick="event.stopPropagation()">×</button>
+          <button class="tab-close-btn" title="Close this tab" data-tab-id="${tab.id}">×</button>
         </div>
       </div>
     `;

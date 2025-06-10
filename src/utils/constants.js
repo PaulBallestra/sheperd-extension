@@ -439,6 +439,7 @@ export const SHEPHERD_ACTIONS = {
   CLOSE_DUPLICATES: 'close_duplicates',
   CLOSE_OLD_TABS: 'close_old_tabs',
   SWITCH_TO_TAB: 'switch_to_tab',
+  CLOSE_TAB: 'close_tab',
   TOGGLE_CATEGORY: 'toggle_category'
 };
 
