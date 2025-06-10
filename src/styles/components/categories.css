@@ -1,6 +1,5 @@
 /* src/styles/components/categories.css */
 /* Categories Component Styles */
-
 .categories-container {
   flex: 1;
   padding: 0 var(--space-lg);
@@ -57,7 +56,6 @@
   font-weight: 600;
   color: var(--text-primary);
   text-transform: capitalize;
-  line-height: 1;
 }
 
 .category-count {

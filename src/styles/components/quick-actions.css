@@ -5,10 +5,9 @@
   background: var(--background-secondary);
   border-top: 1px solid var(--border-light);
   padding: var(--space-md) var(--space-lg);
-  margin-top: auto;
+  margin-top: var(--space-md);
 }
 
-/* Quick Actions Header */
 .quick-actions-header {
   margin-bottom: var(--space-md);
   text-align: center;
@@ -26,7 +25,6 @@
   color: var(--text-secondary);
 }
 
-/* Quick Actions Buttons */
 .quick-actions-buttons {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -47,8 +45,6 @@
   font-weight: 500;
   cursor: pointer;
   transition: all var(--transition-fast);
-  position: relative;
-  overflow: hidden;
 }
 
 .action-btn:hover {
@@ -57,22 +53,12 @@
   box-shadow: var(--shadow-sm);
 }
 
-.action-btn:active {
-  transform: translateY(0);
-}
-
 .action-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   transform: none;
 }
 
-.action-btn:disabled:hover {
-  background: var(--background);
-  box-shadow: none;
-}
-
-/* Button Variants */
 .action-btn.secondary {
   border-color: var(--sheperd-primary);
   color: var(--sheperd-primary);
@@ -93,7 +79,6 @@
   color: white;
 }
 
-/* Button Elements */
 .btn-icon {
   font-size: 16px;
   line-height: 1;
@@ -114,17 +99,6 @@
   min-width: 20px;
   text-align: center;
 }
-
-.action-btn.secondary .btn-badge {
-  background: rgba(102, 126, 234, 0.1);
-  color: var(--sheperd-primary);
-}
-
-.action-btn.danger .btn-badge {
-  background: rgba(239, 68, 68, 0.1);
-  color: var(--sheperd-danger);
-}
-
 /* Loading State */
 .action-btn.loading {
   pointer-events: none;
@@ -198,7 +172,7 @@
 }
 
 /* Responsive Design */
-@media (max-width: 380px) {
+/* @media (max-width: 380px) {
   .quick-actions {
     padding: var(--space-md);
   }
@@ -212,17 +186,16 @@
     padding: var(--space-md);
     font-size: var(--font-size-sm);
   }
-}
+} */
 
 /* Special Grid Layout for 4 buttons */
-@media (min-width: 381px) {
+/* @media (min-width: 381px) {
   .quick-actions-buttons {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
   }
   
-  /* Make "Close All Except Active" span full width */
   .action-btn:nth-child(4) {
     grid-column: 1 / -1;
   }
-} 
+} */

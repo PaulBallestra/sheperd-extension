@@ -172,9 +172,9 @@ Sheperd-extension/
 ├── src/                       # Source code with ES6 modules
 │   ├── assets/                 # Shared utilities & core logic
 │   │   ├── icons/              # Extension icons (16, 48, 128px)
-│   │   │   ├── icon16.png
-│   │   │   ├── icon48.png
-│   │   │   └── icon128.png
+│   │   │   ├── icon16.jpeg
+│   │   │   ├── icon48.jpeg
+│   │   │   └── icon128.jpeg
 │   ├── utils/                 # Shared utilities & core logic
 │   │   ├── constants.js       # Configuration, events & design system
 │   │   ├── categorizer.js     # Smart categorization engine
