@@ -596,10 +596,10 @@ export class CategoriesComponent {
    * @returns {string} - Favicon data URL
    */
   getBrowserInternalFavicon(url) {
-    // Create properly encoded SVG data URLs
+    // Create properly encoded SVG data URLs using URL encoding (safer than base64)
     const createSvgDataUrl = (color, letter) => {
       const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="${color}"/><text x="8" y="12" text-anchor="middle" fill="white" font-size="10" font-weight="bold">${letter}</text></svg>`;
-      return `data:image/svg+xml;base64,${btoa(svg)}`;
+      return `data:image/svg+xml,${encodeURIComponent(svg)}`;
     };
     
     // Browser-specific favicons
@@ -660,8 +660,8 @@ export class CategoriesComponent {
    * @returns {string} - Default favicon data URL
    */
   getDefaultFavicon() {
-    const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><rect width="16" height="16" fill="#ddd" rx="2"/><text x="8" y="12" text-anchor="middle" fill="#999" font-size="10">📄</text></svg>';
-    return `data:image/svg+xml;base64,${btoa(svg)}`;
+    const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><rect width="16" height="16" fill="#ddd" rx="2"/><circle cx="8" cy="8" r="2" fill="#999"/></svg>';
+    return `data:image/svg+xml,${encodeURIComponent(svg)}`;
   }
 
   /**
