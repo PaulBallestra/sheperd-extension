@@ -1,43 +1,41 @@
 {
-  "manifest_version": 3,
-  "name": "Sheperd - Smart Tab Manager",
-  "version": "1.0.0",
-  "description": "Organize and manage your browser tabs with smart categorization and bulk actions",
-  "author": "Sheperd Team",
+    "manifest_version": 3,
+    "name": "Sheperd - Smart Tab Manager",
+    "version": "1.0.0",
+    "description": "Organize and manage your browser tabs with smart categorization and bulk actions",
+    "author": "Sheperd Team",
 
-  "permissions": ["tabs", "storage", "bookmarks", "activeTab", "alarms"],
+    "permissions": ["tabs", "storage", "bookmarks", "activeTab", "alarms"],
 
-  "host_permissions": ["*://*/*"],
+    "host_permissions": ["*://*/*"],
 
-  "action": {
-    "default_popup": "src/popup/popup.html",
-    "default_title": "Sheperd Tab Manager - Organize Your Chaos",
-    "default_icon": {
-      "16": "src/assets/icons/icon16.jpeg",
-      "48": "src/assets/icons/icon48.jpeg",
-      "128": "src/assets/icons/icon128.jpeg"
-    }
-  },
+    "action": {
+        "default_popup": "src/popup/popup.html",
+        "default_title": "Sheperd Tab Manager - Organize Your Chaos",
+        "default_icon": {
+            "16": "src/assets/icons/icon16.jpeg",
+            "48": "src/assets/icons/icon48.jpeg",
+            "128": "src/assets/icons/icon128.jpeg"
+        }
+    },
 
-  "background": {
-    "service_worker": "background.js",
-    "type": "module"
-  },
+    "background": {
+        "service_worker": "background.js",
+        "type": "module"
+    },
 
-  "icons": {
-    "16": "src/assets/icons/icon16.jpeg",
-    "48": "src/assets/icons/icon48.jpeg",
-    "128": "src/assets/icons/icon128.jpeg"
-  },
+    "icons": {
+        "16": "src/assets/icons/icon16.jpeg",
+        "48": "src/assets/icons/icon48.jpeg",
+        "128": "src/assets/icons/icon128.jpeg"
+    },
 
-  "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'"
-  },
+    "content_security_policy": {
+        "extension_pages": "script-src 'self'; object-src 'self'"
+    },
 
-  "web_accessible_resources": [
-    {
-      "resources": ["src/assets/icons/*.jpeg"],
-      "matches": ["<all_urls>"]
-    }
-  ]
+    "web_accessible_resources": [{
+        "resources": ["src/assets/icons/*.jpeg"],
+        "matches": ["<all_urls>"]
+    }]
 }
