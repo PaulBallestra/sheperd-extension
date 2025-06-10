@@ -316,8 +316,6 @@ export class CategoriesComponent {
             const duplicateCount = tabs.filter((tab) => tab.isDuplicate).length;
             const isExpanded = this.expandedCategories.has(categoryName);
 
-            console.log(color);
-
             // Restore expanded state
             if (isExpanded) {
                 categoryDiv.classList.add("expanded");
@@ -359,6 +357,7 @@ export class CategoriesComponent {
     const header = categoryDiv.querySelector(".category-header");
     if (header && color) {
       header.style.borderLeftColor = color;
+      header.style.setProperty('--category-color', color);
     }
 
     return categoryDiv;
@@ -379,7 +378,7 @@ export class CategoriesComponent {
         tab.isDuplicate ? "duplicate" : ""
       }" data-tab-id="${tab.id}" title="${url}">
         <div class="tab-title-container">
-          <img class="tab-favicon" src="${favicon}" alt="${title}" data-default-favicon="${this.getDefaultFavicon()}">
+          <img class="tab-favicon" src="${favicon}" alt="${title}" data-default-favicon="${favicon}" onerror="this.src='${favicon}'">
           <span class="tab-title">${title}</span>
         </div>
         <div class="tab-actions">
