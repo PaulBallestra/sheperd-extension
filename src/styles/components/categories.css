@@ -71,7 +71,7 @@
 
 .tab-duplicate {
   font-size: var(--font-size-xs);
-  color: var(--shepherd-warning);
+  color: var(--Sheperd-warning);
   margin-left: var(--space-xs);
 }
 
@@ -105,9 +105,9 @@
 }
 
 .category-btn.danger:hover {
-  background: var(--shepherd-danger);
+  background: var(--Sheperd-danger);
   color: white;
-  border-color: var(--shepherd-danger);
+  border-color: var(--Sheperd-danger);
 }
 
 /* Tab List */
@@ -144,7 +144,7 @@
 
 .tab-item.duplicate {
   background: rgba(245, 158, 11, 0.05);
-  border-left: 3px solid var(--shepherd-warning);
+  border-left: 3px solid var(--Sheperd-warning);
 }
 
 .tab-favicon {
@@ -194,7 +194,7 @@
 }
 
 .tab-close-btn:hover {
-  background: var(--shepherd-danger);
+  background: var(--Sheperd-danger);
   color: white;
 }
 
@@ -225,7 +225,7 @@
   position: absolute;
   top: var(--space-sm);
   right: var(--space-sm);
-  background: var(--shepherd-success);
+  background: var(--Sheperd-success);
   color: white;
   font-size: var(--font-size-xs);
   padding: var(--space-xs) var(--space-sm);

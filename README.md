@@ -1,4 +1,4 @@
-# 🐑 Shepherd - Smart Tab Manager Chrome Extension
+# 🐑 Sheperd - Smart Tab Manager Chrome Extension
 
 ![Chrome Extension](https://img.shields.io/badge/Chrome-Extension-blue?style=for-the-badge&logo=googlechrome)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
@@ -8,7 +8,7 @@
 
 > **Finally, a tab manager that actually understands your chaos.** 🌪️
 
-**Shepherd** is an intelligent Chrome extension that automatically categorizes and manages your browser tabs with smart AI-like categorization, bulk actions, and "tab shame" metrics. Say goodbye to the endless horizontal scroll of doom!
+**Sheperd** is an intelligent Chrome extension that automatically categorizes and manages your browser tabs with smart AI-like categorization, bulk actions, and "tab shame" metrics. Say goodbye to the endless horizontal scroll of doom!
 
 ---
 
@@ -26,7 +26,7 @@
 
 ---
 
-## ✨ What Makes Shepherd Different
+## ✨ What Makes Sheperd Different
 
 ### 🧠 Smart Auto-Categorization
 - ✅ **Zero manual work** - Just open tabs, we organize them
@@ -48,8 +48,8 @@
 - 🧹 **Bulk close old/duplicate tabs** with smart suggestions
 - 🎯 **Performance-based actions** - Close heaviest tabs first
 
-### 📊 Shepherd Level Metrics (Gamification)
-- 📈 **Real-time tab count** with 5-level shepherd meter
+### 📊 Sheperd Level Metrics (Gamification)
+- 📈 **Real-time tab count** with 5-level Sheperd meter
 - 🎯 **Performance impact scoring** - Light/Medium/Heavy system
 - 📅 **Smart recommendations** - Personalized optimization tips
 - 🏆 **Achievement system** - Celebrate good tab hygiene
@@ -62,7 +62,7 @@
 | Feature | Status | Description |
 |---------|--------|-------------|
 | 🏷️ Smart Categorization | ✅ | Work, Social, Shopping, Dev, Entertainment, Other |
-| 📊 Live Tab Count | ✅ | Visual shepherd meter with real-time updates |
+| 📊 Live Tab Count | ✅ | Visual Sheperd meter with real-time updates |
 | 📈 **Performance Analytics** | 🔥 **NEW** | **Smart resource monitoring & optimization suggestions** |
 | 📁 Category View | ✅ | Expandable categories with tab previews |
 | 🗑️ One-Click Closure | ✅ | Category closure with confirmation |
@@ -111,7 +111,7 @@
 ├── src/popup/                   # ES6 module-based popup interface
 │   ├── components/              # Reusable UI components
 │   │   ├── header.js           # Header with real-time stats
-│   │   ├── shepherd-meter.js   # Level-based tab meter
+│   │   ├── Sheperd-meter.js   # Level-based tab meter
 │   │   ├── analytics.js        # 🔥 Performance analytics & optimization
 │   │   ├── categories.js       # Tab categorization & management
 │   │   └── quick-actions.js    # Bulk operations
@@ -166,7 +166,7 @@
 
 ### Current Structure (Phase 1) - Refactored ES6 Architecture
 ```
-shepherd-extension/
+Sheperd-extension/
 ├── manifest.json              # Extension configuration & permissions
 ├── background.js              # Service worker for tab events & badge updates
 ├── src/                       # Source code with ES6 modules
@@ -182,7 +182,7 @@ shepherd-extension/
 │   ├── popup/                 # Popup interface
 │   │   ├── components/        # Reusable UI components
 │   │   │   ├── header.js      # Header with stats & branding
-│   │   │   ├── shepherd-meter.js # Tab level meter (renamed from shame)
+│   │   │   ├── Sheperd-meter.js # Tab level meter (renamed from shame)
 │   │   │   ├── analytics.js   # 🔥 Performance analytics & optimization
 │   │   │   ├── categories.js  # Category management & display
 │   │   │   └── quick-actions.js # Bulk operations buttons
@@ -192,7 +192,7 @@ shepherd-extension/
 │       ├── main.css          # Global styles & design system
 │       └── components/        # Component-specific stylesheets
 │           ├── header.css     # Header component styles
-│           ├── shepherd-meter.css # Meter component styles
+│           ├── Sheperd-meter.css # Meter component styles
 │           ├── analytics.css  # 🔥 Performance analytics styles
 │           ├── categories.css # Categories component styles
 │           ├── quick-actions.css # Quick actions styles
@@ -209,7 +209,7 @@ shepherd-extension/
 
 ### Future Structure (Phase 2)
 ```
-shepherd-platform/
+Sheperd-platform/
 ├── sheperd-extension/                 # Chrome extension (Phase 1)
 │   └── [current structure]
 ├── backend/                   # Go API server
@@ -271,7 +271,7 @@ shepherd-platform/
 ### Phase 1: MVP Extension (Current) - 🔥 **ENHANCED WITH ANALYTICS**
 - ✅ Smart tab categorization with expanded categories
 - ✅ Bulk category management & optimization
-- ✅ Shepherd level metrics (renamed from shame)
+- ✅ Sheperd level metrics (renamed from shame)
 - 🔥 **NEW: Performance Analytics & Resource Monitoring**
 - 🔥 **NEW: Smart optimization suggestions & actions**
 - ✅ Duplicate detection with smart algorithms
@@ -427,7 +427,7 @@ shepherd-platform/
 
 #### **# Install from Chrome Web Store (Coming Soon)**
 1. 🌐 Visit Chrome Web Store
-2. 🔍 Search "Shepherd Tab Manager"
+2. 🔍 Search "Sheperd Tab Manager"
 3. ➕ Click "Add to Chrome"
 4. 🐑 Click the 🐑 icon in your toolbar
 5. ✨ Watch the magic happen!
@@ -436,8 +436,8 @@ shepherd-platform/
 
 #### **# Clone and run locally**
 ```bash
-git clone https://github.com/yourusername/shepherd-extension
-cd shepherd-extension
+git clone https://github.com/yourusername/Sheperd-extension
+cd Sheperd-extension
 ```
 
 #### **# Load extension in Chrome**
@@ -476,7 +476,7 @@ cd backend && go run cmd/server/main.go
 
 #### **# 1. Fork the repository**
 ```bash
-git fork https://github.com/yourusername/shepherd-extension
+git fork https://github.com/yourusername/Sheperd-extension
 ```
 
 #### **# 2. Create feature branch**
@@ -598,8 +598,8 @@ git push origin feature/amazing-new-feature
 
 #### **# Phase 1: Extension Development**
 ```bash
-git clone https://github.com/yourusername/shepherd-extension
-cd shepherd-extension
+git clone https://github.com/yourusername/Sheperd-extension
+cd Sheperd-extension
 
 # Development workflow:
 # 1. Load extension in Chrome (Developer Mode)
@@ -691,25 +691,25 @@ See `CONTRIBUTORS.md` for full list
 ## 📞 Contact & Support
 
 ### Get In Touch
-- 📧 **Email**: hello@shepherd-tabs.com
-- 🐦 **Twitter**: @ShepherdTabs
+- 📧 **Email**: hello@Sheperd-tabs.com
+- 🐦 **Twitter**: @SheperdTabs
 - 💬 **Discord**: Join Community
 - 🐛 **Bug Reports**: GitHub Issues
 - 💡 **Feature Requests**: GitHub Discussions
 
 ### Documentation
-- 📖 **User Guide**: docs.shepherd-tabs.com
-- 👨‍💻 **Developer Docs**: api.shepherd-tabs.com
+- 📖 **User Guide**: docs.Sheperd-tabs.com
+- 👨‍💻 **Developer Docs**: api.Sheperd-tabs.com
 - 🎥 **Video Tutorials**: YouTube Channel
 
 ---
 
 <div align="center">
 
-**Made with ❤️ by the Shepherd Team**
+**Made with ❤️ by the Sheperd Team**
 
 *Helping you tame the tab chaos, one browser at a time* 🐑
 
-[![Star this repo](https://img.shields.io/badge/⭐-Star%20this%20repo-yellow?style=for-the-badge)](https://github.com/yourusername/shepherd-extension)
+[![Star this repo](https://img.shields.io/badge/⭐-Star%20this%20repo-yellow?style=for-the-badge)](https://github.com/yourusername/Sheperd-extension)
 
 </div>

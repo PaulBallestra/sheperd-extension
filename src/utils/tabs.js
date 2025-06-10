@@ -1,14 +1,14 @@
 // src/utils/tabs.js
 // Chrome Tabs API Utilities with modern async/await patterns
 
-import { SHEPHERD_CONFIG, SHEPHERD_STORAGE_KEYS } from './constants.js';
+import { Sheperd_CONFIG, Sheperd_STORAGE_KEYS } from "./constants.js";
 
 /**
  * Modern Chrome Tabs API wrapper with error handling
  */
 export class TabsManager {
   constructor() {
-    this.isChrome = typeof chrome !== 'undefined' && chrome.tabs;
+    this.isChrome = typeof chrome !== "undefined" && chrome.tabs;
   }
 
   /**
@@ -17,13 +17,13 @@ export class TabsManager {
    */
   async getAllTabs() {
     if (!this.isChrome) {
-      throw new Error('Chrome extension environment required');
+      throw new Error("Chrome extension environment required");
     }
 
     try {
       return await chrome.tabs.query({});
     } catch (error) {
-      console.error('Failed to get all tabs:', error);
+      console.error("Failed to get all tabs:", error);
       throw new Error(`Failed to retrieve tabs: ${error.message}`);
     }
   }
@@ -34,14 +34,16 @@ export class TabsManager {
    */
   async getCurrentWindowTabs() {
     if (!this.isChrome) {
-      throw new Error('Chrome extension environment required');
+      throw new Error("Chrome extension environment required");
     }
 
     try {
       return await chrome.tabs.query({ currentWindow: true });
     } catch (error) {
-      console.error('Failed to get current window tabs:', error);
-      throw new Error(`Failed to retrieve current window tabs: ${error.message}`);
+      console.error("Failed to get current window tabs:", error);
+      throw new Error(
+        `Failed to retrieve current window tabs: ${error.message}`
+      );
     }
   }
 
@@ -52,20 +54,20 @@ export class TabsManager {
    */
   async switchToTab(tabId) {
     if (!this.isChrome) {
-      throw new Error('Chrome extension environment required');
+      throw new Error("Chrome extension environment required");
     }
 
     try {
       // Update the tab to make it active
       await chrome.tabs.update(tabId, { active: true });
-      
+
       // Focus the window containing this tab
       const tab = await chrome.tabs.get(tabId);
       await chrome.windows.update(tab.windowId, { focused: true });
-      
+
       return true;
     } catch (error) {
-      console.error('Failed to switch to tab:', tabId, error);
+      console.error("Failed to switch to tab:", tabId, error);
       throw new Error(`Failed to switch to tab: ${error.message}`);
     }
   }
@@ -77,7 +79,7 @@ export class TabsManager {
    */
   async closeTabs(tabIds) {
     if (!this.isChrome) {
-      throw new Error('Chrome extension environment required');
+      throw new Error("Chrome extension environment required");
     }
 
     if (!Array.isArray(tabIds) || tabIds.length === 0) {
@@ -88,7 +90,7 @@ export class TabsManager {
       await chrome.tabs.remove(tabIds);
       return true;
     } catch (error) {
-      console.error('Failed to close tabs:', tabIds, error);
+      console.error("Failed to close tabs:", tabIds, error);
       throw new Error(`Failed to close tabs: ${error.message}`);
     }
   }
@@ -110,38 +112,38 @@ export class TabsManager {
    */
   async bookmarkTabs(tabs, folderName) {
     if (!this.isChrome) {
-      throw new Error('Chrome extension environment required');
+      throw new Error("Chrome extension environment required");
     }
 
     if (!Array.isArray(tabs) || tabs.length === 0) {
-      throw new Error('No tabs provided for bookmarking');
+      throw new Error("No tabs provided for bookmarking");
     }
 
     try {
       // Create bookmark folder
       const folder = await chrome.bookmarks.create({
-        parentId: '1', // Bookmarks bar
-        title: `🐑 ${folderName} - ${new Date().toLocaleDateString()}`
+        parentId: "1", // Bookmarks bar
+        title: `🐑 ${folderName} - ${new Date().toLocaleDateString()}`,
       });
 
       // Add each tab as a bookmark
-      const bookmarkPromises = tabs.map(tab => 
+      const bookmarkPromises = tabs.map((tab) =>
         chrome.bookmarks.create({
           parentId: folder.id,
-          title: tab.title || 'Untitled',
-          url: tab.url
+          title: tab.title || "Untitled",
+          url: tab.url,
         })
       );
 
       await Promise.all(bookmarkPromises);
-      
+
       return {
         folder,
         bookmarksCount: tabs.length,
-        success: true
+        success: true,
       };
     } catch (error) {
-      console.error('Failed to bookmark tabs:', error);
+      console.error("Failed to bookmark tabs:", error);
       throw new Error(`Failed to bookmark tabs: ${error.message}`);
     }
   }
@@ -156,10 +158,12 @@ export class TabsManager {
     }
 
     try {
-      const result = await chrome.storage.local.get([SHEPHERD_STORAGE_KEYS.TAB_ACCESS_TIMES]);
-      return result[SHEPHERD_STORAGE_KEYS.TAB_ACCESS_TIMES] || {};
+      const result = await chrome.storage.local.get([
+        Sheperd_STORAGE_KEYS.TAB_ACCESS_TIMES,
+      ]);
+      return result[Sheperd_STORAGE_KEYS.TAB_ACCESS_TIMES] || {};
     } catch (error) {
-      console.error('Failed to get tab access times:', error);
+      console.error("Failed to get tab access times:", error);
       return {};
     }
   }
@@ -178,14 +182,14 @@ export class TabsManager {
     try {
       const accessTimes = await this.getTabAccessTimes();
       accessTimes[tabId] = timestamp;
-      
+
       await chrome.storage.local.set({
-        [SHEPHERD_STORAGE_KEYS.TAB_ACCESS_TIMES]: accessTimes
+        [Sheperd_STORAGE_KEYS.TAB_ACCESS_TIMES]: accessTimes,
       });
-      
+
       return true;
     } catch (error) {
-      console.error('Failed to update tab access time:', error);
+      console.error("Failed to update tab access time:", error);
       return false;
     }
   }
@@ -196,21 +200,24 @@ export class TabsManager {
    * @param {number} daysThreshold - Days to consider a tab old
    * @returns {Promise<Array>} - Array of old tabs
    */
-  async findOldTabs(tabs, daysThreshold = SHEPHERD_CONFIG.OLD_TAB_THRESHOLD_DAYS) {
+  async findOldTabs(
+    tabs,
+    daysThreshold = Sheperd_CONFIG.OLD_TAB_THRESHOLD_DAYS
+  ) {
     if (!Array.isArray(tabs)) {
       return [];
     }
 
     try {
       const accessTimes = await this.getTabAccessTimes();
-      const cutoffTime = Date.now() - (daysThreshold * 24 * 60 * 60 * 1000);
-      
-      return tabs.filter(tab => {
+      const cutoffTime = Date.now() - daysThreshold * 24 * 60 * 60 * 1000;
+
+      return tabs.filter((tab) => {
         const lastAccessed = accessTimes[tab.id];
         return lastAccessed && lastAccessed < cutoffTime;
       });
     } catch (error) {
-      console.error('Failed to find old tabs:', error);
+      console.error("Failed to find old tabs:", error);
       return [];
     }
   }
@@ -222,14 +229,16 @@ export class TabsManager {
    */
   async sendMessageToBackground(message) {
     if (!this.isChrome) {
-      throw new Error('Chrome extension environment required');
+      throw new Error("Chrome extension environment required");
     }
 
     try {
       return await chrome.runtime.sendMessage(message);
     } catch (error) {
-      console.error('Failed to send message to background:', error);
-      throw new Error(`Failed to communicate with background script: ${error.message}`);
+      console.error("Failed to send message to background:", error);
+      throw new Error(
+        `Failed to communicate with background script: ${error.message}`
+      );
     }
   }
 
@@ -239,10 +248,12 @@ export class TabsManager {
    */
   async requestBadgeUpdate() {
     try {
-      const response = await this.sendMessageToBackground({ action: 'updateBadge' });
+      const response = await this.sendMessageToBackground({
+        action: "updateBadge",
+      });
       return response?.success || false;
     } catch (error) {
-      console.warn('Failed to request badge update:', error);
+      console.warn("Failed to request badge update:", error);
       return false;
     }
   }
@@ -253,10 +264,12 @@ export class TabsManager {
    */
   async getTabStatistics() {
     try {
-      const response = await this.sendMessageToBackground({ action: 'getTabStats' });
+      const response = await this.sendMessageToBackground({
+        action: "getTabStats",
+      });
       return response?.data || { totalTabs: 0, accessTimes: {} };
     } catch (error) {
-      console.warn('Failed to get tab statistics:', error);
+      console.warn("Failed to get tab statistics:", error);
       return { totalTabs: 0, accessTimes: {} };
     }
   }
@@ -271,11 +284,12 @@ export class TabsManager {
       return false;
     }
 
-    return tabs.every(tab => 
-      tab && 
-      typeof tab === 'object' && 
-      typeof tab.id === 'number' &&
-      typeof tab.url === 'string'
+    return tabs.every(
+      (tab) =>
+        tab &&
+        typeof tab === "object" &&
+        typeof tab.id === "number" &&
+        typeof tab.url === "string"
     );
   }
 
@@ -290,10 +304,11 @@ export class TabsManager {
       return [];
     }
 
-    const regex = pattern instanceof RegExp ? pattern : new RegExp(pattern, 'i');
-    
-    return tabs.filter(tab => 
-      regex.test(tab.url) || regex.test(tab.title || '')
+    const regex =
+      pattern instanceof RegExp ? pattern : new RegExp(pattern, "i");
+
+    return tabs.filter(
+      (tab) => regex.test(tab.url) || regex.test(tab.title || "")
     );
   }
 
@@ -308,7 +323,7 @@ export class TabsManager {
     }
 
     const seen = new Set();
-    return tabs.filter(tab => {
+    return tabs.filter((tab) => {
       const normalizedUrl = this._normalizeUrl(tab.url);
       if (seen.has(normalizedUrl)) {
         return false;
@@ -337,7 +352,7 @@ export class TabsManager {
 export const tabsManager = new TabsManager();
 
 // Legacy support for global usage
-if (typeof window !== 'undefined') {
+if (typeof window !== "undefined") {
   window.TabsManager = TabsManager;
   window.tabsManager = tabsManager;
-} 
+}

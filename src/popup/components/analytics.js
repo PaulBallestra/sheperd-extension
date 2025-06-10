@@ -1,7 +1,7 @@
 // src/popup/components/analytics.js
 // Analytics Component - Smart Performance Monitoring & Optimization
 
-import { SHEPHERD_EVENTS } from '../../utils/constants.js';
+import { Sheperd_EVENTS } from "../../utils/constants.js";
 
 /**
  * Analytics Component
@@ -14,19 +14,33 @@ export class AnalyticsComponent {
     this.loadedRatioElement = null;
     this.recommendationElement = null;
     this.optimizeButtonElement = null;
-    
+
     // Analytics data
     this.totalTabs = 0;
     this.loadedTabs = 0;
     this.tabsByCategory = {};
     this.heavyDomains = new Set([
-      'youtube.com', 'netflix.com', 'figma.com', 'canva.com',
-      'docs.google.com', 'sheets.google.com', 'slides.google.com',
-      'facebook.com', 'instagram.com', 'twitter.com', 'x.com',
-      'discord.com', 'twitch.tv', 'spotify.com', 'soundcloud.com',
-      'github.com', 'gitlab.com', 'codesandbox.io', 'replit.com'
+      "youtube.com",
+      "netflix.com",
+      "figma.com",
+      "canva.com",
+      "docs.google.com",
+      "sheets.google.com",
+      "slides.google.com",
+      "facebook.com",
+      "instagram.com",
+      "twitter.com",
+      "x.com",
+      "discord.com",
+      "twitch.tv",
+      "spotify.com",
+      "soundcloud.com",
+      "github.com",
+      "gitlab.com",
+      "codesandbox.io",
+      "replit.com",
     ]);
-    
+
     this.init();
   }
 
@@ -42,9 +56,9 @@ export class AnalyticsComponent {
    * Create the analytics DOM structure
    */
   createElement() {
-    this.element = document.createElement('div');
-    this.element.className = 'analytics';
-    
+    this.element = document.createElement("div");
+    this.element.className = "analytics";
+
     this.element.innerHTML = `
       <div class="analytics-header">
         <h3>📊 Performance Impact</h3>
@@ -93,11 +107,13 @@ export class AnalyticsComponent {
     `;
 
     // Cache element references
-    this.performanceScoreElement = this.element.querySelector('#performance-indicator');
-    this.loadedRatioElement = this.element.querySelector('#loaded-ratio');
-    this.recommendationElement = this.element.querySelector('#recommendations');
-    this.optimizeButtonElement = this.element.querySelector('#optimize-btn');
-    
+    this.performanceScoreElement = this.element.querySelector(
+      "#performance-indicator"
+    );
+    this.loadedRatioElement = this.element.querySelector("#loaded-ratio");
+    this.recommendationElement = this.element.querySelector("#recommendations");
+    this.optimizeButtonElement = this.element.querySelector("#optimize-btn");
+
     // Add toggle functionality
     this.setupToggle();
   }
@@ -106,27 +122,27 @@ export class AnalyticsComponent {
    * Setup collapsible analytics section
    */
   setupToggle() {
-    const toggleBtn = this.element.querySelector('.analytics-header');
-    const content = this.element.querySelector('.analytics-content');
-    const toggleIcon = this.element.querySelector('.toggle-icon');
-    
-    toggleBtn.addEventListener('click', () => {
-      const isExpanded = content.classList.contains('expanded');
-      
+    const toggleBtn = this.element.querySelector(".analytics-header");
+    const content = this.element.querySelector(".analytics-content");
+    const toggleIcon = this.element.querySelector(".toggle-icon");
+
+    toggleBtn.addEventListener("click", () => {
+      const isExpanded = content.classList.contains("expanded");
+
       if (isExpanded) {
-        content.classList.remove('expanded');
-        toggleIcon.textContent = '▼';
-        toggleBtn.setAttribute('aria-expanded', 'false');
+        content.classList.remove("expanded");
+        toggleIcon.textContent = "▼";
+        toggleBtn.setAttribute("aria-expanded", "false");
       } else {
-        content.classList.add('expanded');
-        toggleIcon.textContent = '▲';
-        toggleBtn.setAttribute('aria-expanded', 'true');
+        content.classList.add("expanded");
+        toggleIcon.textContent = "▲";
+        toggleBtn.setAttribute("aria-expanded", "true");
       }
     });
-    
+
     // Start expanded by default
-    content.classList.add('expanded');
-    toggleBtn.setAttribute('aria-expanded', 'true');
+    content.classList.add("expanded");
+    toggleBtn.setAttribute("aria-expanded", "true");
   }
 
   /**
@@ -134,16 +150,16 @@ export class AnalyticsComponent {
    */
   bindEvents() {
     // Listen for tab data updates
-    document.addEventListener(SHEPHERD_EVENTS.TABS_UPDATED, (event) => {
+    document.addEventListener(Sheperd_EVENTS.TABS_UPDATED, (event) => {
       this.updateAnalytics(event.detail);
     });
-    
-    document.addEventListener(SHEPHERD_EVENTS.CATEGORIES_UPDATED, (event) => {
+
+    document.addEventListener(Sheperd_EVENTS.CATEGORIES_UPDATED, (event) => {
       this.updateCategories(event.detail);
     });
-    
+
     // Optimize button click
-    this.optimizeButtonElement.addEventListener('click', () => {
+    this.optimizeButtonElement.addEventListener("click", () => {
       this.performOptimization();
     });
   }
@@ -155,7 +171,7 @@ export class AnalyticsComponent {
   updateAnalytics(tabData) {
     this.totalTabs = tabData.count || 0;
     this.loadedTabs = this.calculateLoadedTabs(tabData.tabs || []);
-    
+
     this.updatePerformanceScore();
     this.updateLoadedRatio();
     this.updateRecommendations();
@@ -168,9 +184,9 @@ export class AnalyticsComponent {
    * @returns {number} - Number of loaded tabs
    */
   calculateLoadedTabs(tabs) {
-    return tabs.filter(tab => {
+    return tabs.filter((tab) => {
       // Tab is considered loaded if it's not discarded and not pending
-      return !tab.discarded && tab.status !== 'loading';
+      return !tab.discarded && tab.status !== "loading";
     }).length;
   }
 
@@ -189,7 +205,7 @@ export class AnalyticsComponent {
    */
   getAllTabs() {
     const allTabs = [];
-    Object.values(this.tabsByCategory).forEach(category => {
+    Object.values(this.tabsByCategory).forEach((category) => {
       if (category.tabs) {
         allTabs.push(...category.tabs);
       }
@@ -202,23 +218,24 @@ export class AnalyticsComponent {
    * @returns {Object} - Performance score data
    */
   calculatePerformanceScore() {
-    const loadedRatio = this.totalTabs > 0 ? this.loadedTabs / this.totalTabs : 0;
+    const loadedRatio =
+      this.totalTabs > 0 ? this.loadedTabs / this.totalTabs : 0;
     const heavyTabCount = this.countHeavyTabs();
-    
-    let score = 'light';
-    let emoji = '🟢';
-    let details = 'System impact: Minimal';
-    
+
+    let score = "light";
+    let emoji = "🟢";
+    let details = "System impact: Minimal";
+
     if (this.totalTabs > 50 || heavyTabCount > 5) {
-      score = 'heavy';
-      emoji = '🔴';
-      details = 'High system impact detected';
+      score = "heavy";
+      emoji = "🔴";
+      details = "High system impact detected";
     } else if (this.totalTabs > 25 || heavyTabCount > 2 || loadedRatio > 0.7) {
-      score = 'medium';
-      emoji = '🟡';
-      details = 'Moderate system impact';
+      score = "medium";
+      emoji = "🟡";
+      details = "Moderate system impact";
     }
-    
+
     return { score, emoji, details };
   }
 
@@ -228,8 +245,8 @@ export class AnalyticsComponent {
    */
   countHeavyTabs() {
     const allTabs = this.getAllTabs();
-    return allTabs.filter(tab => {
-      const url = new URL(tab.url || '');
+    return allTabs.filter((tab) => {
+      const url = new URL(tab.url || "");
       return this.heavyDomains.has(url.hostname);
     }).length;
   }
@@ -239,20 +256,21 @@ export class AnalyticsComponent {
    */
   updatePerformanceScore() {
     const scoreData = this.calculatePerformanceScore();
-    
+
     if (this.performanceScoreElement) {
-      const emoji = this.performanceScoreElement.querySelector('.score-emoji');
-      const text = this.performanceScoreElement.querySelector('.score-text');
-      const details = this.element.querySelector('#performance-details');
-      
+      const emoji = this.performanceScoreElement.querySelector(".score-emoji");
+      const text = this.performanceScoreElement.querySelector(".score-text");
+      const details = this.element.querySelector("#performance-details");
+
       emoji.textContent = scoreData.emoji;
-      text.textContent = scoreData.score.charAt(0).toUpperCase() + scoreData.score.slice(1);
+      text.textContent =
+        scoreData.score.charAt(0).toUpperCase() + scoreData.score.slice(1);
       details.textContent = scoreData.details;
-      
+
       // Add animation effect
-      this.performanceScoreElement.style.transform = 'scale(1.05)';
+      this.performanceScoreElement.style.transform = "scale(1.05)";
       setTimeout(() => {
-        this.performanceScoreElement.style.transform = 'scale(1)';
+        this.performanceScoreElement.style.transform = "scale(1)";
       }, 200);
     }
   }
@@ -263,20 +281,21 @@ export class AnalyticsComponent {
   updateLoadedRatio() {
     if (this.loadedRatioElement) {
       this.loadedRatioElement.textContent = `${this.loadedTabs}/${this.totalTabs}`;
-      
+
       // Update ratio bar
-      const ratioFill = this.element.querySelector('#ratio-fill');
-      const percentage = this.totalTabs > 0 ? (this.loadedTabs / this.totalTabs) * 100 : 0;
-      
+      const ratioFill = this.element.querySelector("#ratio-fill");
+      const percentage =
+        this.totalTabs > 0 ? (this.loadedTabs / this.totalTabs) * 100 : 0;
+
       ratioFill.style.width = `${percentage}%`;
-      
+
       // Color based on ratio
       if (percentage > 70) {
-        ratioFill.className = 'ratio-fill high';
+        ratioFill.className = "ratio-fill high";
       } else if (percentage > 40) {
-        ratioFill.className = 'ratio-fill medium';
+        ratioFill.className = "ratio-fill medium";
       } else {
-        ratioFill.className = 'ratio-fill low';
+        ratioFill.className = "ratio-fill low";
       }
     }
   }
@@ -288,48 +307,51 @@ export class AnalyticsComponent {
   generateRecommendations() {
     const recommendations = [];
     const heavyTabCount = this.countHeavyTabs();
-    const loadedRatio = this.totalTabs > 0 ? this.loadedTabs / this.totalTabs : 0;
-    
+    const loadedRatio =
+      this.totalTabs > 0 ? this.loadedTabs / this.totalTabs : 0;
+
     if (this.totalTabs > 50) {
       recommendations.push({
-        icon: '🔥',
-        text: `Close ${Math.floor(this.totalTabs * 0.3)} tabs to improve performance`,
-        priority: 'high'
+        icon: "🔥",
+        text: `Close ${Math.floor(
+          this.totalTabs * 0.3
+        )} tabs to improve performance`,
+        priority: "high",
       });
     }
-    
+
     if (heavyTabCount > 3) {
       recommendations.push({
-        icon: '⚡',
+        icon: "⚡",
         text: `Suspend ${heavyTabCount} resource-heavy tabs`,
-        priority: 'medium'
+        priority: "medium",
       });
     }
-    
+
     if (loadedRatio > 0.8 && this.totalTabs > 20) {
       recommendations.push({
-        icon: '💤',
+        icon: "💤",
         text: `${Math.floor(this.loadedTabs * 0.4)} tabs could be suspended`,
-        priority: 'medium'
+        priority: "medium",
       });
     }
-    
+
     if (this.totalTabs > 30) {
       recommendations.push({
-        icon: '📚',
-        text: 'Bookmark frequently visited tabs for quick access',
-        priority: 'low'
+        icon: "📚",
+        text: "Bookmark frequently visited tabs for quick access",
+        priority: "low",
       });
     }
-    
+
     if (recommendations.length === 0) {
       recommendations.push({
-        icon: '✨',
-        text: 'Your tab usage looks optimized!',
-        priority: 'info'
+        icon: "✨",
+        text: "Your tab usage looks optimized!",
+        priority: "info",
       });
     }
-    
+
     return recommendations.slice(0, 3); // Show max 3 recommendations
   }
 
@@ -338,14 +360,18 @@ export class AnalyticsComponent {
    */
   updateRecommendations() {
     const recommendations = this.generateRecommendations();
-    
+
     if (this.recommendationElement) {
-      this.recommendationElement.innerHTML = recommendations.map(rec => `
+      this.recommendationElement.innerHTML = recommendations
+        .map(
+          (rec) => `
         <div class="recommendation-item ${rec.priority}">
           <span class="rec-icon">${rec.icon}</span>
           <span class="rec-text">${rec.text}</span>
         </div>
-      `).join('');
+      `
+        )
+        .join("");
     }
   }
 
@@ -354,18 +380,18 @@ export class AnalyticsComponent {
    */
   updateOptimizeButton() {
     const hasOptimizations = this.totalTabs > 10 || this.countHeavyTabs() > 1;
-    
+
     if (this.optimizeButtonElement) {
       this.optimizeButtonElement.disabled = !hasOptimizations;
-      
+
       if (hasOptimizations) {
-        this.optimizeButtonElement.classList.add('active');
-        const btnText = this.optimizeButtonElement.querySelector('.btn-text');
+        this.optimizeButtonElement.classList.add("active");
+        const btnText = this.optimizeButtonElement.querySelector(".btn-text");
         btnText.textContent = `Optimize (${this.getOptimizationCount()} tabs)`;
       } else {
-        this.optimizeButtonElement.classList.remove('active');
-        const btnText = this.optimizeButtonElement.querySelector('.btn-text');
-        btnText.textContent = 'Performance Optimized';
+        this.optimizeButtonElement.classList.remove("active");
+        const btnText = this.optimizeButtonElement.querySelector(".btn-text");
+        btnText.textContent = "Performance Optimized";
       }
     }
   }
@@ -386,27 +412,29 @@ export class AnalyticsComponent {
   async performOptimization() {
     try {
       this.optimizeButtonElement.disabled = true;
-      this.optimizeButtonElement.classList.add('loading');
-      
+      this.optimizeButtonElement.classList.add("loading");
+
       // Dispatch optimization event
-      const optimizationEvent = new CustomEvent(SHEPHERD_EVENTS.OPTIMIZE_PERFORMANCE, {
-        detail: {
-          action: 'optimize',
-          suggestions: this.generateRecommendations()
+      const optimizationEvent = new CustomEvent(
+        Sheperd_EVENTS.OPTIMIZE_PERFORMANCE,
+        {
+          detail: {
+            action: "optimize",
+            suggestions: this.generateRecommendations(),
+          },
         }
-      });
-      
+      );
+
       document.dispatchEvent(optimizationEvent);
-      
+
       // Show success feedback
       this.showOptimizationFeedback();
-      
     } catch (error) {
-      console.error('Optimization failed:', error);
+      console.error("Optimization failed:", error);
       this.showOptimizationError();
     } finally {
       setTimeout(() => {
-        this.optimizeButtonElement.classList.remove('loading');
+        this.optimizeButtonElement.classList.remove("loading");
         this.updateOptimizeButton();
       }, 1500);
     }
@@ -416,11 +444,11 @@ export class AnalyticsComponent {
    * Show optimization success feedback
    */
   showOptimizationFeedback() {
-    const btnText = this.optimizeButtonElement.querySelector('.btn-text');
+    const btnText = this.optimizeButtonElement.querySelector(".btn-text");
     const originalText = btnText.textContent;
-    
-    btnText.textContent = '✅ Optimized!';
-    
+
+    btnText.textContent = "✅ Optimized!";
+
     setTimeout(() => {
       btnText.textContent = originalText;
     }, 2000);
@@ -430,11 +458,11 @@ export class AnalyticsComponent {
    * Show optimization error feedback
    */
   showOptimizationError() {
-    const btnText = this.optimizeButtonElement.querySelector('.btn-text');
+    const btnText = this.optimizeButtonElement.querySelector(".btn-text");
     const originalText = btnText.textContent;
-    
-    btnText.textContent = '❌ Error occurred';
-    
+
+    btnText.textContent = "❌ Error occurred";
+
     setTimeout(() => {
       btnText.textContent = originalText;
     }, 2000);
@@ -446,7 +474,9 @@ export class AnalyticsComponent {
    */
   render(container) {
     if (!container || !(container instanceof HTMLElement)) {
-      throw new Error('Valid container element required for analytics rendering');
+      throw new Error(
+        "Valid container element required for analytics rendering"
+      );
     }
 
     if (this.element) {
@@ -478,4 +508,4 @@ export class AnalyticsComponent {
 }
 
 // Export singleton instance for convenience
-export const analyticsComponent = new AnalyticsComponent(); 
+export const analyticsComponent = new AnalyticsComponent();

@@ -1,18 +1,18 @@
 // src/popup/components/header.js
-// Header Component - Displays Shepherd branding and tab count
+// Header Component - Displays Sheperd branding and tab count
 
-import { SHEPHERD_EVENTS } from '../../utils/constants.js';
+import { Sheperd_EVENTS } from "../../utils/constants.js";
 
 /**
  * Header Component
- * Manages the display of Shepherd branding and real-time tab count
+ * Manages the display of Sheperd branding and real-time tab count
  */
 export class HeaderComponent {
   constructor() {
     this.element = null;
     this.totalTabsElement = null;
     this.tabCount = 0;
-    
+
     this.init();
   }
 
@@ -28,18 +28,18 @@ export class HeaderComponent {
    * Create the header DOM structure
    */
   createElement() {
-    this.element = document.createElement('div');
-    this.element.className = 'header';
-    
+    this.element = document.createElement("div");
+    this.element.className = "header";
+
     this.element.innerHTML = `
-      <h1>🐑 Shepherd</h1>
+      <h1>🐑 Sheperd</h1>
       <div class="tab-count">
         <span id="total-tabs">0</span> tabs open
       </div>
     `;
 
     // Cache reference to the tab count element
-    this.totalTabsElement = this.element.querySelector('#total-tabs');
+    this.totalTabsElement = this.element.querySelector("#total-tabs");
   }
 
   /**
@@ -47,7 +47,7 @@ export class HeaderComponent {
    */
   bindEvents() {
     // Listen for tab count updates
-    document.addEventListener(SHEPHERD_EVENTS.TABS_UPDATED, (event) => {
+    document.addEventListener(Sheperd_EVENTS.TABS_UPDATED, (event) => {
       this.updateTabCount(event.detail.count);
     });
   }
@@ -57,21 +57,21 @@ export class HeaderComponent {
    * @param {number} count - Number of open tabs
    */
   updateTabCount(count) {
-    if (typeof count !== 'number' || count < 0) {
-      console.warn('Invalid tab count provided:', count);
+    if (typeof count !== "number" || count < 0) {
+      console.warn("Invalid tab count provided:", count);
       return;
     }
 
     this.tabCount = count;
-    
+
     if (this.totalTabsElement) {
       // Add smooth transition animation
-      this.totalTabsElement.style.transform = 'scale(1.1)';
+      this.totalTabsElement.style.transform = "scale(1.1)";
       this.totalTabsElement.textContent = count;
-      
+
       // Reset animation after a brief delay
       setTimeout(() => {
-        this.totalTabsElement.style.transform = 'scale(1)';
+        this.totalTabsElement.style.transform = "scale(1)";
       }, 150);
     }
   }
@@ -90,7 +90,7 @@ export class HeaderComponent {
    */
   render(container) {
     if (!container || !(container instanceof HTMLElement)) {
-      throw new Error('Valid container element required for header rendering');
+      throw new Error("Valid container element required for header rendering");
     }
 
     if (this.element) {
@@ -109,11 +109,11 @@ export class HeaderComponent {
 
     // Add visual feedback for large tab counts
     if (this.tabCount > 50) {
-      this.element.classList.add('tab-apocalypse');
+      this.element.classList.add("tab-apocalypse");
     } else if (this.tabCount > 35) {
-      this.element.classList.add('tab-chaos');
+      this.element.classList.add("tab-chaos");
     } else {
-      this.element.classList.remove('tab-apocalypse', 'tab-chaos');
+      this.element.classList.remove("tab-apocalypse", "tab-chaos");
     }
   }
 
@@ -138,4 +138,4 @@ export class HeaderComponent {
 }
 
 // Export singleton instance for convenience
-export const headerComponent = new HeaderComponent(); 
+export const headerComponent = new HeaderComponent();

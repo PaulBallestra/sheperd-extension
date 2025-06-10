@@ -92,7 +92,7 @@
 
 ---
 
-## 🚀 **Shepherd Project Specific**
+## 🚀 **Sheperd Project Specific**
 
 ### **Feature Priorities**
 1. **Tab Management** - Smart categorization with ES6 modules
@@ -100,7 +100,7 @@
 3. **Performance** - Handle 100+ tabs with efficient algorithms
 4. **User Experience** - Intuitive interface with smooth animations
 5. **Reliability** - Comprehensive error handling and feedback
-6. **Shepherd Meter** - Level-based tab tracking (renamed from shame)
+6. **Sheperd Meter** - Level-based tab tracking (renamed from shame)
 
 ### **Technical Stack Understanding**
 - **Phase 1**: Chrome Extension (ES6 Modules, Component Architecture, CSS Variables)
@@ -110,10 +110,10 @@
 
 ### **Component Development Standards**
 - **Header Component**: Real-time stats, refresh functionality, responsive design
-- **Shepherd Meter**: 5 levels (excellent→apocalyptic), animations, celebrations
+- **Sheperd Meter**: 5 levels (excellent→apocalyptic), animations, celebrations
 - **Categories Component**: Expand/collapse, bulk actions, category-specific colors
 - **Quick Actions**: Smart button states, bulk operations, loading feedback
-- **Event System**: Use SHEPHERD_EVENTS for component communication
+- **Event System**: Use Sheperd_EVENTS for component communication
 
 ### **Business Context**
 - **Target Users**: Power users with 20+ tabs
@@ -222,7 +222,7 @@ I will follow these rules consistently to:
 - ✅ Deliver high-quality, reliable code
 - ✅ Enhance the user experience with every change  
 - ✅ Maintain project momentum and progress
-- ✅ Support the vision of making Shepherd the #1 tab manager
+- ✅ Support the vision of making Sheperd the #1 tab manager
 - ✅ Never compromise on functionality or user experience
 
-**Remember**: Every line of code should make Shepherd better for users who are drowning in tab chaos. We're building the solution they desperately need! 🐑✨ 
+**Remember**: Every line of code should make Sheperd better for users who are drowning in tab chaos. We're building the solution they desperately need! 🐑✨ 

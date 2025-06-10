@@ -1,34 +1,34 @@
 // src/popup/popup.js
 // Main Popup Application - Orchestrates all components
 
-import { SHEPHERD_EVENTS, SHEPHERD_CONFIG } from '../utils/constants.js';
-import { tabsManager } from '../utils/tabs.js';
-import { tabCategorizer } from '../utils/categorizer.js';
+import { Sheperd_EVENTS, Sheperd_CONFIG } from "../utils/constants.js";
+import { tabsManager } from "../utils/tabs.js";
+import { tabCategorizer } from "../utils/categorizer.js";
 
-import { headerComponent } from './components/header.js';
-import { shepherdMeterComponent } from './components/shepherd-meter.js';
-import { analyticsComponent } from './components/analytics.js';
-import { categoriesComponent } from './components/categories.js';
-import { quickActionsComponent } from './components/quick-actions.js';
+import { headerComponent } from "./components/header.js";
+import { SheperdMeterComponent } from "./components/Sheperd-meter.js";
+import { analyticsComponent } from "./components/analytics.js";
+import { categoriesComponent } from "./components/categories.js";
+import { quickActionsComponent } from "./components/quick-actions.js";
 
 /**
- * Main Shepherd Popup Application
+ * Main Sheperd Popup Application
  * Orchestrates all components and manages application state
  */
-class ShepherdPopupApp {
+class SheperdPopupApp {
   constructor() {
     this.isInitialized = false;
     this.isLoading = false;
     this.currentTabs = [];
     this.categorizedTabs = {};
-    
+
     // Component references
     this.components = {
       header: headerComponent,
-      shepherdMeter: shepherdMeterComponent,
+      SheperdMeter: SheperdMeterComponent,
       analytics: analyticsComponent,
       categories: categoriesComponent,
-      quickActions: quickActionsComponent
+      quickActions: quickActionsComponent,
     };
 
     // UI elements
@@ -44,30 +44,29 @@ class ShepherdPopupApp {
     if (this.isInitialized) return;
 
     try {
-      console.log('🐑 Initializing Shepherd Popup...');
-      
-      this.showLoading(true, 'Loading your tabs...');
-      
+      console.log("🐑 Initializing Sheperd Popup...");
+
+      this.showLoading(true, "Loading your tabs...");
+
       // Setup UI structure
       await this.setupUI();
-      
+
       // Bind global events
       this.bindEvents();
-      
+
       // Load and categorize tabs
       await this.loadTabs();
-      
+
       // Render all components
       this.renderComponents();
-      
+
       // Mark as initialized
       this.isInitialized = true;
-      
-      console.log('✅ Shepherd Popup initialized successfully');
-      
+
+      console.log("✅ Sheperd Popup initialized successfully");
     } catch (error) {
-      console.error('❌ Failed to initialize Shepherd Popup:', error);
-      this.showError('Failed to load Shepherd. Please try again.');
+      console.error("❌ Failed to initialize Sheperd Popup:", error);
+      this.showError("Failed to load Sheperd. Please try again.");
     } finally {
       this.showLoading(false);
     }
@@ -79,23 +78,23 @@ class ShepherdPopupApp {
   async setupUI() {
     // Get the document body (popup container)
     const body = document.body;
-    
+
     // Clear any existing content
-    body.innerHTML = '';
-    
+    body.innerHTML = "";
+
     // Create main container
-    const mainContainer = document.createElement('div');
-    mainContainer.className = 'shepherd-popup';
-    
+    const mainContainer = document.createElement("div");
+    mainContainer.className = "Sheperd-popup";
+
     // Create footer
     this.createFooter();
-    
+
     // Create loading overlay
     this.createLoadingOverlay();
-    
+
     // Create error container
     this.createErrorContainer();
-    
+
     // Append to body
     body.appendChild(mainContainer);
     body.appendChild(this.footerElement);
@@ -107,9 +106,9 @@ class ShepherdPopupApp {
    * Create footer with settings and upgrade buttons
    */
   createFooter() {
-    this.footerElement = document.createElement('div');
-    this.footerElement.className = 'footer';
-    
+    this.footerElement = document.createElement("div");
+    this.footerElement.className = "footer";
+
     this.footerElement.innerHTML = `
       <button id="settings-btn" class="text-btn" title="Open settings">
         ⚙️ Settings
@@ -120,7 +119,7 @@ class ShepherdPopupApp {
       <div class="footer-info">
         <span class="version">v1.0.0</span>
         <span class="separator">•</span>
-        <span class="branding">Shepherd</span>
+        <span class="branding">Sheperd</span>
       </div>
     `;
   }
@@ -129,10 +128,10 @@ class ShepherdPopupApp {
    * Create loading overlay
    */
   createLoadingOverlay() {
-    this.loadingElement = document.createElement('div');
-    this.loadingElement.className = 'loading hidden';
-    this.loadingElement.id = 'loading';
-    
+    this.loadingElement = document.createElement("div");
+    this.loadingElement.className = "loading hidden";
+    this.loadingElement.id = "loading";
+
     this.loadingElement.innerHTML = `
       <div class="loading-content">
         <div class="spinner"></div>
@@ -145,10 +144,10 @@ class ShepherdPopupApp {
    * Create error container
    */
   createErrorContainer() {
-    this.errorElement = document.createElement('div');
-    this.errorElement.className = 'error-container hidden';
-    this.errorElement.id = 'error-container';
-    
+    this.errorElement = document.createElement("div");
+    this.errorElement.className = "error-container hidden";
+    this.errorElement.id = "error-container";
+
     this.errorElement.innerHTML = `
       <div class="error-content">
         <div class="error-icon">⚠️</div>
@@ -164,47 +163,52 @@ class ShepherdPopupApp {
    */
   bindEvents() {
     // Footer button events
-    document.getElementById('settings-btn')?.addEventListener('click', () => {
+    document.getElementById("settings-btn")?.addEventListener("click", () => {
       this.openSettings();
     });
 
-    document.getElementById('upgrade-btn')?.addEventListener('click', () => {
+    document.getElementById("upgrade-btn")?.addEventListener("click", () => {
       this.openUpgrade();
     });
 
     // Error retry button
-    this.errorElement.querySelector('.error-retry-btn')?.addEventListener('click', () => {
-      this.retry();
-    });
+    this.errorElement
+      .querySelector(".error-retry-btn")
+      ?.addEventListener("click", () => {
+        this.retry();
+      });
 
     // Global error handler
-    document.addEventListener(SHEPHERD_EVENTS.ERROR_OCCURRED, (event) => {
+    document.addEventListener(Sheperd_EVENTS.ERROR_OCCURRED, (event) => {
       this.handleError(event.detail);
     });
 
     // Loading state handlers
-    document.addEventListener(SHEPHERD_EVENTS.LOADING_STARTED, (event) => {
+    document.addEventListener(Sheperd_EVENTS.LOADING_STARTED, (event) => {
       this.showLoading(true, event.detail.message);
     });
 
-    document.addEventListener(SHEPHERD_EVENTS.LOADING_FINISHED, () => {
+    document.addEventListener(Sheperd_EVENTS.LOADING_FINISHED, () => {
       this.showLoading(false);
     });
 
     // Tab update handler
-    document.addEventListener(SHEPHERD_EVENTS.TABS_UPDATED, async (event) => {
-      if (event.detail.action !== 'refresh') {
+    document.addEventListener(Sheperd_EVENTS.TABS_UPDATED, async (event) => {
+      if (event.detail.action !== "refresh") {
         await this.loadTabs(); // Refresh data after tab operations
       }
     });
 
     // Performance optimization handler
-    document.addEventListener(SHEPHERD_EVENTS.OPTIMIZE_PERFORMANCE, async (event) => {
-      await this.handlePerformanceOptimization(event.detail);
-    });
+    document.addEventListener(
+      Sheperd_EVENTS.OPTIMIZE_PERFORMANCE,
+      async (event) => {
+        await this.handlePerformanceOptimization(event.detail);
+      }
+    );
 
     // Keyboard shortcuts
-    document.addEventListener('keydown', (event) => {
+    document.addEventListener("keydown", (event) => {
       this.handleKeyboardShortcuts(event);
     });
 
@@ -219,22 +223,25 @@ class ShepherdPopupApp {
     try {
       // Get all tabs
       this.currentTabs = await tabsManager.getAllTabs();
-      
+
       // Categorize tabs
       this.categorizedTabs = tabCategorizer.categorizeTabs(this.currentTabs);
-      
+
       // Dispatch update event
-      this.dispatchEvent(SHEPHERD_EVENTS.TABS_UPDATED, {
+      this.dispatchEvent(Sheperd_EVENTS.TABS_UPDATED, {
         tabs: this.currentTabs,
         categorizedTabs: this.categorizedTabs,
         count: this.currentTabs.length,
-        action: 'refresh'
+        action: "refresh",
       });
-      
-      console.log(`📊 Loaded ${this.currentTabs.length} tabs in ${Object.keys(this.categorizedTabs).length} categories`);
-      
+
+      console.log(
+        `📊 Loaded ${this.currentTabs.length} tabs in ${
+          Object.keys(this.categorizedTabs).length
+        } categories`
+      );
     } catch (error) {
-      console.error('Failed to load tabs:', error);
+      console.error("Failed to load tabs:", error);
       throw new Error(`Failed to load tabs: ${error.message}`);
     }
   }
@@ -243,15 +250,15 @@ class ShepherdPopupApp {
    * Render all components to the main container
    */
   renderComponents() {
-    const mainContainer = document.querySelector('.shepherd-popup');
+    const mainContainer = document.querySelector(".Sheperd-popup");
     if (!mainContainer) return;
 
     // Clear existing content
-    mainContainer.innerHTML = '';
+    mainContainer.innerHTML = "";
 
     // Render components in order
     this.components.header.render(mainContainer);
-    this.components.shepherdMeter.render(mainContainer);
+    this.components.SheperdMeter.render(mainContainer);
     this.components.categories.render(mainContainer);
     this.components.analytics.render(mainContainer);
     this.components.quickActions.render(mainContainer);
@@ -262,16 +269,17 @@ class ShepherdPopupApp {
    * @param {boolean} show - Show loading
    * @param {string} message - Loading message
    */
-  showLoading(show, message = 'Loading...') {
+  showLoading(show, message = "Loading...") {
     if (!this.loadingElement) return;
 
     this.isLoading = show;
-    
+
     if (show) {
-      this.loadingElement.querySelector('.loading-message').textContent = message;
-      this.loadingElement.classList.remove('hidden');
+      this.loadingElement.querySelector(".loading-message").textContent =
+        message;
+      this.loadingElement.classList.remove("hidden");
     } else {
-      this.loadingElement.classList.add('hidden');
+      this.loadingElement.classList.add("hidden");
     }
   }
 
@@ -282,8 +290,8 @@ class ShepherdPopupApp {
   showError(message) {
     if (!this.errorElement) return;
 
-    this.errorElement.querySelector('.error-message').textContent = message;
-    this.errorElement.classList.remove('hidden');
+    this.errorElement.querySelector(".error-message").textContent = message;
+    this.errorElement.classList.remove("hidden");
     this.showLoading(false);
   }
 
@@ -292,7 +300,7 @@ class ShepherdPopupApp {
    */
   hideError() {
     if (!this.errorElement) return;
-    this.errorElement.classList.add('hidden');
+    this.errorElement.classList.add("hidden");
   }
 
   /**
@@ -300,16 +308,16 @@ class ShepherdPopupApp {
    * @param {Object} errorData - Error information
    */
   handleError(errorData) {
-    console.error('Application error:', errorData);
-    
-    let message = 'An unexpected error occurred';
-    
+    console.error("Application error:", errorData);
+
+    let message = "An unexpected error occurred";
+
     if (errorData.error) {
       message = errorData.error;
     } else if (errorData.action) {
-      message = `Failed to ${errorData.action.replace('_', ' ')}`;
+      message = `Failed to ${errorData.action.replace("_", " ")}`;
     }
-    
+
     this.showError(message);
   }
 
@@ -328,20 +336,20 @@ class ShepherdPopupApp {
    */
   handleKeyboardShortcuts(event) {
     // Escape key - close popup
-    if (event.key === 'Escape') {
+    if (event.key === "Escape") {
       window.close();
     }
-    
+
     // Ctrl/Cmd + R - refresh
-    if ((event.ctrlKey || event.metaKey) && event.key === 'r') {
+    if ((event.ctrlKey || event.metaKey) && event.key === "r") {
       event.preventDefault();
       this.loadTabs();
     }
-    
+
     // Ctrl/Cmd + D - close duplicates
-    if ((event.ctrlKey || event.metaKey) && event.key === 'd') {
+    if ((event.ctrlKey || event.metaKey) && event.key === "d") {
       event.preventDefault();
-      document.getElementById('close-duplicates')?.click();
+      document.getElementById("close-duplicates")?.click();
     }
   }
 
@@ -355,7 +363,7 @@ class ShepherdPopupApp {
         try {
           await this.loadTabs();
         } catch (error) {
-          console.warn('Auto-refresh failed:', error);
+          console.warn("Auto-refresh failed:", error);
         }
       }
     }, 30000);
@@ -367,32 +375,49 @@ class ShepherdPopupApp {
    */
   async handlePerformanceOptimization(optimizationData) {
     try {
-      console.log('🔥 Performing tab optimization:', optimizationData);
-      
-      this.showLoading(true, 'Optimizing performance...');
-      
+      console.log("🔥 Performing tab optimization:", optimizationData);
+
+      this.showLoading(true, "Optimizing performance...");
+
       // Get all tabs for analysis
       const allTabs = await tabsManager.getAllTabs();
-      
+
       // Identify tabs to optimize based on heavy domains and loaded state
       const heavyDomains = new Set([
-        'youtube.com', 'netflix.com', 'figma.com', 'canva.com',
-        'docs.google.com', 'sheets.google.com', 'slides.google.com',
-        'facebook.com', 'instagram.com', 'twitter.com', 'x.com',
-        'discord.com', 'twitch.tv', 'spotify.com', 'soundcloud.com',
-        'github.com', 'gitlab.com', 'codesandbox.io', 'replit.com'
+        "youtube.com",
+        "netflix.com",
+        "figma.com",
+        "canva.com",
+        "docs.google.com",
+        "sheets.google.com",
+        "slides.google.com",
+        "facebook.com",
+        "instagram.com",
+        "twitter.com",
+        "x.com",
+        "discord.com",
+        "twitch.tv",
+        "spotify.com",
+        "soundcloud.com",
+        "github.com",
+        "gitlab.com",
+        "codesandbox.io",
+        "replit.com",
       ]);
 
       // Find tabs to optimize
-      const tabsToOptimize = allTabs.filter(tab => {
-        if (tab.active) return false; // Don't close active tab
-        
-        const url = new URL(tab.url || '');
-        const isHeavyDomain = heavyDomains.has(url.hostname);
-        const isOldTab = (Date.now() - (tab.lastAccessed || Date.now())) > (24 * 60 * 60 * 1000); // 24h
-        
-        return isHeavyDomain || isOldTab;
-      }).slice(0, 10); // Limit to 10 tabs for safety
+      const tabsToOptimize = allTabs
+        .filter((tab) => {
+          if (tab.active) return false; // Don't close active tab
+
+          const url = new URL(tab.url || "");
+          const isHeavyDomain = heavyDomains.has(url.hostname);
+          const isOldTab =
+            Date.now() - (tab.lastAccessed || Date.now()) > 24 * 60 * 60 * 1000; // 24h
+
+          return isHeavyDomain || isOldTab;
+        })
+        .slice(0, 10); // Limit to 10 tabs for safety
 
       if (tabsToOptimize.length === 0) {
         this.showLoading(false);
@@ -400,20 +425,21 @@ class ShepherdPopupApp {
       }
 
       // Close optimization candidate tabs
-      const tabIds = tabsToOptimize.map(tab => tab.id);
+      const tabIds = tabsToOptimize.map((tab) => tab.id);
       await tabsManager.closeTabs(tabIds);
-      
+
       // Refresh data
       await this.loadTabs();
-      
+
       // Show success message
-      console.log(`✅ Optimized performance by closing ${tabsToOptimize.length} tabs`);
-      
+      console.log(
+        `✅ Optimized performance by closing ${tabsToOptimize.length} tabs`
+      );
     } catch (error) {
-      console.error('❌ Performance optimization failed:', error);
-      this.handleError({ 
-        action: 'optimize_performance', 
-        error: 'Failed to optimize performance' 
+      console.error("❌ Performance optimization failed:", error);
+      this.handleError({
+        action: "optimize_performance",
+        error: "Failed to optimize performance",
       });
     } finally {
       this.showLoading(false);
@@ -426,7 +452,9 @@ class ShepherdPopupApp {
   openSettings() {
     // For now, just show a message
     // In Phase 2, this would open a settings page
-    alert('Settings coming in Shepherd Pro! ⚙️\n\nUpgrade to access advanced customization options.');
+    alert(
+      "Settings coming in Sheperd Pro! ⚙️\n\nUpgrade to access advanced customization options."
+    );
   }
 
   /**
@@ -434,7 +462,7 @@ class ShepherdPopupApp {
    */
   openUpgrade() {
     // Open upgrade page (would be actual URL in production)
-    const upgradeUrl = 'https://shepherd-tabs.com/upgrade';
+    const upgradeUrl = "https://Sheperd-tabs.com/upgrade";
     chrome.tabs.create({ url: upgradeUrl });
     window.close();
   }
@@ -449,7 +477,7 @@ class ShepherdPopupApp {
       totalCategories: Object.keys(this.categorizedTabs).length,
       duplicates: tabCategorizer.findDuplicates(this.currentTabs).length,
       isInitialized: this.isInitialized,
-      isLoading: this.isLoading
+      isLoading: this.isLoading,
     };
   }
 
@@ -468,7 +496,7 @@ class ShepherdPopupApp {
    */
   destroy() {
     // Destroy all components
-    Object.values(this.components).forEach(component => {
+    Object.values(this.components).forEach((component) => {
       if (component.destroy) {
         component.destroy();
       }
@@ -483,22 +511,22 @@ class ShepherdPopupApp {
 }
 
 // Create and initialize the application when DOM is ready
-let shepherdApp = null;
+let SheperdApp = null;
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', async () => {
-    shepherdApp = new ShepherdPopupApp();
-    await shepherdApp.init();
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", async () => {
+    SheperdApp = new SheperdPopupApp();
+    await SheperdApp.init();
   });
 } else {
   // DOM is already ready
-  shepherdApp = new ShepherdPopupApp();
-  shepherdApp.init();
+  SheperdApp = new SheperdPopupApp();
+  SheperdApp.init();
 }
 
 // Export for debugging/testing
-if (typeof window !== 'undefined') {
-  window.shepherdApp = shepherdApp;
+if (typeof window !== "undefined") {
+  window.SheperdApp = SheperdApp;
 }
 
-export default ShepherdPopupApp; 
+export default SheperdPopupApp;

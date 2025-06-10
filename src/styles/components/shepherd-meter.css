@@ -1,7 +1,7 @@
-/* src/styles/components/shepherd-meter.css */
-/* Shepherd Meter Component Styles */
+/* src/styles/components/Sheperd-meter.css */
+/* Sheperd Meter Component Styles */
 
-.shepherd-meter {
+.Sheperd-meter {
   background: var(--background-secondary);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-lg);
@@ -11,7 +11,7 @@
   transition: all var(--transition-normal);
 }
 
-.shepherd-meter:hover {
+.Sheperd-meter:hover {
   box-shadow: var(--shadow-md);
 }
 
@@ -66,53 +66,53 @@
 }
 
 /* Level-specific styling */
-.shepherd-meter.excellent {
+.Sheperd-meter.excellent {
   background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
   border-color: rgba(16, 185, 129, 0.2);
 }
 
-.shepherd-meter.excellent .meter-count,
-.shepherd-meter.excellent .meter-message {
+.Sheperd-meter.excellent .meter-count,
+.Sheperd-meter.excellent .meter-message {
   color: var(--meter-excellent);
 }
 
-.shepherd-meter.good {
+.Sheperd-meter.good {
   background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));
   border-color: rgba(59, 130, 246, 0.2);
 }
 
-.shepherd-meter.good .meter-count,
-.shepherd-meter.good .meter-message {
+.Sheperd-meter.good .meter-count,
+.Sheperd-meter.good .meter-message {
   color: var(--meter-good);
 }
 
-.shepherd-meter.busy {
+.Sheperd-meter.busy {
   background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05));
   border-color: rgba(245, 158, 11, 0.2);
 }
 
-.shepherd-meter.busy .meter-count,
-.shepherd-meter.busy .meter-message {
+.Sheperd-meter.busy .meter-count,
+.Sheperd-meter.busy .meter-message {
   color: var(--meter-busy);
 }
 
-.shepherd-meter.chaotic {
+.Sheperd-meter.chaotic {
   background: linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(249, 115, 22, 0.05));
   border-color: rgba(249, 115, 22, 0.2);
 }
 
-.shepherd-meter.chaotic .meter-count,
-.shepherd-meter.chaotic .meter-message {
+.Sheperd-meter.chaotic .meter-count,
+.Sheperd-meter.chaotic .meter-message {
   color: var(--meter-chaotic);
 }
 
-.shepherd-meter.apocalyptic {
+.Sheperd-meter.apocalyptic {
   background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
   border-color: rgba(239, 68, 68, 0.2);
 }
 
-.shepherd-meter.apocalyptic .meter-count,
-.shepherd-meter.apocalyptic .meter-message {
+.Sheperd-meter.apocalyptic .meter-count,
+.Sheperd-meter.apocalyptic .meter-message {
   color: var(--meter-apocalyptic);
 }
 
@@ -139,8 +139,8 @@
 }
 
 /* High tab count warning animations */
-.shepherd-meter.chaotic .meter-icon,
-.shepherd-meter.apocalyptic .meter-icon {
+.Sheperd-meter.chaotic .meter-icon,
+.Sheperd-meter.apocalyptic .meter-icon {
   animation: warning-pulse 2s infinite;
 }
 
@@ -191,16 +191,16 @@
 }
 
 /* Interactive States */
-.shepherd-meter.clickable {
+.Sheperd-meter.clickable {
   cursor: pointer;
 }
 
-.shepherd-meter.clickable:hover {
+.Sheperd-meter.clickable:hover {
   transform: translateY(-1px);
   box-shadow: var(--shadow-lg);
 }
 
-.shepherd-meter.clickable:active {
+.Sheperd-meter.clickable:active {
   transform: translateY(0);
   box-shadow: var(--shadow-sm);
 } 

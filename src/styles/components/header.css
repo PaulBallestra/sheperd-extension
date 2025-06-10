@@ -76,17 +76,17 @@
 
 @keyframes statUpdate {
   0% { transform: scale(1); }
-  50% { transform: scale(1.1); color: var(--shepherd-primary); }
+  50% { transform: scale(1.1); color: var(--Sheperd-primary); }
   100% { transform: scale(1); }
 }
 
 /* High Tab Count Warning */
 .header-stats.high-count .header-stat-value {
-  color: var(--shepherd-warning);
+  color: var(--Sheperd-warning);
 }
 
 .header-stats.very-high-count .header-stat-value {
-  color: var(--shepherd-danger);
+  color: var(--Sheperd-danger);
   animation: pulse 2s infinite;
 }
 

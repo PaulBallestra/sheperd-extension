@@ -23,18 +23,18 @@
 }
 
 .text-btn.premium {
-  color: var(--shepherd-primary);
+  color: var(--Sheperd-primary);
   font-weight: 600;
 }
 
 .text-btn.premium:hover {
   color: white;
-  background: var(--shepherd-primary);
+  background: var(--Sheperd-primary);
 }
 
 /* Primary Buttons */
 .primary-btn {
-  background: var(--shepherd-primary);
+  background: var(--Sheperd-primary);
   color: white;
   border: none;
   padding: var(--space-sm) var(--space-lg);
@@ -50,7 +50,7 @@
 }
 
 .primary-btn:hover {
-  background: var(--shepherd-primary-dark);
+  background: var(--Sheperd-primary-dark);
   transform: translateY(-1px);
   box-shadow: var(--shadow-sm);
 }
@@ -68,8 +68,8 @@
 /* Secondary Buttons */
 .secondary-btn {
   background: var(--background);
-  color: var(--shepherd-primary);
-  border: 1px solid var(--shepherd-primary);
+  color: var(--Sheperd-primary);
+  border: 1px solid var(--Sheperd-primary);
   padding: var(--space-sm) var(--space-lg);
   border-radius: var(--radius-md);
   font-size: var(--font-size-sm);
@@ -83,7 +83,7 @@
 }
 
 .secondary-btn:hover {
-  background: var(--shepherd-primary);
+  background: var(--Sheperd-primary);
   color: white;
   transform: translateY(-1px);
   box-shadow: var(--shadow-sm);
@@ -101,7 +101,7 @@
 
 /* Danger Buttons */
 .danger-btn {
-  background: var(--shepherd-danger);
+  background: var(--Sheperd-danger);
   color: white;
   border: none;
   padding: var(--space-sm) var(--space-lg);

@@ -1,26 +1,26 @@
-// src/popup/components/shepherd-meter.js
-// Shepherd Meter Component - Displays tab chaos level with visual feedback
+// src/popup/components/Sheperd-meter.js
+// Sheperd Meter Component - Displays tab chaos level with visual feedback
 
-import { SHEPHERD_EVENTS } from '../../utils/constants.js';
-import { tabCategorizer } from '../../utils/categorizer.js';
+import { Sheperd_EVENTS } from "../../utils/constants.js";
+import { tabCategorizer } from "../../utils/categorizer.js";
 
 /**
- * Shepherd Meter Component
+ * Sheperd Meter Component
  * Displays the current "tab chaos" level based on number of open tabs
- * Renamed from "shame-meter" to match Shepherd branding
+ * Renamed from "shame-meter" to match Sheperd branding
  */
-export class ShepherdMeterComponent {
+export class SheperdMeterComponent {
   constructor() {
     this.element = null;
     this.messageElement = null;
     this.fillElement = null;
     this.currentLevel = null;
-    
+
     this.init();
   }
 
   /**
-   * Initialize the Shepherd meter component
+   * Initialize the Sheperd meter component
    */
   init() {
     this.createElement();
@@ -28,28 +28,28 @@ export class ShepherdMeterComponent {
   }
 
   /**
-   * Create the Shepherd meter DOM structure
+   * Create the Sheperd meter DOM structure
    */
   createElement() {
-    this.element = document.createElement('div');
-    this.element.className = 'shepherd-meter';
-    
+    this.element = document.createElement("div");
+    this.element.className = "Sheperd-meter";
+
     this.element.innerHTML = `
-      <div class="shepherd-text">
-        <span id="shepherd-message">Looking good! 👍</span>
+      <div class="Sheperd-text">
+        <span id="Sheperd-message">Looking good! 👍</span>
       </div>
-      <div class="shepherd-bar">
-        <div id="shepherd-fill"></div>
+      <div class="Sheperd-bar">
+        <div id="Sheperd-fill"></div>
       </div>
-      <div class="shepherd-tip">
-        <span id="shepherd-tip-text">Keep it up! You're managing your tabs well.</span>
+      <div class="Sheperd-tip">
+        <span id="Sheperd-tip-text">Keep it up! You're managing your tabs well.</span>
       </div>
     `;
 
     // Cache references to key elements
-    this.messageElement = this.element.querySelector('#shepherd-message');
-    this.fillElement = this.element.querySelector('#shepherd-fill');
-    this.tipElement = this.element.querySelector('#shepherd-tip-text');
+    this.messageElement = this.element.querySelector("#Sheperd-message");
+    this.fillElement = this.element.querySelector("#Sheperd-fill");
+    this.tipElement = this.element.querySelector("#Sheperd-tip-text");
   }
 
   /**
@@ -57,37 +57,37 @@ export class ShepherdMeterComponent {
    */
   bindEvents() {
     // Listen for tab count updates
-    document.addEventListener(SHEPHERD_EVENTS.TABS_UPDATED, (event) => {
+    document.addEventListener(Sheperd_EVENTS.TABS_UPDATED, (event) => {
       this.updateMeter(event.detail.count);
     });
 
     // Add hover effects for additional tips
-    this.element.addEventListener('mouseenter', () => {
+    this.element.addEventListener("mouseenter", () => {
       this.showDetailedTip();
     });
 
-    this.element.addEventListener('mouseleave', () => {
+    this.element.addEventListener("mouseleave", () => {
       this.hideDetailedTip();
     });
   }
 
   /**
-   * Update the Shepherd meter based on tab count
+   * Update the Sheperd meter based on tab count
    * @param {number} tabCount - Number of open tabs
    */
   updateMeter(tabCount) {
-    if (typeof tabCount !== 'number' || tabCount < 0) {
-      console.warn('Invalid tab count provided:', tabCount);
+    if (typeof tabCount !== "number" || tabCount < 0) {
+      console.warn("Invalid tab count provided:", tabCount);
       return;
     }
 
-    const shepherdLevel = tabCategorizer.getShepherdLevel(tabCount);
-    this.currentLevel = shepherdLevel;
+    const SheperdLevel = tabCategorizer.getSheperdLevel(tabCount);
+    this.currentLevel = SheperdLevel;
 
-    this.updateMessage(shepherdLevel.message);
-    this.updateBar(shepherdLevel.color, shepherdLevel.percentage);
-    this.updateTip(shepherdLevel, tabCount);
-    this.updateElementClasses(shepherdLevel.level);
+    this.updateMessage(SheperdLevel.message);
+    this.updateBar(SheperdLevel.color, SheperdLevel.percentage);
+    this.updateTip(SheperdLevel, tabCount);
+    this.updateElementClasses(SheperdLevel.level);
   }
 
   /**
@@ -98,11 +98,11 @@ export class ShepherdMeterComponent {
     if (!this.messageElement) return;
 
     // Add fade animation
-    this.messageElement.style.opacity = '0';
-    
+    this.messageElement.style.opacity = "0";
+
     setTimeout(() => {
       this.messageElement.textContent = message;
-      this.messageElement.style.opacity = '1';
+      this.messageElement.style.opacity = "1";
     }, 150);
   }
 
@@ -117,39 +117,39 @@ export class ShepherdMeterComponent {
     // Animate the bar fill
     this.fillElement.style.backgroundColor = color;
     this.fillElement.style.width = `${percentage}%`;
-    
+
     // Add pulse effect for high levels
     if (percentage > 80) {
-      this.fillElement.classList.add('pulse');
+      this.fillElement.classList.add("pulse");
     } else {
-      this.fillElement.classList.remove('pulse');
+      this.fillElement.classList.remove("pulse");
     }
   }
 
   /**
    * Update the tip text based on current level
-   * @param {Object} level - Shepherd level data
+   * @param {Object} level - Sheperd level data
    * @param {number} tabCount - Current tab count
    */
   updateTip(level, tabCount) {
     if (!this.tipElement) return;
 
-    let tipText = '';
+    let tipText = "";
 
     switch (level.level) {
-      case 'excellent':
+      case "excellent":
         tipText = `Perfect! You have ${tabCount} tabs - very manageable.`;
         break;
-      case 'good':
+      case "good":
         tipText = `Good job! ${tabCount} tabs is still under control.`;
         break;
-      case 'busy':
+      case "busy":
         tipText = `Getting busy with ${tabCount} tabs. Consider closing some.`;
         break;
-      case 'chaotic':
+      case "chaotic":
         tipText = `${tabCount} tabs is getting chaotic! Time to organize.`;
         break;
-      case 'apocalyptic':
+      case "apocalyptic":
         tipText = `🚨 ${tabCount} tabs! This is tab apocalypse territory!`;
         break;
       default:
@@ -167,9 +167,17 @@ export class ShepherdMeterComponent {
     if (!this.element) return;
 
     // Remove all level classes
-    const levelClasses = ['excellent', 'good', 'busy', 'chaotic', 'apocalyptic'];
-    levelClasses.forEach(cls => this.element.classList.remove(`level-${cls}`));
-    
+    const levelClasses = [
+      "excellent",
+      "good",
+      "busy",
+      "chaotic",
+      "apocalyptic",
+    ];
+    levelClasses.forEach((cls) =>
+      this.element.classList.remove(`level-${cls}`)
+    );
+
     // Add current level class
     this.element.classList.add(`level-${level}`);
   }
@@ -184,14 +192,15 @@ export class ShepherdMeterComponent {
       excellent: "You're a tab management pro! Keep this up.",
       good: "Nice work! You're staying organized.",
       busy: "Consider using bookmarks or closing unused tabs.",
-      chaotic: "Try Shepherd's bulk close features to regain control.",
-      apocalyptic: "Emergency! Use 'Close Duplicates' and category management now!"
+      chaotic: "Try Sheperd's bulk close features to regain control.",
+      apocalyptic:
+        "Emergency! Use 'Close Duplicates' and category management now!",
     };
 
-    const tip = tips[this.currentLevel.level] || '';
+    const tip = tips[this.currentLevel.level] || "";
     if (tip && this.tipElement) {
       this.tipElement.textContent = tip;
-      this.tipElement.style.fontWeight = 'bold';
+      this.tipElement.style.fontWeight = "bold";
     }
   }
 
@@ -201,12 +210,12 @@ export class ShepherdMeterComponent {
   hideDetailedTip() {
     if (this.currentLevel && this.tipElement) {
       this.updateTip(this.currentLevel, this.currentLevel.tabCount);
-      this.tipElement.style.fontWeight = 'normal';
+      this.tipElement.style.fontWeight = "normal";
     }
   }
 
   /**
-   * Get current Shepherd level
+   * Get current Sheperd level
    * @returns {Object|null} - Current level data
    */
   getCurrentLevel() {
@@ -219,10 +228,10 @@ export class ShepherdMeterComponent {
   celebrate() {
     if (!this.element) return;
 
-    this.element.classList.add('celebrating');
-    
+    this.element.classList.add("celebrating");
+
     setTimeout(() => {
-      this.element.classList.remove('celebrating');
+      this.element.classList.remove("celebrating");
     }, 1000);
   }
 
@@ -232,7 +241,9 @@ export class ShepherdMeterComponent {
    */
   render(container) {
     if (!container || !(container instanceof HTMLElement)) {
-      throw new Error('Valid container element required for Shepherd meter rendering');
+      throw new Error(
+        "Valid container element required for Sheperd meter rendering"
+      );
     }
 
     if (this.element) {
@@ -274,4 +285,4 @@ export class ShepherdMeterComponent {
 }
 
 // Export singleton instance for convenience
-export const shepherdMeterComponent = new ShepherdMeterComponent(); 
+export const SheperdMeterComponent = new SheperdMeterComponent();

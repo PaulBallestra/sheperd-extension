@@ -1,9 +1,9 @@
 // src/popup/components/categories.js
 // Categories Component - Manages tab category display and interactions
 
-import { SHEPHERD_EVENTS, SHEPHERD_ACTIONS } from '../../utils/constants.js';
-import { tabCategorizer } from '../../utils/categorizer.js';
-import { tabsManager } from '../../utils/tabs.js';
+import { Sheperd_EVENTS, Sheperd_ACTIONS } from "../../utils/constants.js";
+import { tabCategorizer } from "../../utils/categorizer.js";
+import { tabsManager } from "../../utils/tabs.js";
 
 /**
  * Categories Component
@@ -14,7 +14,7 @@ export class CategoriesComponent {
     this.element = null;
     this.categorizedTabs = {};
     this.expandedCategories = new Set();
-    
+
     this.init();
   }
 
@@ -30,9 +30,9 @@ export class CategoriesComponent {
    * Create the categories container DOM structure
    */
   createElement() {
-    this.element = document.createElement('div');
-    this.element.className = 'categories-container';
-    this.element.id = 'categories-container';
+    this.element = document.createElement("div");
+    this.element.className = "categories-container";
+    this.element.id = "categories-container";
   }
 
   /**
@@ -40,56 +40,64 @@ export class CategoriesComponent {
    */
   bindEvents() {
     // Category header clicks (expand/collapse)
-    this.element.addEventListener('click', (e) => {
-      if (e.target.closest('.category-header') && !e.target.closest('.category-actions')) {
-        const categoryName = e.target.closest('.category-header').dataset.category;
+    this.element.addEventListener("click", (e) => {
+      if (
+        e.target.closest(".category-header") &&
+        !e.target.closest(".category-actions")
+      ) {
+        const categoryName =
+          e.target.closest(".category-header").dataset.category;
         this.toggleCategory(categoryName);
       }
     });
 
     // Category action buttons
-    this.element.addEventListener('click', (e) => {
-      const actionBtn = e.target.closest('.category-btn');
+    this.element.addEventListener("click", (e) => {
+      const actionBtn = e.target.closest(".category-btn");
       if (actionBtn) {
         e.stopPropagation();
         const action = actionBtn.dataset.action;
         const category = actionBtn.dataset.category;
-        
+
         this.handleCategoryAction(action, category);
       }
     });
 
     // Tab close button clicks
-    this.element.addEventListener('click', (e) => {
-      const closeBtn = e.target.closest('.tab-close-btn');
+    this.element.addEventListener("click", (e) => {
+      const closeBtn = e.target.closest(".tab-close-btn");
       if (closeBtn) {
         e.stopPropagation();
         const tabId = parseInt(closeBtn.dataset.tabId);
-        this.handleTabAction(SHEPHERD_ACTIONS.CLOSE_TAB, tabId);
+        this.handleTabAction(Sheperd_ACTIONS.CLOSE_TAB, tabId);
       }
     });
 
     // Tab item clicks (switch to tab)
-    this.element.addEventListener('click', (e) => {
-      const tabItem = e.target.closest('.tab-item');
-      if (tabItem && !e.target.closest('.tab-close-btn')) {
+    this.element.addEventListener("click", (e) => {
+      const tabItem = e.target.closest(".tab-item");
+      if (tabItem && !e.target.closest(".tab-close-btn")) {
         const tabId = parseInt(tabItem.dataset.tabId);
-        this.handleTabAction(SHEPHERD_ACTIONS.SWITCH_TO_TAB, tabId);
+        this.handleTabAction(Sheperd_ACTIONS.SWITCH_TO_TAB, tabId);
       }
     });
 
     // Favicon error handling
-    this.element.addEventListener('error', (e) => {
-      if (e.target.classList.contains('tab-favicon')) {
-        const defaultFavicon = e.target.dataset.defaultFavicon;
-        if (defaultFavicon) {
-          e.target.src = defaultFavicon;
+    this.element.addEventListener(
+      "error",
+      (e) => {
+        if (e.target.classList.contains("tab-favicon")) {
+          const defaultFavicon = e.target.dataset.defaultFavicon;
+          if (defaultFavicon) {
+            e.target.src = defaultFavicon;
+          }
         }
-      }
-    }, true); // Use capture phase for error events
+      },
+      true
+    ); // Use capture phase for error events
 
     // Listen for tabs updates
-    document.addEventListener(SHEPHERD_EVENTS.TABS_UPDATED, (event) => {
+    document.addEventListener(Sheperd_EVENTS.TABS_UPDATED, (event) => {
       this.updateCategories(event.detail.categorizedTabs);
     });
   }
@@ -105,21 +113,21 @@ export class CategoriesComponent {
 
     try {
       switch (action) {
-        case 'close':
+        case "close":
           await this.closeCategoryTabs(categoryName, tabs);
           break;
-        case 'bookmark':
+        case "bookmark":
           await this.bookmarkCategoryTabs(categoryName, tabs);
           break;
         default:
-          console.warn('Unknown category action:', action);
+          console.warn("Unknown category action:", action);
       }
     } catch (error) {
-      console.error('Category action failed:', error);
-      this.dispatchEvent(SHEPHERD_EVENTS.ERROR_OCCURRED, { 
+      console.error("Category action failed:", error);
+      this.dispatchEvent(Sheperd_EVENTS.ERROR_OCCURRED, {
         error: error.message,
         action,
-        category: categoryName 
+        category: categoryName,
       });
     }
   }
@@ -132,29 +140,29 @@ export class CategoriesComponent {
   async handleTabAction(action, tabId) {
     try {
       switch (action) {
-        case SHEPHERD_ACTIONS.SWITCH_TO_TAB:
+        case Sheperd_ACTIONS.SWITCH_TO_TAB:
           await tabsManager.switchToTab(tabId);
           // Close popup after switching
           window.close();
           break;
-        case SHEPHERD_ACTIONS.CLOSE_TAB:
+        case Sheperd_ACTIONS.CLOSE_TAB:
           await tabsManager.closeTabs([tabId]);
           // Update badge and refresh categories
           await tabsManager.requestBadgeUpdate();
-          this.dispatchEvent(SHEPHERD_EVENTS.TABS_UPDATED, { 
-            action: 'tab_closed',
-            tabId: tabId
+          this.dispatchEvent(Sheperd_EVENTS.TABS_UPDATED, {
+            action: "tab_closed",
+            tabId: tabId,
           });
           break;
         default:
-          console.warn('Unknown tab action:', action);
+          console.warn("Unknown tab action:", action);
       }
     } catch (error) {
-      console.error('Tab action failed:', error);
-      this.dispatchEvent(SHEPHERD_EVENTS.ERROR_OCCURRED, { 
+      console.error("Tab action failed:", error);
+      this.dispatchEvent(Sheperd_EVENTS.ERROR_OCCURRED, {
         error: error.message,
         action,
-        tabId 
+        tabId,
       });
     }
   }
@@ -165,26 +173,29 @@ export class CategoriesComponent {
    * @param {Array} tabs - Category tabs
    */
   async closeCategoryTabs(categoryName, tabs) {
-    const confirmed = confirm(`Close all ${tabs.length} tabs in "${categoryName}"?`);
+    const confirmed = confirm(
+      `Close all ${tabs.length} tabs in "${categoryName}"?`
+    );
     if (!confirmed) return;
 
-    this.dispatchEvent(SHEPHERD_EVENTS.LOADING_STARTED, { action: 'closing_category' });
+    this.dispatchEvent(Sheperd_EVENTS.LOADING_STARTED, {
+      action: "closing_category",
+    });
 
     try {
-      const tabIds = tabs.map(tab => tab.id);
+      const tabIds = tabs.map((tab) => tab.id);
       await tabsManager.closeTabs(tabIds);
 
       // Update badge
       await tabsManager.requestBadgeUpdate();
 
-      this.dispatchEvent(SHEPHERD_EVENTS.TABS_UPDATED, { 
-        action: 'category_closed',
+      this.dispatchEvent(Sheperd_EVENTS.TABS_UPDATED, {
+        action: "category_closed",
         category: categoryName,
-        count: tabs.length
+        count: tabs.length,
       });
-
     } finally {
-      this.dispatchEvent(SHEPHERD_EVENTS.LOADING_FINISHED);
+      this.dispatchEvent(Sheperd_EVENTS.LOADING_FINISHED);
     }
   }
 
@@ -194,18 +205,22 @@ export class CategoriesComponent {
    * @param {Array} tabs - Category tabs
    */
   async bookmarkCategoryTabs(categoryName, tabs) {
-    this.dispatchEvent(SHEPHERD_EVENTS.LOADING_STARTED, { action: 'bookmarking_category' });
+    this.dispatchEvent(Sheperd_EVENTS.LOADING_STARTED, {
+      action: "bookmarking_category",
+    });
 
     try {
       const result = await tabsManager.bookmarkTabs(tabs, categoryName);
-      
+
       if (result.success) {
         // Show success feedback
-        this.showCategoryFeedback(categoryName, `✅ ${result.bookmarksCount} tabs bookmarked!`);
+        this.showCategoryFeedback(
+          categoryName,
+          `✅ ${result.bookmarksCount} tabs bookmarked!`
+        );
       }
-
     } finally {
-      this.dispatchEvent(SHEPHERD_EVENTS.LOADING_FINISHED);
+      this.dispatchEvent(Sheperd_EVENTS.LOADING_FINISHED);
     }
   }
 
@@ -214,35 +229,41 @@ export class CategoriesComponent {
    * @param {string} categoryName - Category name
    */
   toggleCategory(categoryName) {
-    const categoryEl = this.element.querySelector(`[data-category="${categoryName}"]`);
+    const categoryEl = this.element.querySelector(
+      `[data-category="${categoryName}"]`
+    );
     if (!categoryEl) return;
 
-    const content = categoryEl.querySelector('.category-content');
-    const toggleIcon = categoryEl.querySelector('.toggle-icon');
+    const content = categoryEl.querySelector(".category-content");
+    const toggleIcon = categoryEl.querySelector(".toggle-icon");
     const isExpanded = this.expandedCategories.has(categoryName);
-    
+
     if (isExpanded) {
       // Collapse
-      content.classList.remove('expanded');
-      categoryEl.classList.remove('expanded');
+      content.classList.remove("expanded");
+      categoryEl.classList.remove("expanded");
       this.expandedCategories.delete(categoryName);
-      
+
       if (toggleIcon) {
-        toggleIcon.textContent = '▼';
+        toggleIcon.textContent = "▼";
       }
-      
-      this.dispatchEvent(SHEPHERD_EVENTS.CATEGORY_COLLAPSED, { category: categoryName });
+
+      this.dispatchEvent(Sheperd_EVENTS.CATEGORY_COLLAPSED, {
+        category: categoryName,
+      });
     } else {
       // Expand
-      content.classList.add('expanded');
-      categoryEl.classList.add('expanded');
+      content.classList.add("expanded");
+      categoryEl.classList.add("expanded");
       this.expandedCategories.add(categoryName);
-      
+
       if (toggleIcon) {
-        toggleIcon.textContent = '▲';
+        toggleIcon.textContent = "▲";
       }
-      
-      this.dispatchEvent(SHEPHERD_EVENTS.CATEGORY_EXPANDED, { category: categoryName });
+
+      this.dispatchEvent(Sheperd_EVENTS.CATEGORY_EXPANDED, {
+        category: categoryName,
+      });
     }
   }
 
@@ -261,11 +282,12 @@ export class CategoriesComponent {
   renderCategories() {
     if (!this.element) return;
 
-    this.element.innerHTML = '';
-    
+    this.element.innerHTML = "";
+
     // Sort categories by tab count (descending)
-    const sortedCategories = Object.entries(this.categorizedTabs)
-      .sort(([,a], [,b]) => b.length - a.length);
+    const sortedCategories = Object.entries(this.categorizedTabs).sort(
+      ([, a], [, b]) => b.length - a.length
+    );
 
     if (sortedCategories.length === 0) {
       this.renderEmptyState();
@@ -285,18 +307,18 @@ export class CategoriesComponent {
    * @returns {HTMLElement} - Category DOM element
    */
   createCategoryElement(categoryName, tabs) {
-    const categoryDiv = document.createElement('div');
-    categoryDiv.className = 'category';
+    const categoryDiv = document.createElement("div");
+    categoryDiv.className = "category";
     categoryDiv.dataset.category = categoryName;
-    
+
     const icon = tabCategorizer.getCategoryIcon(categoryName);
     const color = tabCategorizer.getCategoryColor(categoryName);
-    const duplicateCount = tabs.filter(tab => tab.isDuplicate).length;
+    const duplicateCount = tabs.filter((tab) => tab.isDuplicate).length;
     const isExpanded = this.expandedCategories.has(categoryName);
-    
+
     // Restore expanded state
     if (isExpanded) {
-      categoryDiv.classList.add('expanded');
+      categoryDiv.classList.add("expanded");
     }
 
     categoryDiv.innerHTML = `
@@ -305,7 +327,11 @@ export class CategoriesComponent {
           <span class="category-icon">${icon}</span>
           <span class="category-name">${categoryName}</span>
           
-          ${duplicateCount > 0 ? `<span class="tab-duplicate">🔄 ${duplicateCount}</span>` : ''}
+          ${
+            duplicateCount > 0
+              ? `<span class="tab-duplicate">🔄 ${duplicateCount}</span>`
+              : ""
+          }
         </div>
         <div class="category-actions">
           <button class="category-btn" data-action="bookmark" data-category="${categoryName}" title="Bookmark all tabs">
@@ -317,22 +343,22 @@ export class CategoriesComponent {
         </div>
         <div class="category-toggle">
           <span class="category-count">${tabs.length}</span>
-          <span class="toggle-icon">${isExpanded ? '▲' : '▼'}</span>
+          <span class="toggle-icon">${isExpanded ? "▲" : "▼"}</span>
         </div>
       </div>
-      <div class="category-content ${isExpanded ? 'expanded' : ''}">
+      <div class="category-content ${isExpanded ? "expanded" : ""}">
         <div class="tab-list">
-          ${tabs.map(tab => this.createTabElement(tab)).join('')}
+          ${tabs.map((tab) => this.createTabElement(tab)).join("")}
         </div>
       </div>
     `;
-    
+
     // Apply category color without inline styles (CSP-compliant)
-    const header = categoryDiv.querySelector('.category-header');
+    const header = categoryDiv.querySelector(".category-header");
     if (header && color) {
       header.style.borderLeftColor = color;
     }
-    
+
     return categoryDiv;
   }
 
@@ -343,18 +369,22 @@ export class CategoriesComponent {
    */
   createTabElement(tab) {
     const favicon = tab.favIconUrl || this.getDefaultFavicon();
-    const title = this.escapeHtml(tab.title || 'Untitled');
-    const url = this.escapeHtml(tab.url || '');
-    
+    const title = this.escapeHtml(tab.title || "Untitled");
+    const url = this.escapeHtml(tab.url || "");
+
     return `
-      <div class="tab-item ${tab.isDuplicate ? 'duplicate' : ''}" data-tab-id="${tab.id}" title="${url}">
+      <div class="tab-item ${
+        tab.isDuplicate ? "duplicate" : ""
+      }" data-tab-id="${tab.id}" title="${url}">
         <div class="tab-title-container">
           <img class="tab-favicon" src="${favicon}" alt="${title}" data-default-favicon="${this.getDefaultFavicon()}">
           <span class="tab-title">${title}</span>
         </div>
         <div class="tab-actions">
-          ${tab.isDuplicate ? '<span class="tab-duplicate">🔄</span>' : ''}
-          <button class="tab-close-btn" title="Close this tab" data-tab-id="${tab.id}">×</button>
+          ${tab.isDuplicate ? '<span class="tab-duplicate">🔄</span>' : ""}
+          <button class="tab-close-btn" title="Close this tab" data-tab-id="${
+            tab.id
+          }">×</button>
         </div>
       </div>
     `;
@@ -368,7 +398,7 @@ export class CategoriesComponent {
       <div class="empty-state">
         <div class="empty-icon">🐑</div>
         <h3>No tabs to organize!</h3>
-        <p>Open some tabs and Shepherd will categorize them for you.</p>
+        <p>Open some tabs and Sheperd will categorize them for you.</p>
       </div>
     `;
   }
@@ -379,15 +409,17 @@ export class CategoriesComponent {
    * @param {string} message - Feedback message
    */
   showCategoryFeedback(categoryName, message) {
-    const categoryEl = this.element.querySelector(`[data-category="${categoryName}"]`);
+    const categoryEl = this.element.querySelector(
+      `[data-category="${categoryName}"]`
+    );
     if (!categoryEl) return;
 
-    const feedback = document.createElement('div');
-    feedback.className = 'category-feedback';
+    const feedback = document.createElement("div");
+    feedback.className = "category-feedback";
     feedback.textContent = message;
-    
+
     categoryEl.appendChild(feedback);
-    
+
     setTimeout(() => {
       feedback.remove();
     }, 3000);
@@ -407,7 +439,7 @@ export class CategoriesComponent {
    * @returns {string} - Escaped text
    */
   escapeHtml(text) {
-    const div = document.createElement('div');
+    const div = document.createElement("div");
     div.textContent = text;
     return div.innerHTML;
   }
@@ -446,7 +478,9 @@ export class CategoriesComponent {
    */
   render(container) {
     if (!container || !(container instanceof HTMLElement)) {
-      throw new Error('Valid container element required for categories rendering');
+      throw new Error(
+        "Valid container element required for categories rendering"
+      );
     }
 
     if (this.element) {
@@ -462,7 +496,7 @@ export class CategoriesComponent {
     if (state.categorizedTabs) {
       this.updateCategories(state.categorizedTabs);
     }
-    
+
     if (state.expandedCategories) {
       this.setExpandedCategories(state.expandedCategories);
     }
@@ -490,4 +524,4 @@ export class CategoriesComponent {
 }
 
 // Export singleton instance for convenience
-export const categoriesComponent = new CategoriesComponent(); 
+export const categoriesComponent = new CategoriesComponent();

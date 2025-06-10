@@ -1,7 +1,11 @@
 // src/utils/categorizer.js
 // Modern ES6 Tab Categorization Engine
 
-import { TAB_CATEGORIES, SHEPHERD_METER_LEVELS, SHEPHERD_CONFIG } from './constants.js';
+import {
+  TAB_CATEGORIES,
+  Sheperd_METER_LEVELS,
+  Sheperd_CONFIG,
+} from "./constants.js";
 
 /**
  * Advanced Tab Categorization Engine
@@ -10,7 +14,7 @@ import { TAB_CATEGORIES, SHEPHERD_METER_LEVELS, SHEPHERD_CONFIG } from './consta
 export class TabCategorizer {
   constructor() {
     this.categories = TAB_CATEGORIES;
-    this.meterLevels = SHEPHERD_METER_LEVELS;
+    this.meterLevels = Sheperd_METER_LEVELS;
   }
 
   /**
@@ -20,20 +24,20 @@ export class TabCategorizer {
    */
   categorizeTab(tab) {
     if (!tab?.url || !tab?.title) {
-      return 'Uncategorized';
+      return "Uncategorized";
     }
 
     const url = tab.url.toLowerCase();
     const title = tab.title.toLowerCase();
-    
+
     // Check each category for matches
     for (const [categoryName, config] of Object.entries(this.categories)) {
       if (this._matchesCategory(url, title, config)) {
         return categoryName;
       }
     }
-    
-    return 'Uncategorized';
+
+    return "Uncategorized";
   }
 
   /**
@@ -48,33 +52,33 @@ export class TabCategorizer {
 
     const categorized = {};
     const duplicates = this.findDuplicates(tabs);
-    
+
     // Initialize categories
-    Object.keys(this.categories).forEach(category => {
+    Object.keys(this.categories).forEach((category) => {
       categorized[category] = [];
     });
-    categorized['Uncategorized'] = [];
-    
+    categorized["Uncategorized"] = [];
+
     // Categorize each tab
-    tabs.forEach(tab => {
+    tabs.forEach((tab) => {
       const category = this.categorizeTab(tab);
       const isDuplicate = duplicates.includes(tab.id);
-      
+
       categorized[category].push({
         ...tab,
         isDuplicate,
         category,
-        lastAccessed: Date.now() // For future "old tabs" detection
+        lastAccessed: Date.now(), // For future "old tabs" detection
       });
     });
-    
+
     // Remove empty categories for cleaner UI
-    Object.keys(categorized).forEach(category => {
+    Object.keys(categorized).forEach((category) => {
       if (categorized[category].length === 0) {
         delete categorized[category];
       }
     });
-    
+
     return categorized;
   }
 
@@ -86,10 +90,10 @@ export class TabCategorizer {
   findDuplicates(tabs) {
     const urlMap = new Map();
     const duplicates = new Set();
-    
-    tabs.forEach(tab => {
+
+    tabs.forEach((tab) => {
       const normalizedUrl = this.normalizeUrl(tab.url);
-      
+
       if (urlMap.has(normalizedUrl)) {
         // Mark both tabs as duplicates
         duplicates.add(tab.id);
@@ -98,7 +102,7 @@ export class TabCategorizer {
         urlMap.set(normalizedUrl, tab.id);
       }
     });
-    
+
     return Array.from(duplicates);
   }
 
@@ -111,10 +115,10 @@ export class TabCategorizer {
     try {
       const urlObj = new URL(url);
       // Remove query params, fragments, and common tracking parameters
-      const cleanPath = urlObj.pathname.replace(/\/$/, ''); // Remove trailing slash
+      const cleanPath = urlObj.pathname.replace(/\/$/, ""); // Remove trailing slash
       return `${urlObj.protocol}//${urlObj.hostname}${cleanPath}`;
     } catch (error) {
-      console.warn('Failed to normalize URL:', url, error);
+      console.warn("Failed to normalize URL:", url, error);
       return url;
     }
   }
@@ -125,7 +129,7 @@ export class TabCategorizer {
    * @returns {string} - Unicode emoji icon
    */
   getCategoryIcon(categoryName) {
-    return this.categories[categoryName]?.icon || '📋';
+    return this.categories[categoryName]?.icon || "📋";
   }
 
   /**
@@ -134,31 +138,31 @@ export class TabCategorizer {
    * @returns {string} - Hex color code
    */
   getCategoryColor(categoryName) {
-    return this.categories[categoryName]?.color || '#6B7280';
+    return this.categories[categoryName]?.color || "#6B7280";
   }
 
   /**
-   * Calculate Shepherd Meter level based on tab count
+   * Calculate Sheperd Meter level based on tab count
    * @param {number} tabCount - Number of open tabs
-   * @returns {Object} - Shepherd meter data
+   * @returns {Object} - Sheperd meter data
    */
-  getShepherdLevel(tabCount) {
+  getSheperdLevel(tabCount) {
     for (const [levelName, levelData] of Object.entries(this.meterLevels)) {
       const [min, max] = levelData.range;
       if (tabCount >= min && tabCount <= max) {
         return {
           ...levelData,
           levelName,
-          tabCount
+          tabCount,
         };
       }
     }
-    
+
     // Fallback to apocalyptic if somehow nothing matches
     return {
       ...this.meterLevels.APOCALYPTIC,
-      levelName: 'APOCALYPTIC',
-      tabCount
+      levelName: "APOCALYPTIC",
+      tabCount,
     };
   }
 
@@ -170,14 +174,14 @@ export class TabCategorizer {
   getTabStatistics(tabs) {
     const categorized = this.categorizeTabs(tabs);
     const duplicates = this.findDuplicates(tabs);
-    const shepherdLevel = this.getShepherdLevel(tabs.length);
-    
+    const SheperdLevel = this.getSheperdLevel(tabs.length);
+
     const stats = {
       total: tabs.length,
       duplicates: duplicates.length,
       categories: Object.keys(categorized).length,
-      shepherdLevel,
-      categoryBreakdown: {}
+      SheperdLevel,
+      categoryBreakdown: {},
     };
 
     // Category breakdown
@@ -185,7 +189,7 @@ export class TabCategorizer {
       stats.categoryBreakdown[category] = {
         count: categoryTabs.length,
         percentage: Math.round((categoryTabs.length / tabs.length) * 100),
-        duplicates: categoryTabs.filter(tab => tab.isDuplicate).length
+        duplicates: categoryTabs.filter((tab) => tab.isDuplicate).length,
       };
     });
 
@@ -198,16 +202,16 @@ export class TabCategorizer {
    * @param {number} daysThreshold - Days to consider a tab old
    * @returns {Array} - Array of old tab IDs
    */
-  findOldTabs(tabs, daysThreshold = SHEPHERD_CONFIG.OLD_TAB_THRESHOLD_DAYS) {
-    const cutoffTime = Date.now() - (daysThreshold * 24 * 60 * 60 * 1000);
-    
+  findOldTabs(tabs, daysThreshold = Sheperd_CONFIG.OLD_TAB_THRESHOLD_DAYS) {
+    const cutoffTime = Date.now() - daysThreshold * 24 * 60 * 60 * 1000;
+
     return tabs
-      .filter(tab => {
+      .filter((tab) => {
         // For now, consider tabs old if they haven't been accessed recently
         // In the future, this could use stored access times from background script
         return tab.lastAccessed && tab.lastAccessed < cutoffTime;
       })
-      .map(tab => tab.id);
+      .map((tab) => tab.id);
   }
 
   /**
@@ -219,25 +223,27 @@ export class TabCategorizer {
    */
   _matchesCategory(url, title, config) {
     // Check keywords
-    const hasKeyword = config.keywords.some(keyword => 
-      url.includes(keyword.toLowerCase()) || title.includes(keyword.toLowerCase())
+    const hasKeyword = config.keywords.some(
+      (keyword) =>
+        url.includes(keyword.toLowerCase()) ||
+        title.includes(keyword.toLowerCase())
     );
-    
+
     if (hasKeyword) {
       return true;
     }
-    
+
     // Check regex patterns if they exist
     if (config.patterns) {
-      const hasPattern = config.patterns.some(pattern =>
-        pattern.test(url) || pattern.test(title)
+      const hasPattern = config.patterns.some(
+        (pattern) => pattern.test(url) || pattern.test(title)
       );
-      
+
       if (hasPattern) {
         return true;
       }
     }
-    
+
     return false;
   }
 }
@@ -246,7 +252,7 @@ export class TabCategorizer {
 export const tabCategorizer = new TabCategorizer();
 
 // Legacy support for global usage (backward compatibility)
-if (typeof window !== 'undefined') {
+if (typeof window !== "undefined") {
   window.TabCategorizer = TabCategorizer;
   window.tabCategorizer = tabCategorizer;
-} 
+}
