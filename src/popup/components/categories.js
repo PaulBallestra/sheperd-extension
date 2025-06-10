@@ -240,6 +240,7 @@ export class CategoriesComponent {
 
         if (isExpanded) {
             // Collapse
+            content.style.maxHeight = '0px';
             content.classList.remove("expanded");
             categoryEl.classList.remove("expanded");
             this.expandedCategories.delete(categoryName);
@@ -248,7 +249,9 @@ export class CategoriesComponent {
                 category: categoryName,
             });
         } else {
-            // Expand
+            // Expand with dynamic height
+            const dynamicHeight = this.calculateCategoryHeight(categoryName);
+            content.style.maxHeight = `${dynamicHeight}px`;
             content.classList.add("expanded");
             categoryEl.classList.add("expanded");
             this.expandedCategories.add(categoryName);
@@ -257,6 +260,28 @@ export class CategoriesComponent {
                 category: categoryName,
             });
         }
+    }
+
+    /**
+     * Calculate the appropriate height for a category based on its content
+     * @param {string} categoryName - Category name
+     * @returns {number} - Calculated height in pixels
+     */
+    calculateCategoryHeight(categoryName) {
+        const tabs = this.categorizedTabs[categoryName] || [];
+        const tabCount = tabs.length;
+
+        // Base padding and border height
+        const baseHeight = 24; // padding top + bottom (12px each)
+
+        // Each tab item height (approximately 44px including margins)
+        const tabHeight = 44;
+
+        // Calculate total height with a small buffer
+        const totalHeight = baseHeight + (tabCount * tabHeight) + 8; // 8px buffer
+
+        // No height limit - let it expand for infinite tabs!
+        return totalHeight;
     }
 
     /**

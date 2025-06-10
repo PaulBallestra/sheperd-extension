@@ -100,6 +100,10 @@
     transform: rotate(180deg);
 }
 
+.category.expanded .category-header {
+    background: var(--background-tertiary);
+}
+
 .category-header:hover .toggle-icon {
     color: var(--text-primary);
     transform: scale(1.1);
@@ -157,15 +161,58 @@
     padding: 0;
     max-height: 0;
     overflow: hidden;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s cubic-bezier(0.4, 0, 0.2, 1), border-top-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     opacity: 0;
+    border-top: 1px solid transparent;
 }
 
 .category-content.expanded {
-    max-height: 800px;
+    /* max-height set dynamically by JavaScript */
     padding: var(--space-sm) var(--space-lg);
     opacity: 1;
     border-top: 1px solid var(--border-light);
+}
+
+
+/* Smooth staggered animation for tabs when category expands */
+
+.category-content.expanded .tab-item {
+    animation: fadeInUp 0.3s ease forwards;
+}
+
+.category-content.expanded .tab-item:nth-child(1) {
+    animation-delay: 0.05s;
+}
+
+.category-content.expanded .tab-item:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.category-content.expanded .tab-item:nth-child(3) {
+    animation-delay: 0.15s;
+}
+
+.category-content.expanded .tab-item:nth-child(4) {
+    animation-delay: 0.2s;
+}
+
+.category-content.expanded .tab-item:nth-child(5) {
+    animation-delay: 0.25s;
+}
+
+.category-content.expanded .tab-item:nth-child(n+6) {
+    animation-delay: 0.3s;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .tab-list {
@@ -185,6 +232,8 @@
     border-radius: var(--radius-md);
     margin-bottom: 2px;
     min-height: 40px;
+    transform: translateY(0);
+    opacity: 1;
 }
 
 .tab-item:last-child {
