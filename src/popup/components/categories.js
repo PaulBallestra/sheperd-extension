@@ -10,347 +10,349 @@ import { tabsManager } from "../../utils/tabs.js";
  * Handles the display and management of categorized tabs
  */
 export class CategoriesComponent {
-  constructor() {
-    this.element = null;
-    this.categorizedTabs = {};
-    this.expandedCategories = new Set();
+    constructor() {
+        this.element = null;
+        this.categorizedTabs = {};
+        this.expandedCategories = new Set();
 
-    this.init();
-  }
+        this.init();
+    }
 
-  /**
-   * Initialize the categories component
-   */
-  init() {
-    this.createElement();
-    this.bindEvents();
-  }
+    /**
+     * Initialize the categories component
+     */
+    init() {
+        this.createElement();
+        this.bindEvents();
+    }
 
-  /**
-   * Create the categories container DOM structure
-   */
-  createElement() {
-    this.element = document.createElement("div");
-    this.element.className = "categories-container";
-    this.element.id = "categories-container";
-  }
+    /**
+     * Create the categories container DOM structure
+     */
+    createElement() {
+        this.element = document.createElement("div");
+        this.element.className = "categories-container";
+        this.element.id = "categories-container";
+    }
 
-  /**
-   * Bind event listeners
-   */
-  bindEvents() {
-    // Category header clicks (expand/collapse)
-    this.element.addEventListener("click", (e) => {
-      if (
-        e.target.closest(".category-header") &&
-        !e.target.closest(".category-actions")
-      ) {
-        const categoryName =
-          e.target.closest(".category-header").dataset.category;
-        this.toggleCategory(categoryName);
-      }
-    });
+    /**
+     * Bind event listeners
+     */
+    bindEvents() {
+        // Category header clicks (expand/collapse)
+        this.element.addEventListener("click", (e) => {
+            if (
+                e.target.closest(".category-header") &&
+                !e.target.closest(".category-actions")
+            ) {
+                const categoryName =
+                    e.target.closest(".category-header").dataset.category;
+                this.toggleCategory(categoryName);
+            }
+        });
 
-    // Category action buttons
-    this.element.addEventListener("click", (e) => {
-      const actionBtn = e.target.closest(".category-btn");
-      if (actionBtn) {
-        e.stopPropagation();
-        const action = actionBtn.dataset.action;
-        const category = actionBtn.dataset.category;
+        // Category action buttons
+        this.element.addEventListener("click", (e) => {
+            const actionBtn = e.target.closest(".category-btn");
+            if (actionBtn) {
+                e.stopPropagation();
+                const action = actionBtn.dataset.action;
+                const category = actionBtn.dataset.category;
 
-        this.handleCategoryAction(action, category);
-      }
-    });
+                this.handleCategoryAction(action, category);
+            }
+        });
 
-    // Tab close button clicks
-    this.element.addEventListener("click", (e) => {
-      const closeBtn = e.target.closest(".tab-close-btn");
-      if (closeBtn) {
-        e.stopPropagation();
-        const tabId = parseInt(closeBtn.dataset.tabId);
-        this.handleTabAction(SHEPERD_ACTIONS.CLOSE_TAB, tabId);
-      }
-    });
+        // Tab close button clicks
+        this.element.addEventListener("click", (e) => {
+            const closeBtn = e.target.closest(".tab-close-btn");
+            if (closeBtn) {
+                e.stopPropagation();
+                const tabId = parseInt(closeBtn.dataset.tabId);
+                this.handleTabAction(SHEPERD_ACTIONS.CLOSE_TAB, tabId);
+            }
+        });
 
-    // Tab item clicks (switch to tab)
-    this.element.addEventListener("click", (e) => {
-      const tabItem = e.target.closest(".tab-item");
-      if (tabItem && !e.target.closest(".tab-close-btn")) {
-        const tabId = parseInt(tabItem.dataset.tabId);
-        this.handleTabAction(SHEPERD_ACTIONS.SWITCH_TO_TAB, tabId);
-      }
-    });
+        // Tab item clicks (switch to tab)
+        this.element.addEventListener("click", (e) => {
+            const tabItem = e.target.closest(".tab-item");
+            if (tabItem && !e.target.closest(".tab-close-btn")) {
+                const tabId = parseInt(tabItem.dataset.tabId);
+                this.handleTabAction(SHEPERD_ACTIONS.SWITCH_TO_TAB, tabId);
+            }
+        });
 
-    // Favicon error handling
-    this.element.addEventListener(
-      "error",
-      (e) => {
-        if (e.target.classList.contains("tab-favicon")) {
-          const defaultFavicon = e.target.dataset.defaultFavicon;
-          if (defaultFavicon) {
-            e.target.src = defaultFavicon;
-          }
+        // Favicon error handling
+        this.element.addEventListener(
+            "error",
+            (e) => {
+                if (e.target.classList.contains("tab-favicon")) {
+                    const defaultFavicon = e.target.dataset.defaultFavicon;
+                    if (defaultFavicon) {
+                        e.target.src = defaultFavicon;
+                    }
+                }
+            },
+            true
+        ); // Use capture phase for error events
+
+        // Listen for tabs updates
+        document.addEventListener(SHEPERD_EVENTS.TABS_UPDATED, (event) => {
+            this.updateCategories(event.detail.categorizedTabs);
+        });
+    }
+
+    /**
+     * Handle category actions (close, bookmark)
+     * @param {string} action - Action type
+     * @param {string} categoryName - Category name
+     */
+    async handleCategoryAction(action, categoryName) {
+        const tabs = this.categorizedTabs[categoryName];
+        if (!tabs || tabs.length === 0) return;
+
+        try {
+            switch (action) {
+                case "close":
+                    await this.closeCategoryTabs(categoryName, tabs);
+                    break;
+                case "bookmark":
+                    await this.bookmarkCategoryTabs(categoryName, tabs);
+                    break;
+                default:
+                    console.warn("Unknown category action:", action);
+            }
+        } catch (error) {
+            console.error("Category action failed:", error);
+            this.dispatchEvent(SHEPERD_EVENTS.ERROR_OCCURRED, {
+                error: error.message,
+                action,
+                category: categoryName,
+            });
         }
-      },
-      true
-    ); // Use capture phase for error events
-
-    // Listen for tabs updates
-    document.addEventListener(SHEPERD_EVENTS.TABS_UPDATED, (event) => {
-      this.updateCategories(event.detail.categorizedTabs);
-    });
-  }
-
-  /**
-   * Handle category actions (close, bookmark)
-   * @param {string} action - Action type
-   * @param {string} categoryName - Category name
-   */
-  async handleCategoryAction(action, categoryName) {
-    const tabs = this.categorizedTabs[categoryName];
-    if (!tabs || tabs.length === 0) return;
-
-    try {
-      switch (action) {
-        case "close":
-          await this.closeCategoryTabs(categoryName, tabs);
-          break;
-        case "bookmark":
-          await this.bookmarkCategoryTabs(categoryName, tabs);
-          break;
-        default:
-          console.warn("Unknown category action:", action);
-      }
-    } catch (error) {
-      console.error("Category action failed:", error);
-      this.dispatchEvent(SHEPERD_EVENTS.ERROR_OCCURRED, {
-        error: error.message,
-        action,
-        category: categoryName,
-      });
     }
-  }
 
-  /**
-   * Handle individual tab actions
-   * @param {string} action - Action type
-   * @param {number} tabId - Tab ID
-   */
-  async handleTabAction(action, tabId) {
-    try {
-      switch (action) {
-        case SHEPERD_ACTIONS.SWITCH_TO_TAB:
-          await tabsManager.switchToTab(tabId);
-          // Close popup after switching
-          window.close();
-          break;
-        case SHEPERD_ACTIONS.CLOSE_TAB:
-          await tabsManager.closeTabs([tabId]);
-          // Update badge and refresh categories
-          await tabsManager.requestBadgeUpdate();
-          this.dispatchEvent(SHEPERD_EVENTS.TABS_UPDATED, {
-            action: "tab_closed",
-            tabId: tabId,
-          });
-          break;
-        default:
-          console.warn("Unknown tab action:", action);
-      }
-    } catch (error) {
-      console.error("Tab action failed:", error);
-      this.dispatchEvent(SHEPERD_EVENTS.ERROR_OCCURRED, {
-        error: error.message,
-        action,
-        tabId,
-      });
+    /**
+     * Handle individual tab actions
+     * @param {string} action - Action type
+     * @param {number} tabId - Tab ID
+     */
+    async handleTabAction(action, tabId) {
+        try {
+            switch (action) {
+                case SHEPERD_ACTIONS.SWITCH_TO_TAB:
+                    await tabsManager.switchToTab(tabId);
+                    // Close popup after switching
+                    window.close();
+                    break;
+                case SHEPERD_ACTIONS.CLOSE_TAB:
+                    await tabsManager.closeTabs([tabId]);
+                    // Update badge and refresh categories
+                    await tabsManager.requestBadgeUpdate();
+                    this.dispatchEvent(SHEPERD_EVENTS.TABS_UPDATED, {
+                        action: "tab_closed",
+                        tabId: tabId,
+                    });
+                    break;
+                default:
+                    console.warn("Unknown tab action:", action);
+            }
+        } catch (error) {
+            console.error("Tab action failed:", error);
+            this.dispatchEvent(SHEPERD_EVENTS.ERROR_OCCURRED, {
+                error: error.message,
+                action,
+                tabId,
+            });
+        }
     }
-  }
 
-  /**
-   * Close all tabs in a category
-   * @param {string} categoryName - Category name
-   * @param {Array} tabs - Category tabs
-   */
-  async closeCategoryTabs(categoryName, tabs) {
-    const confirmed = confirm(
-      `Close all ${tabs.length} tabs in "${categoryName}"?`
-    );
-    if (!confirmed) return;
-
-    this.dispatchEvent(SHEPERD_EVENTS.LOADING_STARTED, {
-      action: "closing_category",
-    });
-
-    try {
-      const tabIds = tabs.map((tab) => tab.id);
-      await tabsManager.closeTabs(tabIds);
-
-      // Update badge
-      await tabsManager.requestBadgeUpdate();
-
-      this.dispatchEvent(SHEPERD_EVENTS.TABS_UPDATED, {
-        action: "category_closed",
-        category: categoryName,
-        count: tabs.length,
-      });
-    } finally {
-      this.dispatchEvent(SHEPERD_EVENTS.LOADING_FINISHED);
-    }
-  }
-
-  /**
-   * Bookmark all tabs in a category
-   * @param {string} categoryName - Category name
-   * @param {Array} tabs - Category tabs
-   */
-  async bookmarkCategoryTabs(categoryName, tabs) {
-    this.dispatchEvent(SHEPERD_EVENTS.LOADING_STARTED, {
-      action: "bookmarking_category",
-    });
-
-    try {
-      const result = await tabsManager.bookmarkTabs(tabs, categoryName);
-
-      if (result.success) {
-        // Show success feedback
-        this.showCategoryFeedback(
-          categoryName,
-          `✅ ${result.bookmarksCount} tabs bookmarked!`
+    /**
+     * Close all tabs in a category
+     * @param {string} categoryName - Category name
+     * @param {Array} tabs - Category tabs
+     */
+    async closeCategoryTabs(categoryName, tabs) {
+        const confirmed = confirm(
+            `Close all ${tabs.length} tabs in "${categoryName}"?`
         );
-      }
-    } finally {
-      this.dispatchEvent(SHEPERD_EVENTS.LOADING_FINISHED);
-    }
-  }
+        if (!confirmed) return;
 
-  /**
-   * Toggle category expansion with smooth animation
-   * @param {string} categoryName - Category name
-   */
-  toggleCategory(categoryName) {
-    const categoryEl = this.element.querySelector(
-      `[data-category="${categoryName}"]`
-    );
-    if (!categoryEl) return;
+        this.dispatchEvent(SHEPERD_EVENTS.LOADING_STARTED, {
+            action: "closing_category",
+        });
 
-    const content = categoryEl.querySelector(".category-content");
-    const toggleIcon = categoryEl.querySelector(".toggle-icon");
-    const isExpanded = this.expandedCategories.has(categoryName);
+        try {
+            const tabIds = tabs.map((tab) => tab.id);
+            await tabsManager.closeTabs(tabIds);
 
-    if (isExpanded) {
-      // Collapse
-      content.classList.remove("expanded");
-      categoryEl.classList.remove("expanded");
-      this.expandedCategories.delete(categoryName);
+            // Update badge
+            await tabsManager.requestBadgeUpdate();
 
-      if (toggleIcon) {
-        toggleIcon.textContent = "▼";
-      }
-
-      this.dispatchEvent(SHEPERD_EVENTS.CATEGORY_COLLAPSED, {
-        category: categoryName,
-      });
-    } else {
-      // Expand
-      content.classList.add("expanded");
-      categoryEl.classList.add("expanded");
-      this.expandedCategories.add(categoryName);
-
-      if (toggleIcon) {
-        toggleIcon.textContent = "▲";
-      }
-
-      this.dispatchEvent(SHEPERD_EVENTS.CATEGORY_EXPANDED, {
-        category: categoryName,
-      });
-    }
-  }
-
-  /**
-   * Update categories display
-   * @param {Object} categorizedTabs - Categorized tabs object
-   */
-  updateCategories(categorizedTabs) {
-    this.categorizedTabs = categorizedTabs || {};
-    this.renderCategories();
-  }
-
-  /**
-   * Render all categories
-   */
-  renderCategories() {
-    if (!this.element) return;
-
-    this.element.innerHTML = "";
-
-    // Sort categories by tab count (descending)
-    const sortedCategories = Object.entries(this.categorizedTabs).sort(
-      ([, a], [, b]) => b.length - a.length
-    );
-
-    if (sortedCategories.length === 0) {
-      this.renderEmptyState();
-      return;
+            this.dispatchEvent(SHEPERD_EVENTS.TABS_UPDATED, {
+                action: "category_closed",
+                category: categoryName,
+                count: tabs.length,
+            });
+        } finally {
+            this.dispatchEvent(SHEPERD_EVENTS.LOADING_FINISHED);
+        }
     }
 
-    sortedCategories.forEach(([categoryName, tabs]) => {
-      const categoryEl = this.createCategoryElement(categoryName, tabs);
-      this.element.appendChild(categoryEl);
-    });
-  }
+    /**
+     * Bookmark all tabs in a category
+     * @param {string} categoryName - Category name
+     * @param {Array} tabs - Category tabs
+     */
+    async bookmarkCategoryTabs(categoryName, tabs) {
+        this.dispatchEvent(SHEPERD_EVENTS.LOADING_STARTED, {
+            action: "bookmarking_category",
+        });
 
-  /**
-   * Create a single category element
-   * @param {string} categoryName - Category name
-   * @param {Array} tabs - Category tabs
-   * @returns {HTMLElement} - Category DOM element
-   */
-  createCategoryElement(categoryName, tabs) {
-    const categoryDiv = document.createElement("div");
-    categoryDiv.className = "category";
-    categoryDiv.dataset.category = categoryName;
+        try {
+            const result = await tabsManager.bookmarkTabs(tabs, categoryName);
 
-    const icon = tabCategorizer.getCategoryIcon(categoryName);
-    const color = tabCategorizer.getCategoryColor(categoryName);
-    const duplicateCount = tabs.filter((tab) => tab.isDuplicate).length;
-    const isExpanded = this.expandedCategories.has(categoryName);
-
-    // Restore expanded state
-    if (isExpanded) {
-      categoryDiv.classList.add("expanded");
+            if (result.success) {
+                // Show success feedback
+                this.showCategoryFeedback(
+                    categoryName,
+                    `✅ ${result.bookmarksCount} tabs bookmarked!`
+                );
+            }
+        } finally {
+            this.dispatchEvent(SHEPERD_EVENTS.LOADING_FINISHED);
+        }
     }
 
-    categoryDiv.innerHTML = `
-      <div class="category-header" data-category="${categoryName}" data-category-color="${color}">
-        <div class="category-title">
-          <span class="category-icon">${icon}</span>
-          <span class="category-name">${categoryName}</span>
-          
-          ${
-            duplicateCount > 0
-              ? `<span class="tab-duplicate">🔄 ${duplicateCount}</span>`
-              : ""
-          }
+    /**
+     * Toggle category expansion with smooth animation
+     * @param {string} categoryName - Category name
+     */
+    toggleCategory(categoryName) {
+        const categoryEl = this.element.querySelector(
+            `[data-category="${categoryName}"]`
+        );
+        if (!categoryEl) return;
+
+        const content = categoryEl.querySelector(".category-content");
+        const toggleIcon = categoryEl.querySelector(".toggle-icon");
+        const isExpanded = this.expandedCategories.has(categoryName);
+
+        if (isExpanded) {
+            // Collapse
+            content.classList.remove("expanded");
+            categoryEl.classList.remove("expanded");
+            this.expandedCategories.delete(categoryName);
+
+            if (toggleIcon) {
+                toggleIcon.textContent = "▼";
+            }
+
+            this.dispatchEvent(SHEPERD_EVENTS.CATEGORY_COLLAPSED, {
+                category: categoryName,
+            });
+        } else {
+            // Expand
+            content.classList.add("expanded");
+            categoryEl.classList.add("expanded");
+            this.expandedCategories.add(categoryName);
+
+            if (toggleIcon) {
+                toggleIcon.textContent = "▲";
+            }
+
+            this.dispatchEvent(SHEPERD_EVENTS.CATEGORY_EXPANDED, {
+                category: categoryName,
+            });
+        }
+    }
+
+    /**
+     * Update categories display
+     * @param {Object} categorizedTabs - Categorized tabs object
+     */
+    updateCategories(categorizedTabs) {
+        this.categorizedTabs = categorizedTabs || {};
+        this.renderCategories();
+    }
+
+    /**
+     * Render all categories
+     */
+    renderCategories() {
+        if (!this.element) return;
+
+        this.element.innerHTML = "";
+
+        // Sort categories by tab count (descending)
+        const sortedCategories = Object.entries(this.categorizedTabs).sort(
+            ([, a], [, b]) => b.length - a.length
+        );
+
+        if (sortedCategories.length === 0) {
+            this.renderEmptyState();
+            return;
+        }
+
+        sortedCategories.forEach(([categoryName, tabs]) => {
+            const categoryEl = this.createCategoryElement(categoryName, tabs);
+            this.element.appendChild(categoryEl);
+        });
+    }
+
+    /**
+     * Create a single category element
+     * @param {string} categoryName - Category name
+     * @param {Array} tabs - Category tabs
+     * @returns {HTMLElement} - Category DOM element
+     */
+    createCategoryElement(categoryName, tabs) {
+            const categoryDiv = document.createElement("div");
+            categoryDiv.className = "category";
+            categoryDiv.dataset.category = categoryName;
+
+            const icon = tabCategorizer.getCategoryIcon(categoryName);
+            const color = tabCategorizer.getCategoryColor(categoryName);
+            const duplicateCount = tabs.filter((tab) => tab.isDuplicate).length;
+            const isExpanded = this.expandedCategories.has(categoryName);
+
+            console.log(color);
+
+            // Restore expanded state
+            if (isExpanded) {
+                categoryDiv.classList.add("expanded");
+            }
+
+            categoryDiv.innerHTML = `
+        <div class="category-header" data-category="${categoryName}" data-category-color="${color}">
+          <div class="category-title">
+            <span class="category-icon">${icon}</span>
+            <span class="category-name">${categoryName}</span>
+            
+            ${
+              duplicateCount > 0
+                ? `<span class="tab-duplicate">🔄 ${duplicateCount}</span>`
+                : ""
+            }
+          </div>
+          <div class="category-actions">
+            <button class="category-btn" data-action="bookmark" data-category="${categoryName}" title="Bookmark all tabs">
+              📁 Bookmark
+            </button>
+            <button class="category-btn danger" data-action="close" data-category="${categoryName}" title="Close all tabs">
+              ✖️ Close
+            </button>
+          </div>
+          <div class="category-toggle">
+            <span class="category-count">${tabs.length}</span>
+            <span class="toggle-icon">${isExpanded ? "▲" : "▼"}</span>
+          </div>
         </div>
-        <div class="category-actions">
-          <button class="category-btn" data-action="bookmark" data-category="${categoryName}" title="Bookmark all tabs">
-            📁 Bookmark
-          </button>
-          <button class="category-btn danger" data-action="close" data-category="${categoryName}" title="Close all tabs">
-            ✖️ Close
-          </button>
+        <div class="category-content ${isExpanded ? "expanded" : ""}">
+          <div class="tab-list">
+            ${tabs.map((tab) => this.createTabElement(tab)).join("")}
+          </div>
         </div>
-        <div class="category-toggle">
-          <span class="category-count">${tabs.length}</span>
-          <span class="toggle-icon">${isExpanded ? "▲" : "▼"}</span>
-        </div>
-      </div>
-      <div class="category-content ${isExpanded ? "expanded" : ""}">
-        <div class="tab-list">
-          ${tabs.map((tab) => this.createTabElement(tab)).join("")}
-        </div>
-      </div>
     `;
 
     // Apply category color without inline styles (CSP-compliant)

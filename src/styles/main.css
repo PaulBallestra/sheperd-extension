@@ -232,41 +232,6 @@ body {
 }
 
 
-/* Footer Component */
-
-.footer {
-    background: var(--background);
-    border-top: 1px solid var(--border-light);
-    padding: var(--space-md) var(--space-lg);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: auto;
-    flex-shrink: 0;
-}
-
-.footer-info {
-    display: flex;
-    align-items: center;
-    gap: var(--space-xs);
-    font-size: var(--font-size-xs);
-    color: var(--text-muted);
-}
-
-.version {
-    color: var(--text-secondary);
-}
-
-.separator {
-    color: var(--text-muted);
-}
-
-.branding {
-    color: var(--sheperd-primary);
-    font-weight: 600;
-}
-
-
 /* Shared Button Styles */
 
 .text-btn {
@@ -483,7 +448,8 @@ body {
 
 /* Responsive Design */
 
-@media (max-width: 380px) {
+
+/* @media (max-width: 380px) {
     .header {
         padding: var(--space-md);
     }
@@ -519,4 +485,4 @@ body {
         flex-direction: column;
         gap: var(--space-sm);
     }
-}
+} */

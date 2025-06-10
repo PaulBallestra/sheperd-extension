@@ -1,59 +1,36 @@
 /* src/styles/components/footer.css */
+
+
 /* Footer Component Styles */
 
 .footer {
-  background: var(--background);
-  border-top: 1px solid var(--border-light);
-  padding: var(--space-md) var(--space-lg);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: auto;
-  flex-shrink: 0;
+    background: var(--background);
+    border-top: 1px solid var(--border-light);
+    padding: var(--space-md) var(--space-lg);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    flex-shrink: 0;
 }
 
-/* Footer Info */
 .footer-info {
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-  font-size: var(--font-size-xs);
-  color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
 }
 
 .version {
-  color: var(--text-secondary);
+    color: var(--text-secondary);
 }
 
 .separator {
-  color: var(--text-muted);
+    color: var(--text-muted);
 }
 
 .branding {
-  color: var(--sheperd-primary);
-  font-weight: 600;
+    color: var(--sheperd-primary);
+    font-weight: 600;
 }
-
-/* Footer Actions */
-.footer-actions {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-}
-
-/* Responsive Design */
-@media (max-width: 380px) {
-  .footer {
-    padding: var(--space-sm) var(--space-md);
-    flex-direction: column;
-    gap: var(--space-sm);
-  }
-  
-  .footer-info {
-    order: 2;
-  }
-  
-  .footer-actions {
-    order: 1;
-  }
-} 
