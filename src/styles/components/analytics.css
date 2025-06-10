@@ -26,7 +26,7 @@
     background: var(--background);
     border-bottom: 1px solid var(--border-light);
     cursor: pointer;
-    transition: background-color var(--transition-fast);
+    transition: all var(--transition-fast);
 }
 
 .analytics-header:hover {
@@ -44,13 +44,22 @@
 }
 
 .analytics-toggle {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: var(--space-xs) var(--space-sm);
-    border-radius: var(--radius-sm);
-    transition: all var(--transition-fast);
+    margin: 0 var(--space-sm);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-sm);
+}
+
+.analytics-toggle .toggle-icon {
+    font-size: var(--font-size-base);
     color: var(--text-secondary);
+    transition: all var(--transition-normal);
+    transform: scale(1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .analytics-toggle:hover {
@@ -58,9 +67,18 @@
     color: var(--text-primary);
 }
 
-.toggle-icon {
-    font-size: var(--font-size-base);
-    transition: transform var(--transition-normal);
+.toggle-icon svg {
+    transition: all var(--transition-normal);
+    transform: rotate(0deg);
+}
+
+.analytics.expanded .toggle-icon svg {
+    transform: rotate(180deg);
+}
+
+.analytics-header:hover .toggle-icon {
+    color: var(--text-primary);
+    transform: scale(1.1);
 }
 
 .analytics-content {

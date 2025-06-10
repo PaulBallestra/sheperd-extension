@@ -244,10 +244,6 @@ export class CategoriesComponent {
             categoryEl.classList.remove("expanded");
             this.expandedCategories.delete(categoryName);
 
-            if (toggleIcon) {
-                toggleIcon.textContent = "▼";
-            }
-
             this.dispatchEvent(SHEPERD_EVENTS.CATEGORY_COLLAPSED, {
                 category: categoryName,
             });
@@ -256,10 +252,6 @@ export class CategoriesComponent {
             content.classList.add("expanded");
             categoryEl.classList.add("expanded");
             this.expandedCategories.add(categoryName);
-
-            if (toggleIcon) {
-                toggleIcon.textContent = "▲";
-            }
 
             this.dispatchEvent(SHEPERD_EVENTS.CATEGORY_EXPANDED, {
                 category: categoryName,
@@ -322,28 +314,41 @@ export class CategoriesComponent {
             }
 
             categoryDiv.innerHTML = `
-        <div class="category-header" data-category="${categoryName}" data-category-color="${color}">
+        <div class="category-header" data-category="${categoryName}" ${color ? `data-category-color="${color}"` : ''}>
           <div class="category-title">
             <span class="category-icon">${icon}</span>
             <span class="category-name">${categoryName}</span>
             
             ${
               duplicateCount > 0
-                ? `<span class="tab-duplicate">🔄 ${duplicateCount}</span>`
+                ? `<span class="tab-duplicate">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2L13.09 8.26L19 7L17.74 13.26L22 15L15.74 16.09L17 22L10.74 20.74L9 25L7.91 18.74L2 20L3.26 13.74L-1 12L5.26 10.91L4 5L10.26 6.26L12 2Z" fill="currentColor"/>
+                    </svg>
+                    ${duplicateCount}
+                  </span>`
                 : ""
             }
           </div>
           <div class="category-actions">
             <button class="category-btn" data-action="bookmark" data-category="${categoryName}" title="Bookmark all tabs">
-              📁 Bookmark
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19 21L12 16L5 21V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H17C17.5304 3 18.0391 3.21071 18.4142 3.58579C18.7893 3.96086 19 4.46957 19 5V21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
             </button>
             <button class="category-btn danger" data-action="close" data-category="${categoryName}" title="Close all tabs">
-              ✖️ Close
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
             </button>
           </div>
           <div class="category-toggle">
             <span class="category-count">${tabs.length}</span>
-            <span class="toggle-icon">${isExpanded ? "▲" : "▼"}</span>
+            <span class="toggle-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
           </div>
         </div>
         <div class="category-content ${isExpanded ? "expanded" : ""}">
@@ -382,10 +387,18 @@ export class CategoriesComponent {
           <span class="tab-title">${title}</span>
         </div>
         <div class="tab-actions">
-          ${tab.isDuplicate ? '<span class="tab-duplicate">🔄</span>' : ""}
+          ${tab.isDuplicate ? `<span class="tab-duplicate" title="Duplicate tab">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2L13.09 8.26L19 7L17.74 13.26L22 15L15.74 16.09L17 22L10.74 20.74L9 25L7.91 18.74L2 20L3.26 13.74L-1 12L5.26 10.91L4 5L10.26 6.26L12 2Z" fill="currentColor"/>
+            </svg>
+          </span>` : ""}
           <button class="tab-close-btn" title="Close this tab" data-tab-id="${
             tab.id
-          }">×</button>
+          }">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
         </div>
       </div>
     `;
