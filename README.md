@@ -1,7 +1,7 @@
 # 🐑 Sheperd - Smart Tab Manager Chrome Extension
 
 ![Chrome Extension](https://img.shields.io/badge/Chrome-Extension-blue?style=for-the-badge&logo=googlechrome)
-![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+<!-- ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge) -->
 ![Status](https://img.shields.io/badge/Status-In%20Development-orange?style=for-the-badge)
 
 ---
@@ -34,7 +34,7 @@
 - 🔗 **Domain clustering** - Groups related sites intelligently
 - 🔍 **Duplicate detection** - Highlights your 7 identical Amazon tabs
 
-### 🔥 **Performance Analytics (UNIQUE FEATURE!)**
+### 🔥 Performance Analytics
 - 📊 **Real-time resource monitoring** - See actual performance impact
 - 🎯 **Smart optimization suggestions** - "Close 5 tabs to save 200MB RAM"
 - 🧠 **Domain intelligence** - Knows which sites are resource-heavy
@@ -71,7 +71,7 @@
 | 🎨 Modern UI | ✅ | Clean, 2024-standard interface |
 | ⚡ Performance | ✅ | Optimized for 100+ tabs with smart algorithms |
 
-### 🔥 Performance Analytics System (NEW!)
+### 🔥 Performance Analytics System
 | Metric | Details | Smart Actions |
 |--------|---------|---------------|
 | 📊 **Resource Impact** | Light/Medium/Heavy performance scoring | One-click optimization suggestions |
@@ -112,7 +112,7 @@
 │   ├── components/              # Reusable UI components
 │   │   ├── header.js           # Header with real-time stats
 │   │   ├── Sheperd-meter.js   # Level-based tab meter
-│   │   ├── analytics.js        # 🔥 Performance analytics & optimization
+│   │   ├── analytics.js        # Performance analytics & optimization
 │   │   ├── categories.js       # Tab categorization & management
 │   │   └── quick-actions.js    # Bulk operations
 │   ├── popup.js                # Main app orchestrator
@@ -124,6 +124,13 @@
 ├── src/styles/                  # Component-based CSS
 │   ├── main.css                # Design system & globals
 │   └── components/             # Component-specific styles
+│       ├── analytics.css                # Analytics css of analytics component
+│       ├── buttons.css                     # Buttons css of buttons component
+│       ├── categories.css                # Categories css of category component
+│       ├── footer.css                # Footer css of footer component
+│       ├── header.css                # Header css of header component
+│       ├── quick-actions.css                # Quick actions css of quick-actions component
+│       ├── sheperd-meter.css                # SheperdMeter css of sheperd-meter component
 ├── background.js                # Service worker with badge system
 └── Chrome Storage + Events      # Modern data & event handling
 ```
@@ -166,7 +173,7 @@
 
 ### Current Structure (Phase 1) - Refactored ES6 Architecture
 ```
-Sheperd-extension/
+sheperd-extension/
 ├── manifest.json              # Extension configuration & permissions
 ├── background.js              # Service worker for tab events & badge updates
 ├── src/                       # Source code with ES6 modules
@@ -182,8 +189,8 @@ Sheperd-extension/
 │   ├── popup/                 # Popup interface
 │   │   ├── components/        # Reusable UI components
 │   │   │   ├── header.js      # Header with stats & branding
-│   │   │   ├── Sheperd-meter.js # Tab level meter (renamed from shame)
-│   │   │   ├── analytics.js   # 🔥 Performance analytics & optimization
+│   │   │   ├── sheperd-meter.js # Tab level meter (renamed from shame)
+│   │   │   ├── analytics.js   # Performance analytics & optimization
 │   │   │   ├── categories.js  # Category management & display
 │   │   │   └── quick-actions.js # Bulk operations buttons
 │   │   ├── popup.js          # Main application orchestrator
@@ -192,8 +199,8 @@ Sheperd-extension/
 │       ├── main.css          # Global styles & design system
 │       └── components/        # Component-specific stylesheets
 │           ├── header.css     # Header component styles
-│           ├── Sheperd-meter.css # Meter component styles
-│           ├── analytics.css  # 🔥 Performance analytics styles
+│           ├── sheperd-meter.css # Meter component styles
+│           ├── analytics.css  # Performance analytics styles
 │           ├── categories.css # Categories component styles
 │           ├── quick-actions.css # Quick actions styles
 │           ├── buttons.css    # Shared button styles
@@ -268,12 +275,12 @@ Sheperd-platform/
 
 ## 🚧 Roadmap & Future Features
 
-### Phase 1: MVP Extension (Current) - 🔥 **ENHANCED WITH ANALYTICS**
+### Phase 1: MVP Extension (Current)
 - ✅ Smart tab categorization with expanded categories
 - ✅ Bulk category management & optimization
 - ✅ Sheperd level metrics (renamed from shame)
-- 🔥 **NEW: Performance Analytics & Resource Monitoring**
-- 🔥 **NEW: Smart optimization suggestions & actions**
+- ✅ Performance Analytics & Resource Monitoring**
+- ✅ Smart optimization suggestions & actions**
 - ✅ Duplicate detection with smart algorithms
 - ✅ Clean, modern UI with performance insights
 - ✅ Optimized for 100+ tabs with analytics
@@ -436,8 +443,8 @@ Sheperd-platform/
 
 #### **# Clone and run locally**
 ```bash
-git clone https://github.com/yourusername/Sheperd-extension
-cd Sheperd-extension
+git clone https://github.com/yourusername/sheperd-extension
+cd sheperd-extension
 ```
 
 #### **# Load extension in Chrome**
@@ -476,7 +483,7 @@ cd backend && go run cmd/server/main.go
 
 #### **# 1. Fork the repository**
 ```bash
-git fork https://github.com/yourusername/Sheperd-extension
+git fork https://github.com/yourusername/sheperd-extension
 ```
 
 #### **# 2. Create feature branch**
@@ -589,7 +596,7 @@ git push origin feature/amazing-new-feature
 - 🔧 Basic understanding of Chrome Extension APIs
 
 #### **# Required for Phase 2**
-- 🐹 Go 1.21+
+- 🐹 Go 1.24+
 - 🟢 Node.js 18+
 - 🐘 PostgreSQL 14+
 - 🐳 Docker & Docker Compose
@@ -598,8 +605,8 @@ git push origin feature/amazing-new-feature
 
 #### **# Phase 1: Extension Development**
 ```bash
-git clone https://github.com/yourusername/Sheperd-extension
-cd Sheperd-extension
+git clone https://github.com/yourusername/sheperd-extension
+cd sheperd-extension
 
 # Development workflow:
 # 1. Load extension in Chrome (Developer Mode)
@@ -691,14 +698,14 @@ See `CONTRIBUTORS.md` for full list
 ## 📞 Contact & Support
 
 ### Get In Touch
-- 📧 **Email**: hello@Sheperd-tabs.com
+- 📧 **Email**: hello@sheperd-tabs.com
 - 🐦 **Twitter**: @SheperdTabs
 - 💬 **Discord**: Join Community
 - 🐛 **Bug Reports**: GitHub Issues
 - 💡 **Feature Requests**: GitHub Discussions
 
 ### Documentation
-- 📖 **User Guide**: docs.Sheperd-tabs.com
+- 📖 **User Guide**: docs.sheperd-tabs.com
 - 👨‍💻 **Developer Docs**: api.Sheperd-tabs.com
 - 🎥 **Video Tutorials**: YouTube Channel
 
@@ -710,6 +717,6 @@ See `CONTRIBUTORS.md` for full list
 
 *Helping you tame the tab chaos, one browser at a time* 🐑
 
-[![Star this repo](https://img.shields.io/badge/⭐-Star%20this%20repo-yellow?style=for-the-badge)](https://github.com/yourusername/Sheperd-extension)
+[![Star this repo](https://img.shields.io/badge/⭐-Star%20this%20repo-yellow?style=for-the-badge)](https://github.com/yourusername/sheperd-extension)
 
 </div>
