@@ -23,90 +23,378 @@ export const TAB_CATEGORIES = {
     icon: '💻',
     color: '#10B981',
     keywords: [
-      'github.com', 'gitlab.com', 'bitbucket.org',
-      'stackoverflow.com', 'stackexchange.com',
-      'developer.mozilla.org', 'docs.microsoft.com',
-      'dev.to', 'medium.com/tag/programming',
-      'codepen.io', 'jsfiddle.net', 'replit.com',
-      'localhost', '127.0.0.1', ':3000', ':8080',
-      'api.', 'docs.', 'documentation'
+      // Code Repositories & Version Control
+      'github.com', 'gitlab.com', 'bitbucket.org', 'codeberg.org',
+      
+      // Q&A & Forums
+      'stackoverflow.com', 'stackexchange.com', 'serverfault.com',
+      
+      // Documentation & References
+      'developer.mozilla.org', 'docs.microsoft.com', 'docs.aws.amazon.com',
+      'cloud.google.com/docs', 'docs.docker.com', 'kubernetes.io',
+      'reactjs.org', 'vuejs.org', 'angular.io', 'svelte.dev',
+      'nodejs.org', 'python.org', 'golang.org', 'rust-lang.org',
+      
+      // Dev Platforms & Tools
+      'dev.to', 'hashnode.com', 'codepen.io', 'jsfiddle.net', 
+      'replit.com', 'codesandbox.io', 'glitch.com', 'stackblitz.com',
+      'vercel.com', 'netlify.com', 'heroku.com', 'railway.app',
+      
+      // Local Development
+      'localhost', '127.0.0.1', 'local.', 'dev.',
+      
+      // Package Managers & Registries
+      'npmjs.com', 'pypi.org', 'packagist.org', 'crates.io',
+      'nuget.org', 'maven.apache.org'
     ],
     patterns: [
       /docs?\./i,
       /api\./i,
       /localhost/i,
-      /:\d{4}/i  // Port numbers
+      /127\.0\.0\.1/i,
+      /:\d{4}/i,  // Port numbers
+      /dev\./i,
+      /staging\./i,
+      /test\./i
+    ]
+  },
+
+  'AI & Machine Learning': {
+    icon: '🤖',
+    color: '#FF6B6B',
+    keywords: [
+      // AI Chat & Assistants
+      'chat.openai.com', 'chatgpt.com', 'claude.ai', 'anthropic.com',
+      'bard.google.com', 'bing.com/chat', 'character.ai', 'poe.com',
+      'perplexity.ai', 'you.com', 'phind.com',
+      
+      // AI Development Platforms
+      'huggingface.co', 'replicate.com', 'runpod.io', 'colab.research.google.com',
+      'kaggle.com', 'paperswithcode.com', 'arxiv.org',
+      
+      // AI Tools & Services
+      'midjourney.com', 'stability.ai', 'dalle.openai.com',
+      'runway.ml', 'luma.ai', 'elevenlabs.io', 'murf.ai',
+      'jasper.ai', 'copy.ai', 'writesonic.com', 'grammarly.com',
+      'notion.ai', 'github.com/copilot',
+      
+      // AI News & Communities
+      'aibreakfast.com', 'towards-ai.com', 'techcrunch.com/tag/artificial-intelligence'
+    ],
+    patterns: [
+      /\bai\b/i,
+      /artificial.intelligence/i,
+      /machine.learning/i,
+      /neural.network/i,
+      /gpt/i,
+      /llm/i
     ]
   },
   
-  'Social & News': {
-    icon: '📰',
+  'Social & Communication': {
+    icon: '📱',
     color: '#F59E0B',
     keywords: [
-      'twitter.com', 'facebook.com', 'instagram.com',
-      'linkedin.com', 'reddit.com', 'discord.com',
-      'news.ycombinator.com', 'hackernews',
-      'cnn.com', 'bbc.com', 'nytimes.com',
-      'medium.com', 'substack.com',
-      'news', 'breaking', 'headlines'
+      // Major Social Platforms
+      'twitter.com', 'x.com', 'facebook.com', 'instagram.com',
+      'linkedin.com', 'tiktok.com', 'snapchat.com', 'pinterest.com',
+      
+      // Professional Networks
+      'glassdoor.com', 'indeed.com', 'angel.co', 'wellfound.com',
+      
+      // Communities & Forums
+      'reddit.com', 'discord.com', 'telegram.org', 'whatsapp.com',
+      'signal.org', 'mastodon.social', 'threads.net',
+      
+      // Dating & Social
+      'tinder.com', 'bumble.com', 'hinge.co', 'match.com',
+      
+      // Communication Tools
+      'zoom.us', 'meet.google.com', 'teams.microsoft.com',
+      'slack.com', 'discord.gg'
+    ],
+    patterns: [
+      /social/i,
+      /chat/i,
+      /message/i,
+      /community/i
+    ]
+  },
+
+  'News & Information': {
+    icon: '📰',
+    color: '#6366F1',
+    keywords: [
+      // Major News Outlets
+      'cnn.com', 'bbc.com', 'nytimes.com', 'washingtonpost.com',
+      'reuters.com', 'ap.org', 'bloomberg.com', 'wsj.com',
+      'theguardian.com', 'usatoday.com', 'npr.org', 'pbs.org',
+      
+      // Tech News
+      'techcrunch.com', 'theverge.com', 'ars-technica.com', 'wired.com',
+      'engadget.com', 'gizmodo.com', 'mashable.com', 'venturebeat.com',
+      
+      // Aggregators & Discussion
+      'news.ycombinator.com', 'slashdot.org', 'digg.com',
+      'flipboard.com', 'pocket.com', 'instapaper.com',
+      
+      // Newsletters & Blogs
+      'medium.com', 'substack.com', 'newsletter.'
+    ],
+    patterns: [
+      /news/i,
+      /breaking/i,
+      /headlines/i,
+      /journal/i,
+      /times/i,
+      /post/i
     ]
   },
   
-  'Shopping': {
+  'Shopping & E-commerce': {
     icon: '🛒',
     color: '#EF4444',
     keywords: [
-      'amazon.com', 'ebay.com', 'etsy.com',
-      'walmart.com', 'target.com', 'bestbuy.com',
-      'aliexpress.com', 'alibaba.com',
-      'shop', 'buy', 'cart', 'checkout',
-      'price', 'deal', 'sale', 'coupon'
+      // Major Retailers
+      'amazon.com', 'walmart.com', 'target.com', 'costco.com',
+      'bestbuy.com', 'homedepot.com', 'lowes.com', 'macys.com',
+      
+      // Online Marketplaces
+      'ebay.com', 'etsy.com', 'mercari.com', 'poshmark.com',
+      'facebook.com/marketplace', 'offerup.com', 'craigslist.org',
+      
+      // International & Specialized
+      'aliexpress.com', 'alibaba.com', 'wish.com', 'temu.com',
+      'shein.com', 'zaful.com', 'banggood.com',
+      
+      // Fashion & Lifestyle
+      'nike.com', 'adidas.com', 'zara.com', 'h&m.com',
+      'uniqlo.com', 'gap.com', 'oldnavy.com',
+      
+      // Deal Sites
+      'slickdeals.net', 'groupon.com', 'woot.com', 'overstock.com',
+      'dealfinder.', 'coupon', 'promo'
     ],
     patterns: [
       /shop/i,
+      /store/i,
       /buy/i,
       /cart/i,
-      /checkout/i
+      /checkout/i,
+      /deals?/i,
+      /sale/i,
+      /coupon/i,
+      /price/i
     ]
   },
   
-  'Entertainment': {
+  'Entertainment & Media': {
     icon: '🎬',
     color: '#8B5CF6',
     keywords: [
-      'youtube.com', 'netflix.com', 'hulu.com',
-      'disney.com', 'twitch.tv', 'spotify.com',
-      'soundcloud.com', 'pandora.com',
-      'gaming', 'games', 'movie', 'music',
-      'video', 'stream', 'watch'
+      // Video Streaming
+      'youtube.com', 'netflix.com', 'hulu.com', 'disneyplus.com',
+      'amazon.com/prime', 'hbomax.com', 'paramount.com', 'peacocktv.com',
+      'crunchyroll.com', 'funimation.com', 'tubi.tv', 'roku.com',
+      
+      // Music Streaming
+      'spotify.com', 'apple.com/music', 'youtube.com/music',
+      'soundcloud.com', 'pandora.com', 'deezer.com', 'tidal.com',
+      
+      // Gaming
+      'twitch.tv', 'steam.com', 'epic.games', 'origin.com',
+      'battle.net', 'xbox.com', 'playstation.com', 'nintendo.com',
+      'itch.io', 'gog.com', 'humble.com',
+      
+      // Entertainment News & Reviews
+      'imdb.com', 'rottentomatoes.com', 'metacritic.com',
+      'entertainment.', 'variety.com', 'hollywood.com',
+      
+      // Podcasts & Audio
+      'podcasts.apple.com', 'podcasts.google.com', 'anchor.fm'
+    ],
+    patterns: [
+      /watch/i,
+      /stream/i,
+      /play/i,
+      /video/i,
+      /music/i,
+      /game/i,
+      /gaming/i,
+      /entertainment/i
     ]
   },
   
   'Work & Productivity': {
-    icon: '📊',
+    icon: '💼',
     color: '#3B82F6',
     keywords: [
-      'gmail.com', 'outlook.com', 'mail.google.com',
-      'calendar.google.com', 'calendly.com',
-      'slack.com', 'teams.microsoft.com', 'zoom.us',
-      'notion.so', 'airtable.com', 'trello.com',
-      'asana.com', 'monday.com', 'clickup.com',
-      'drive.google.com', 'dropbox.com', 'onedrive.com'
+      // Email & Communication
+      'gmail.com', 'outlook.com', 'mail.google.com', 'mail.yahoo.com',
+      'protonmail.com', 'tutanota.com',
+      
+      // Calendar & Scheduling
+      'calendar.google.com', 'outlook.live.com/calendar', 'calendly.com',
+      'acuityscheduling.com', 'when2meet.com', 'doodle.com',
+      
+      // Project Management
+      'asana.com', 'trello.com', 'monday.com', 'clickup.com',
+      'notion.so', 'airtable.com', 'basecamp.com', 'jira.atlassian.com',
+      
+      // Cloud Storage & Docs
+      'drive.google.com', 'docs.google.com', 'sheets.google.com',
+      'onedrive.com', 'dropbox.com', 'box.com', 'icloud.com',
+      'office.com', 'office365.com',
+      
+      // Design & Creative
+      'figma.com', 'sketch.com', 'adobe.com', 'canva.com',
+      'miro.com', 'mural.co', 'lucidchart.com',
+      
+      // Finance & Business
+      'quickbooks.com', 'xero.com', 'freshbooks.com',
+      'stripe.com', 'paypal.com', 'square.com'
+    ],
+    patterns: [
+      /work/i,
+      /office/i,
+      /business/i,
+      /productivity/i,
+      /project/i,
+      /task/i,
+      /meeting/i
     ]
   },
   
   'Research & Learning': {
     icon: '📚',
-    color: '#6B7280',
+    color: '#059669',
     keywords: [
-      'wikipedia.org', 'scholar.google.com',
-      'coursera.org', 'udemy.com', 'edx.org',
-      'khanacademy.org', 'pluralsight.com',
-      'research', 'study', 'learn', 'course',
-      'tutorial', 'guide', 'how-to'
+      // Educational Platforms
+      'coursera.org', 'udemy.com', 'edx.org', 'khanacademy.org',
+      'pluralsight.com', 'skillshare.com', 'masterclass.com',
+      'linkedin.com/learning', 'udacity.com', 'codecademy.com',
+      
+      // Academic & Research
+      'wikipedia.org', 'scholar.google.com', 'jstor.org',
+      'researchgate.net', 'academia.edu', 'pubmed.ncbi.nlm.nih.gov',
+      'sciencedirect.com', 'springer.com', 'nature.com',
+      
+      // Language Learning
+      'duolingo.com', 'babbel.com', 'rosettastone.com',
+      'busuu.com', 'lingoda.com', 'italki.com',
+      
+      // Reference & Tools
+      'dictionary.com', 'merriam-webster.com', 'thesaurus.com',
+      'translate.google.com', 'deepl.com', 'grammarly.com',
+      
+      // Libraries & Archives
+      '.edu', '.ac.', 'library.', 'archive.org'
+    ],
+    patterns: [
+      /learn/i,
+      /study/i,
+      /course/i,
+      /tutorial/i,
+      /guide/i,
+      /how.?to/i,
+      /research/i,
+      /academic/i,
+      /\.edu/i
+    ]
+  },
+
+  'Finance & Banking': {
+    icon: '💰',
+    color: '#DC2626',
+    keywords: [
+      // Banking
+      'bankofamerica.com', 'chase.com', 'wellsfargo.com', 'citi.com',
+      'usbank.com', 'pnc.com', 'truist.com', 'capitalone.com',
+      
+      // Investment & Trading
+      'robinhood.com', 'etrade.com', 'schwab.com', 'fidelity.com',
+      'vanguard.com', 'tdameritrade.com', 'webull.com', 'coinbase.com',
+      
+      // Crypto
+      'binance.com', 'kraken.com', 'gemini.com', 'crypto.com',
+      'blockchain.com', 'coinmarketcap.com', 'coingecko.com',
+      
+      // Personal Finance
+      'mint.com', 'ynab.com', 'personalcapital.com', 'creditkarma.com',
+      'nerdwallet.com', 'bankrate.com', 'experian.com', 'creditscorecard.com',
+      
+      // Business Finance
+      'quickbooks.com', 'xero.com', 'freshbooks.com'
+    ],
+    patterns: [
+      /bank/i,
+      /finance/i,
+      /money/i,
+      /invest/i,
+      /crypto/i,
+      /trading/i,
+      /credit/i,
+      /loan/i
+    ]
+  },
+
+  'Health & Fitness': {
+    icon: '🏥',
+    color: '#16A34A',
+    keywords: [
+      // Health Information
+      'webmd.com', 'mayoclinic.org', 'healthline.com', 'medicalnewstoday.com',
+      'nih.gov', 'cdc.gov', 'who.int',
+      
+      // Fitness & Wellness
+      'myfitnesspal.com', 'fitbit.com', 'strava.com', 'nike.com/run-club',
+      'headspace.com', 'calm.com', 'meditation.com',
+      
+      // Mental Health
+      'betterhelp.com', 'talkspace.com', 'psychology.com',
+      
+      // Medical Services
+      'teladoc.com', 'amwell.com', 'mdlive.com'
+    ],
+    patterns: [
+      /health/i,
+      /medical/i,
+      /fitness/i,
+      /wellness/i,
+      /doctor/i,
+      /hospital/i
+    ]
+  },
+
+  'Travel & Maps': {
+    icon: '✈️',
+    color: '#0EA5E9',
+    keywords: [
+      // Maps & Navigation
+      'maps.google.com', 'waze.com', 'mapquest.com', 'bing.com/maps',
+      
+      // Travel Booking
+      'expedia.com', 'booking.com', 'hotels.com', 'airbnb.com',
+      'kayak.com', 'priceline.com', 'tripadvisor.com', 'vrbo.com',
+      
+      // Airlines
+      'delta.com', 'american.com', 'united.com', 'southwest.com',
+      'jetblue.com', 'alaska.com',
+      
+      // Travel Planning
+      'tripit.com', 'lonely.planet', 'fodors.com', 'frommers.com'
+    ],
+    patterns: [
+      /travel/i,
+      /trip/i,
+      /hotel/i,
+      /flight/i,
+      /map/i,
+      /navigation/i
     ]
   }
 };
+
 
 export const SHEPHERD_METER_LEVELS = {
   EXCELLENT: {
