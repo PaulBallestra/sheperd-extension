@@ -156,17 +156,7 @@ export class AnalyticsComponent {
         // Bind real-time state management events
         this.bindRealTimeEvents();
 
-        // Legacy events for backward compatibility
-        document.addEventListener(SHEPERD_EVENTS.TABS_UPDATED, (event) => {
-            const { action } = event.detail;
-            if (action === "refresh") {
-                this.updateAnalytics(event.detail);
-            }
-        });
-
-        document.addEventListener(SHEPERD_EVENTS.CATEGORIES_UPDATED, (event) => {
-            this.updateCategories(event.detail);
-        });
+        // Real-time events only - legacy TABS_UPDATED removed
 
         // Optimize button click
         this.optimizeButtonElement.addEventListener("click", () => {
@@ -180,7 +170,8 @@ export class AnalyticsComponent {
     bindRealTimeEvents() {
         // Listen for real-time analytics updates
         document.addEventListener(SHEPERD_EVENTS.ANALYTICS_UPDATED, (event) => {
-            const { currentTabs, categorizedTabs, totalCount } = event.detail;
+            const { currentTabs, categorizedTabs, totalCount, type } = event.detail;
+            console.log(`🔄 Analytics received ANALYTICS_UPDATED: ${type}, totalCount: ${totalCount}, tabs: ${currentTabs?.length || 0}`);
             this.updateAnalyticsRealtime(currentTabs, categorizedTabs, totalCount);
         });
     }
@@ -194,6 +185,7 @@ export class AnalyticsComponent {
     updateAnalyticsRealtime(tabs, categorizedTabs, totalCount) {
         this.totalTabs = totalCount;
         this.tabsByCategory = categorizedTabs;
+        this.currentTabs = tabs || []; // Store current tabs for optimization calculations
         this.loadedTabs = this.calculateLoadedTabs(tabs || []);
 
         this.updatePerformanceScore();
@@ -282,10 +274,14 @@ export class AnalyticsComponent {
      * @returns {number} - Number of heavy tabs
      */
     countHeavyTabs() {
-        const allTabs = this.getAllTabs();
+        const allTabs = this.currentTabs || this.getAllTabs();
         return allTabs.filter((tab) => {
-            const url = new URL(tab.url || "");
-            return this.heavyDomains.has(url.hostname);
+            try {
+                const url = new URL(tab.url || "");
+                return this.heavyDomains.has(url.hostname);
+            } catch (error) {
+                return false; // Invalid URL
+            }
         }).length;
     }
 
@@ -441,7 +437,10 @@ export class AnalyticsComponent {
     getOptimizationCount() {
         const heavyTabs = this.countHeavyTabs();
         const excessTabs = Math.max(0, this.totalTabs - 25);
-        return Math.min(heavyTabs + Math.floor(excessTabs * 0.3), 10);
+        const optimizableCount = Math.min(heavyTabs + Math.floor(excessTabs * 0.3), 10);
+
+        console.log(`🔧 Optimization count: heavyTabs=${heavyTabs}, excessTabs=${excessTabs}, total=${optimizableCount}`);
+        return optimizableCount;
     }
 
     /**

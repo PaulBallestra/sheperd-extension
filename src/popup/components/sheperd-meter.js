@@ -59,13 +59,7 @@ export class SheperdMeterComponent {
         // Bind real-time state management events
         this.bindRealTimeEvents();
 
-        // Legacy TABS_UPDATED for backward compatibility
-        document.addEventListener(SHEPERD_EVENTS.TABS_UPDATED, (event) => {
-            const { action, count } = event.detail;
-            if (action === "refresh") {
-                this.updateMeter(count);
-            }
-        });
+        // Real-time events only - legacy TABS_UPDATED removed
 
         // Add hover effects for additional tips
         this.element.addEventListener("mouseenter", () => {
@@ -83,7 +77,8 @@ export class SheperdMeterComponent {
     bindRealTimeEvents() {
         // Listen for real-time Sheperd meter updates
         document.addEventListener(SHEPERD_EVENTS.SHEPERD_METER_UPDATED, (event) => {
-            const { totalCount } = event.detail;
+            const { totalCount, type } = event.detail;
+            console.log(`🔄 Sheperd meter received SHEPERD_METER_UPDATED: ${type}, totalCount: ${totalCount}`);
             this.updateMeter(totalCount);
         });
     }

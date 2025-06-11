@@ -49,13 +49,7 @@ export class HeaderComponent {
         // Bind real-time state management events
         this.bindRealTimeEvents();
 
-        // Legacy TABS_UPDATED for backward compatibility
-        document.addEventListener(SHEPERD_EVENTS.TABS_UPDATED, (event) => {
-            const { action, count } = event.detail;
-            if (action === "refresh") {
-                this.updateTabCount(count);
-            }
-        });
+        // Real-time events only - legacy TABS_UPDATED removed
     }
 
     /**
@@ -64,7 +58,8 @@ export class HeaderComponent {
     bindRealTimeEvents() {
         // Listen for real-time header updates
         document.addEventListener(SHEPERD_EVENTS.HEADER_UPDATED, (event) => {
-            const { totalCount } = event.detail;
+            const { totalCount, type } = event.detail;
+            console.log(`🔄 Header received HEADER_UPDATED: ${type}, totalCount: ${totalCount}`);
             this.updateTabCount(totalCount);
         });
     }

@@ -99,22 +99,21 @@ export class CategoriesComponent {
         // Bind real-time state management events
         this.bindRealTimeEvents();
 
-        // Legacy TABS_UPDATED for backward compatibility
-        document.addEventListener(SHEPERD_EVENTS.TABS_UPDATED, (event) => {
-            const { action, categorizedTabs } = event.detail;
-
-            // Only handle full refresh events
-            if (action === "refresh") {
-                this.updateCategories(categorizedTabs);
-            }
-        });
+        // Real-time events only - legacy TABS_UPDATED removed
     }
 
     /**
      * Bind real-time state management events
      */
     bindRealTimeEvents() {
-        // Listen for state restoration events ONLY
+        // Listen for categories-specific updates (initial load and major rebuilds)
+        document.addEventListener(SHEPERD_EVENTS.CATEGORIES_UPDATED, (event) => {
+            const { categorizedTabs, type } = event.detail;
+            console.log(`🔄 Categories received CATEGORIES_UPDATED: ${type}, categories: ${Object.keys(categorizedTabs || {}).length}`);
+            this.updateCategories(categorizedTabs);
+        });
+
+        // Listen for state restoration events
         document.addEventListener(SHEPERD_EVENTS.STATE_UPDATED, (event) => {
             const { type, categorizedTabs } = event.detail;
 
@@ -166,15 +165,8 @@ export class CategoriesComponent {
         // Listen for bulk operation failures to restore tabs
         document.addEventListener(SHEPERD_EVENTS.BULK_OPERATION_FAILED, (event) => {
             const { operation, removedTabs } = event.detail;
-            console.log(`❌ Bulk operation '${operation}' failed - triggering full refresh`);
-
-            // For bulk operation failures, trigger a full refresh as fallback
-            this.dispatchEvent(SHEPERD_EVENTS.TABS_UPDATED, {
-                action: "restore_failed",
-                operation,
-                removedTabs,
-                count: this.getTotalTabCount() + removedTabs.length,
-            });
+            console.log(`❌ Bulk operation '${operation}' failed - no action needed, main app handles rollback`);
+            // Main app handles state rollback automatically via restoreStateSnapshot
         });
     }
 
@@ -487,12 +479,7 @@ export class CategoriesComponent {
      */
     restoreTabInUI(tabId) {
         if (!this._removedTabData || this._removedTabData.tabId !== tabId) {
-            // Fallback: trigger full refresh
-            this.dispatchEvent(SHEPERD_EVENTS.TABS_UPDATED, {
-                action: "restore_failed",
-                tabId: tabId,
-                count: this.getTotalTabCount(),
-            });
+            console.warn(`Cannot restore tab ${tabId} - no stored data found`);
             return;
         }
 
@@ -582,12 +569,7 @@ export class CategoriesComponent {
      */
     restoreCategoryInUI(categoryName, tabs) {
         if (!this._removedCategoryData || this._removedCategoryData.categoryName !== categoryName) {
-            // Fallback: trigger full refresh
-            this.dispatchEvent(SHEPERD_EVENTS.TABS_UPDATED, {
-                action: "restore_failed",
-                category: categoryName,
-                count: this.getTotalTabCount() + tabs.length,
-            });
+            console.warn(`Cannot restore category ${categoryName} - no stored data found`);
             return;
         }
 

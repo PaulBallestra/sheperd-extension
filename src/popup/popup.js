@@ -59,10 +59,21 @@ class SheperdPopupApp {
             this.bindEvents();
 
             // Load and categorize tabs
+            // Load and categorize tabs
             await this.loadTabs();
 
             // Render all components
             this.renderComponents();
+
+            // CRITICAL: Update all components with current state AFTER they're rendered
+            // This ensures components get initial state even if they missed the loadTabs() events
+            // Add small delay to ensure DOM is fully ready
+            setTimeout(() => {
+                this.dispatchRealTimeUpdates({
+                    type: 'post_render_update',
+                    components: ['header', 'sheperd-meter', 'analytics', 'quick-actions']
+                });
+            }, 100);
 
             // Mark as initialized
             this.isInitialized = true;
@@ -215,27 +226,14 @@ class SheperdPopupApp {
         // Set up real-time tab change listener
         this.setupRealTimeUpdates();
 
-        // Auto-refresh tabs periodically (as backup for empty state and missed events)
-        this.startAutoRefresh();
+        // Safety check for edge cases (called from init method only)
     }
 
     /**
      * Bind comprehensive real-time event handlers for state management
      */
     bindRealTimeEvents() {
-        // DISABLED: Legacy TABS_UPDATED - This was causing infinite loops!
-        // The loadTabs() method dispatches TABS_UPDATED with action "refresh"
-        // Which then triggers this listener to call loadTabs() again = INFINITE LOOP!
-        console.log("🚫 Legacy TABS_UPDATED event handler DISABLED - was causing infinite loops");
-
-        /* DISABLED INFINITE LOOP CODE:
-        document.addEventListener(SHEPERD_EVENTS.TABS_UPDATED, async(event) => {
-            const { action } = event.detail;
-            if (action === "refresh" || action === "restore_failed") {
-                await this.loadTabs(); // <-- This creates infinite loop!
-            }
-        });
-        */
+        // Real-time event system only - legacy TABS_UPDATED removed to prevent infinite loops
 
         // Tab removal events
         document.addEventListener(SHEPERD_EVENTS.TAB_REMOVED_OPTIMISTIC, (event) => {
@@ -298,12 +296,20 @@ class SheperdPopupApp {
     }
 
     /**
-     * Handle confirmed tab removal - mark operation complete
+     * Handle confirmed tab removal - mark operation complete and update components
      */
     handleTabRemovalConfirmed({ tabId, operationId }) {
         // Remove from operation queue
         this.operationQueue.delete(operationId);
         console.log(`✅ Tab ${tabId} removal confirmed`);
+
+        // After successful individual tab removal, update components with final state
+        this.dispatchRealTimeUpdates({
+            type: 'tab_removal_confirmed',
+            tabId,
+            operationId,
+            components: ['header', 'sheperd-meter', 'analytics', 'quick-actions']
+        });
     }
 
     /**
@@ -346,11 +352,19 @@ class SheperdPopupApp {
     }
 
     /**
-     * Handle confirmed category removal
+     * Handle confirmed category removal - update components with final state
      */
     handleCategoryRemovalConfirmed({ categoryName, operationId }) {
         this.operationQueue.delete(operationId);
         console.log(`✅ Category "${categoryName}" removal confirmed`);
+
+        // After successful category removal, update components with final state
+        this.dispatchRealTimeUpdates({
+            type: 'category_removal_confirmed',
+            categoryName,
+            operationId,
+            components: ['header', 'sheperd-meter', 'analytics', 'quick-actions']
+        });
     }
 
     /**
@@ -376,16 +390,25 @@ class SheperdPopupApp {
      * Handle optimistic bulk operations (duplicates, old tabs, etc.)
      */
     handleBulkOperationOptimistic({ operation, removedTabs, operationId }) {
+        console.log(`🗑️ Bulk operation optimistic: ${operation}, removing ${removedTabs.length} tabs`);
+        console.log(`📊 Before removal: ${this.currentTabs.length} tabs`);
+
         // Save current state for potential rollback
         this.saveStateSnapshot(operationId);
 
         // Remove tabs from main app state
         removedTabs.forEach(tab => {
             const categoryName = this.findTabCategory(tab.id);
+            console.log(`🔍 Tab ${tab.id} found in category: ${categoryName}`);
             if (categoryName) {
                 this.removeTabFromState(tab.id, categoryName);
+                console.log(`✅ Removed tab ${tab.id} from state`);
+            } else {
+                console.warn(`❌ Tab ${tab.id} not found in any category!`);
             }
         });
+
+        console.log(`📊 After removal: ${this.currentTabs.length} tabs`);
 
         // Dispatch updates only to components that need tab count updates (not categories)
         this.dispatchRealTimeUpdates({
@@ -398,11 +421,20 @@ class SheperdPopupApp {
     }
 
     /**
-     * Handle confirmed bulk operation
+     * Handle confirmed bulk operation - update components with final state
      */
     handleBulkOperationConfirmed({ operation, operationId }) {
         this.operationQueue.delete(operationId);
         console.log(`✅ Bulk operation "${operation}" confirmed`);
+
+        // After successful bulk operation, dispatch updates to refresh all component states
+        // This is critical for quick actions to update counters and button states
+        this.dispatchRealTimeUpdates({
+            type: 'bulk_operation_confirmed',
+            operation,
+            operationId,
+            components: ['header', 'sheperd-meter', 'analytics', 'quick-actions', 'categories']
+        });
     }
 
     /**
@@ -428,18 +460,30 @@ class SheperdPopupApp {
      * Remove tab from internal app state
      */
     removeTabFromState(tabId, categoryName) {
+        const beforeCount = this.currentTabs.length;
+
         // Remove from currentTabs
         this.currentTabs = this.currentTabs.filter(tab => tab.id !== tabId);
 
+        const afterCount = this.currentTabs.length;
+        console.log(`🔄 removeTabFromState: ${beforeCount} → ${afterCount} tabs (removed ${beforeCount - afterCount})`);
+
         // Remove from categorizedTabs
         if (this.categorizedTabs[categoryName]) {
+            const beforeCategoryCount = this.categorizedTabs[categoryName].length;
             this.categorizedTabs[categoryName] = this.categorizedTabs[categoryName]
                 .filter(tab => tab.id !== tabId);
+            const afterCategoryCount = this.categorizedTabs[categoryName].length;
+
+            console.log(`🔄 Category ${categoryName}: ${beforeCategoryCount} → ${afterCategoryCount} tabs`);
 
             // Remove empty categories
             if (this.categorizedTabs[categoryName].length === 0) {
                 delete this.categorizedTabs[categoryName];
+                console.log(`🗑️ Removed empty category: ${categoryName}`);
             }
+        } else {
+            console.warn(`❌ Category ${categoryName} not found in categorizedTabs!`);
         }
     }
 
@@ -518,8 +562,16 @@ class SheperdPopupApp {
             ...data
         };
 
-        // Only dispatch STATE_UPDATED for categories component (for restoration events)
-        if (components.includes('categories') || components.length === 0) {
+        // Dispatch categories update for initial load and rebuilds
+        if (components.includes('categories')) {
+            console.log(`🎯 Dispatching CATEGORIES_UPDATED with ${Object.keys(this.categorizedTabs).length} categories`);
+            document.dispatchEvent(new CustomEvent(SHEPERD_EVENTS.CATEGORIES_UPDATED, {
+                detail: updateData
+            }));
+        }
+
+        // Only dispatch STATE_UPDATED for restoration events (no categories in normal flow)
+        if (components.length === 0) {
             document.dispatchEvent(new CustomEvent(SHEPERD_EVENTS.STATE_UPDATED, {
                 detail: updateData
             }));
@@ -533,24 +585,28 @@ class SheperdPopupApp {
         }
 
         if (components.includes('analytics')) {
+            console.log(`🎯 Dispatching ANALYTICS_UPDATED with totalCount: ${updateData.totalCount}, tabs: ${updateData.currentTabs.length}`);
             document.dispatchEvent(new CustomEvent(SHEPERD_EVENTS.ANALYTICS_UPDATED, {
                 detail: updateData
             }));
         }
 
         if (components.includes('header')) {
+            console.log(`🎯 Dispatching HEADER_UPDATED with totalCount: ${updateData.totalCount}`);
             document.dispatchEvent(new CustomEvent(SHEPERD_EVENTS.HEADER_UPDATED, {
                 detail: updateData
             }));
         }
 
         if (components.includes('quick-actions')) {
+            console.log(`🎯 Dispatching QUICK_ACTIONS_UPDATED with ${updateData.currentTabs.length} tabs`);
             document.dispatchEvent(new CustomEvent(SHEPERD_EVENTS.QUICK_ACTIONS_UPDATED, {
                 detail: updateData
             }));
         }
 
         if (components.includes('sheperd-meter')) {
+            console.log(`🎯 Dispatching SHEPERD_METER_UPDATED with totalCount: ${updateData.totalCount}`);
             document.dispatchEvent(new CustomEvent(SHEPERD_EVENTS.SHEPERD_METER_UPDATED, {
                 detail: updateData
             }));
@@ -570,12 +626,13 @@ class SheperdPopupApp {
             // Categorize tabs
             this.categorizedTabs = tabCategorizer.categorizeTabs(this.currentTabs);
 
-            // Dispatch update event
-            this.dispatchEvent(SHEPERD_EVENTS.TABS_UPDATED, {
-                tabs: this.currentTabs,
-                categorizedTabs: this.categorizedTabs,
-                count: this.currentTabs.length,
-                action: "refresh",
+            // Legacy TABS_UPDATED removed - using real-time events only
+
+            // CRITICAL: Also dispatch specific component events for initial state
+            // This ensures all components get properly initialized with current data
+            this.dispatchRealTimeUpdates({
+                type: 'initial_load',
+                components: ['header', 'sheperd-meter', 'analytics', 'quick-actions', 'categories']
             });
 
             console.log(
@@ -698,30 +755,28 @@ class SheperdPopupApp {
 
     /**
      * Set up real-time tab change updates
-     * TEMPORARILY DISABLED - Testing if background script events are causing issues
+     * RE-ENABLED with smart filtering to prevent infinite loops
      */
     setupRealTimeUpdates() {
-        // DISABLED: Background script event listener temporarily disabled for debugging
-        console.log("🚫 Background script events DISABLED for testing - no more external events");
+        // Background script events enabled for real-time tab monitoring
 
-        // If this fixes the constant refreshing, we know background script events are the problem
-        // TODO: Re-enable with proper filtering once issue is identified
-
-        /* DISABLED CODE:
         const api = typeof browser !== "undefined" && browser.runtime ? browser : chrome;
+
         api.runtime.onMessage.addListener((message, sender, sendResponse) => {
+            // Only handle external tab changes (from background script)
             if (message.type === 'TAB_CHANGE') {
+                console.log(`📡 Received real-time tab change: ${message.eventType}`);
                 this.handleRealTimeTabChange(message.eventType, message.data);
                 sendResponse({ success: true });
                 return true;
             }
             if (message.action === "tab_change_notification") {
+                console.log(`📡 Received tab change notification: ${message.eventType}`);
                 this.handleRealTimeTabChange(message.eventType, message.data);
                 sendResponse({ success: true });
                 return true;
             }
         });
-        */
     }
 
     /**
@@ -730,26 +785,33 @@ class SheperdPopupApp {
      * @param {Object} data - Event data
      */
     async handleRealTimeTabChange(eventType, data) {
-        if (!this.isInitialized || this.isLoading) return;
-
-        // ALL TAB CHANGES NOW HANDLED VIA OPTIMISTIC REAL-TIME EVENTS
-        // No more loadTabs() calls from background script events!
-        console.log(`🚀 Real-time event '${eventType}' - handled optimistically, no refresh needed`);
-
-        // For debugging: Log tab events without refreshing
-        if ((data && data.tabId) || (data && data.tabIds)) {
-            console.log(`📊 Tab event data:`, data);
+        if (!this.isInitialized || this.isLoading) {
+            console.log(`⏸️ Ignoring ${eventType} - app not ready`);
+            return;
         }
 
-        // Special case: For new tab creation when we have empty state, 
-        // we can trigger a single refresh as a safety net
-        if (eventType === "tab_created" && Object.keys(this.categorizedTabs).length === 0) {
-            console.log("🔄 Empty state detected with new tab - safety refresh");
-            try {
-                await this.loadTabs();
-            } catch (error) {
-                console.warn("Safety refresh failed:", error);
-            }
+        console.log(`🚀 Processing real-time tab change: ${eventType}`);
+
+        try {
+            // Get fresh tab data from Chrome
+            const newTabs = await tabsManager.getAllTabs();
+            const newCategorizedTabs = tabCategorizer.categorizeTabs(newTabs);
+
+            // Update internal state
+            this.currentTabs = newTabs;
+            this.categorizedTabs = newCategorizedTabs;
+
+            console.log(`✅ Updated state: ${newTabs.length} tabs in ${Object.keys(newCategorizedTabs).length} categories`);
+
+            // Dispatch real-time updates to all components
+            this.dispatchRealTimeUpdates({
+                type: `chrome_${eventType}`,
+                eventType,
+                components: ['header', 'sheperd-meter', 'analytics', 'quick-actions', 'categories']
+            });
+
+        } catch (error) {
+            console.warn(`❌ Failed to handle real-time tab change: ${error.message}`);
         }
     }
 
@@ -760,7 +822,7 @@ class SheperdPopupApp {
     startAutoRefresh() {
         // Auto-refresh is DISABLED in real-time mode
         // All updates now happen via optimistic real-time events
-        console.log("🚀 Auto-refresh disabled - using real-time events only");
+        // Auto-refresh disabled - using real-time events only
 
         // Optional: Only refresh if extension has been open for more than 5 minutes without any activity
         // This is just a safety net for edge cases

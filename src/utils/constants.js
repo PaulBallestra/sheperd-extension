@@ -691,7 +691,6 @@ export const SHEPERD_ACTIONS = {
 
 export const SHEPERD_EVENTS = {
     // Legacy events (keep for compatibility)
-    TABS_UPDATED: "tabs_updated",
     CATEGORIES_UPDATED: "categories_updated",
     CATEGORY_EXPANDED: "category_expanded",
     CATEGORY_COLLAPSED: "category_collapsed",

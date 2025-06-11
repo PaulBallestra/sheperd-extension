@@ -103,13 +103,7 @@ export class QuickActionsComponent {
         // Bind real-time state management events
         this.bindRealTimeEvents();
 
-        // Legacy TABS_UPDATED for backward compatibility
-        document.addEventListener(SHEPERD_EVENTS.TABS_UPDATED, (event) => {
-            const { action } = event.detail;
-            if (action === "refresh") {
-                this.updateButtons(event.detail);
-            }
-        });
+        // Real-time events only - legacy TABS_UPDATED removed
 
         // Listen for loading state changes
         document.addEventListener(SHEPERD_EVENTS.LOADING_STARTED, () => {
@@ -128,7 +122,7 @@ export class QuickActionsComponent {
         // Listen for real-time state updates from main popup
         document.addEventListener(SHEPERD_EVENTS.QUICK_ACTIONS_UPDATED, (event) => {
             const { currentTabs, type } = event.detail;
-            console.log(`🔄 Quick actions updating from main popup: ${type || 'state_update'}`);
+            console.log(`🔄 Quick actions received QUICK_ACTIONS_UPDATED: ${type}, tabs: ${currentTabs?.length || 0}`);
             this.updateButtonsRealtime(currentTabs);
         });
     }
