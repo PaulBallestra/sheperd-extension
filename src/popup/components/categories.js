@@ -168,6 +168,115 @@ export class CategoriesComponent {
             console.log(`❌ Bulk operation '${operation}' failed - no action needed, main app handles rollback`);
             // Main app handles state rollback automatically via restoreStateSnapshot
         });
+
+        // Listen for Chrome real-time tab changes (handled separately from main app)
+        // This prevents the main app from triggering full category rebuilds on Chrome events
+        const api = typeof browser !== "undefined" && browser.runtime ? browser : chrome;
+        if (api && api.runtime && api.runtime.onMessage) {
+            api.runtime.onMessage.addListener((message, sender, sendResponse) => {
+                if (message.type === 'TAB_CHANGE' || message.action === "tab_change_notification") {
+                    console.log(`🏷️ Categories received Chrome tab change: ${message.eventType}`);
+                    this.handleChromeTabChange(message.eventType, message.data);
+                    return false; // Don't stop other listeners
+                }
+            });
+        }
+    }
+
+    /**
+     * Handle Chrome tab changes without full rebuild
+     * @param {string} eventType - Chrome event type
+     * @param {Object} data - Event data
+     */
+    async handleChromeTabChange(eventType, data) {
+        // Only handle Chrome events that don't interfere with optimistic updates
+        // Ignore events that are already handled by user actions
+        if (eventType === 'removed' || eventType === 'updated') {
+            console.log(`⏸️ Categories ignoring Chrome '${eventType}' - handled by optimistic updates`);
+            return;
+        }
+
+        // For tab creation, we can add tabs without full rebuild
+        if (eventType === 'created' && data && data.tab) {
+            console.log(`➕ Categories handling Chrome tab creation: ${data.tab.id}`);
+            this.addTabToUI(data.tab);
+            return;
+        }
+
+        // For other events, we may need updated data but shouldn't rebuild
+        console.log(`⚠️ Categories received unhandled Chrome event: ${eventType}`);
+    }
+
+    /**
+     * Add a new tab to the UI without full rebuild
+     * @param {Object} newTab - New tab object
+     */
+    addTabToUI(newTab) {
+        try {
+            // Import categorizer to categorize the new tab
+            const category = tabCategorizer.categorizeTab(newTab);
+
+            // Add to internal state
+            if (!this.categorizedTabs[category]) {
+                this.categorizedTabs[category] = [];
+            }
+            this.categorizedTabs[category].push(newTab);
+
+            // Find or create category element
+            let categoryElement = this.element.querySelector(`[data-category="${category}"]`);
+
+            if (!categoryElement) {
+                // Create new category
+                categoryElement = this.createCategoryElement(category, [newTab]);
+
+                // Insert in correct position (categories are sorted by tab count)
+                const existingCategories = Array.from(this.element.querySelectorAll('.category'));
+                const insertIndex = this.findInsertionIndex(1, existingCategories);
+
+                if (insertIndex < existingCategories.length) {
+                    this.element.insertBefore(categoryElement, existingCategories[insertIndex]);
+                } else {
+                    this.element.appendChild(categoryElement);
+                }
+
+                console.log(`✅ Created new category '${category}' for tab ${newTab.id}`);
+            } else {
+                // Add tab to existing category
+                const tabList = categoryElement.querySelector('.tab-list');
+                if (tabList) {
+                    const tabHtml = this.createTabElement(newTab);
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = tabHtml;
+                    const newTabElement = tempDiv.firstElementChild;
+
+                    // Add with animation
+                    newTabElement.style.opacity = '0';
+                    newTabElement.style.transform = 'translateX(-20px)';
+                    tabList.appendChild(newTabElement);
+
+                    // Animate in
+                    setTimeout(() => {
+                        newTabElement.style.transition = 'all 0.3s ease';
+                        newTabElement.style.opacity = '1';
+                        newTabElement.style.transform = 'translateX(0)';
+                    }, 50);
+
+                    // Update category header count
+                    this.updateCategoryHeaderCount(category, categoryElement);
+
+                    console.log(`✅ Added tab ${newTab.id} to existing category '${category}'`);
+                }
+            }
+
+            // Clear empty state if present
+            const emptyState = this.element.querySelector('.empty-state');
+            if (emptyState) {
+                emptyState.remove();
+            }
+
+        } catch (error) {
+            console.error('Failed to add tab to UI:', error);
+        }
     }
 
     /**

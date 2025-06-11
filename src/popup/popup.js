@@ -427,13 +427,13 @@ class SheperdPopupApp {
         this.operationQueue.delete(operationId);
         console.log(`✅ Bulk operation "${operation}" confirmed`);
 
-        // After successful bulk operation, dispatch updates to refresh all component states
-        // This is critical for quick actions to update counters and button states
+        // After successful bulk operation, dispatch updates to refresh component states
+        // Categories handle their own optimistic updates, no need to rebuild
         this.dispatchRealTimeUpdates({
             type: 'bulk_operation_confirmed',
             operation,
             operationId,
-            components: ['header', 'sheperd-meter', 'analytics', 'quick-actions', 'categories']
+            components: ['header', 'sheperd-meter', 'analytics', 'quick-actions'] // Categories already updated optimistically
         });
     }
 
@@ -803,11 +803,11 @@ class SheperdPopupApp {
 
             console.log(`✅ Updated state: ${newTabs.length} tabs in ${Object.keys(newCategorizedTabs).length} categories`);
 
-            // Dispatch real-time updates to all components
+            // Dispatch real-time updates to components (categories handle Chrome events separately)
             this.dispatchRealTimeUpdates({
                 type: `chrome_${eventType}`,
                 eventType,
-                components: ['header', 'sheperd-meter', 'analytics', 'quick-actions', 'categories']
+                components: ['header', 'sheperd-meter', 'analytics', 'quick-actions'] // Categories get direct Chrome events
             });
 
         } catch (error) {

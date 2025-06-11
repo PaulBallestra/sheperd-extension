@@ -92,6 +92,11 @@ export class TabCategorizer {
         const duplicatesToRemove = [];
 
         tabs.forEach((tab) => {
+            // Skip tabs with invalid or special URLs
+            if (!this.isValidUrlForDuplicateCheck(tab.url)) {
+                return; // Skip this tab - can't normalize invalid URLs
+            }
+
             const normalizedUrl = this.normalizeUrl(tab.url);
 
             if (urlMap.has(normalizedUrl)) {
@@ -104,6 +109,34 @@ export class TabCategorizer {
         });
 
         return duplicatesToRemove;
+    }
+
+    /**
+     * Check if URL is valid for duplicate detection
+     * @param {string} url - URL to check
+     * @returns {boolean} - True if URL is valid for duplicate checking
+     */
+    isValidUrlForDuplicateCheck(url) {
+        if (!url || typeof url !== 'string') {
+            return false;
+        }
+
+        // Skip Chrome internal URLs and special schemes
+        const invalidPrefixes = [
+            'chrome://',
+            'chrome-extension://',
+            'chrome-search://',
+            'chrome-devtools://',
+            'about:',
+            'moz-extension://',
+            'safari-extension://',
+            'data:',
+            'blob:',
+            'javascript:',
+            'file://'
+        ];
+
+        return !invalidPrefixes.some(prefix => url.toLowerCase().startsWith(prefix.toLowerCase()));
     }
 
     /**
@@ -128,7 +161,10 @@ export class TabCategorizer {
 
             return normalizedUrl;
         } catch (error) {
-            console.warn("Failed to normalize URL:", url, error);
+            // Only log warnings for URLs that should be valid (not Chrome internal pages)
+            if (this.isValidUrlForDuplicateCheck(url)) {
+                console.warn("Failed to normalize URL:", url);
+            }
             return url;
         }
     }
