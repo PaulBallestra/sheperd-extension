@@ -360,8 +360,9 @@ class SheperdPopupApp {
      * Set up real-time tab change updates
      */
     setupRealTimeUpdates() {
-        // Listen for messages from background script
-        chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+        // Listen for messages from background script (cross-browser compatible)
+        const api = (typeof browser !== 'undefined' && browser.runtime) ? browser : chrome;
+        api.runtime.onMessage.addListener((message, sender, sendResponse) => {
             if (message.action === 'tab_change_notification') {
                 this.handleRealTimeTabChange(message.eventType, message.data);
                 sendResponse({ success: true });
@@ -503,7 +504,8 @@ class SheperdPopupApp {
     openUpgrade() {
         // Open upgrade page (would be actual URL in production)
         const upgradeUrl = "https://Sheperd-tabs.com/upgrade";
-        chrome.tabs.create({ url: upgradeUrl });
+        const api = (typeof browser !== 'undefined' && browser.runtime) ? browser : chrome;
+        api.tabs.create({ url: upgradeUrl });
         window.close();
     }
 

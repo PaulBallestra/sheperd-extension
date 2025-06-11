@@ -1,0 +1,32 @@
+{
+    "name": "sheperd-tab-manager",
+    "version": "1.0.0",
+    "description": "Smart Tab Manager Chrome & Firefox Extension",
+    "main": "background.js",
+    "scripts": {
+        "build:chrome": "node build-scripts/build-chrome.js",
+        "build:firefox": "node build-scripts/build-firefox.js",
+        "build:all": "npm run build:chrome && npm run build:firefox",
+        "dev:chrome": "npm run build:chrome && echo 'Chrome build ready! Load in chrome://extensions/'",
+        "dev:firefox": "npm run build:firefox && echo 'Firefox build ready! Load in about:debugging'",
+        "clean": "rm -f manifest.json background.js"
+    },
+    "keywords": [
+        "chrome-extension",
+        "firefox-addon",
+        "tab-manager",
+        "productivity",
+        "browser-extension"
+    ],
+    "author": "Sheperd Team",
+    "license": "MIT",
+    "devDependencies": {},
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/yourusername/sheperd-extension.git"
+    },
+    "bugs": {
+        "url": "https://github.com/yourusername/sheperd-extension/issues"
+    },
+    "homepage": "https://github.com/yourusername/sheperd-extension#readme"
+}
