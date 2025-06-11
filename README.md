@@ -333,6 +333,7 @@ Sheperd-platform/
 - 📊 Productivity analysis
 - 📦 Automatic tab archiving
 - 🧠 Context-aware tab grouping
+- 📄 AI-Ready Page Export: Convert any webpage into clean, AI-friendly markdown with one click.
 
 #### Integrations:
 - 🔖 Bookmark sync across browsers
