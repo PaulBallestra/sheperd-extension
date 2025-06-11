@@ -1,7 +1,7 @@
 // src/utils/license.js
 // Licensing and monetization utilities for Sheperd
 
-import { SHEPERD_LICENSE, MONETIZATION_EVENTS } from './constants.js';
+import { SHEPERD_LICENSE, MONETIZATION_EVENTS, TAB_CATEGORIES } from './constants.js';
 
 /**
  * License Manager - Handles Pro/Free version logic

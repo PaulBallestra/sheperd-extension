@@ -1,5 +1,12 @@
 /* src/styles/main.css */
 
+@import 'components/upgrade-prompt.css';
+@import 'components/categories.css';
+@import 'components/quick-actions.css';
+@import 'components/analytics.css';
+@import 'components/footer.css';
+@import 'components/sheperd-meter.css';
+@import 'components/header.css';
 
 /* Chrome Extension Compatible CSS - All styles in one file (no @import) */
 

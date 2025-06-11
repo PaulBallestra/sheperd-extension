@@ -1,7 +1,7 @@
 /* src/styles/components/upgrade-prompt.css */
 
 
-/* Upgrade prompt styling for Sheperd Pro */
+/* Upgrade prompt styling for Sheperd Pro - Fixed colors and contrast */
 
 .upgrade-prompt-overlay {
     position: fixed;
@@ -9,8 +9,9 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(8px);
+    background: rgba(0, 0, 0, 0.85) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
     z-index: 10000;
     display: flex;
     align-items: center;
@@ -21,20 +22,20 @@
 }
 
 .upgrade-prompt-overlay--visible {
-    opacity: 1;
+    opacity: 1 !important;
 }
 
 .upgrade-prompt {
-    background: var(--bg-primary);
+    background: #ffffff !important;
     border-radius: 16px;
-    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
     max-width: 600px;
     width: 100%;
     max-height: 90vh;
     overflow: hidden;
     transform: scale(0.9) translateY(20px);
     transition: transform 0.3s ease;
-    border: 1px solid var(--border-light);
+    border: 1px solid #e2e8f0 !important;
 }
 
 .upgrade-prompt-overlay--visible .upgrade-prompt {
@@ -46,14 +47,15 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid var(--border-light);
+    border-bottom: 1px solid #e2e8f0;
     margin-bottom: 0;
     padding-bottom: 16px;
+    background: #ffffff;
 }
 
 .upgrade-prompt__header h3 {
     margin: 0;
-    color: var(--text-primary);
+    color: #1f2937 !important;
     font-size: 24px;
     font-weight: 600;
 }
@@ -62,7 +64,7 @@
     background: none;
     border: none;
     font-size: 24px;
-    color: var(--text-secondary);
+    color: #6b7280 !important;
     cursor: pointer;
     padding: 4px;
     border-radius: 4px;
@@ -70,18 +72,19 @@
 }
 
 .upgrade-prompt__close:hover {
-    background: var(--bg-secondary);
-    color: var(--text-primary);
+    background: #f8fafc;
+    color: #1f2937 !important;
 }
 
 .upgrade-prompt__content {
     padding: 24px;
     max-height: 60vh;
     overflow-y: auto;
+    background: #ffffff;
 }
 
 .upgrade-prompt__content p {
-    color: var(--text-secondary);
+    color: #4b5563 !important;
     font-size: 16px;
     line-height: 1.5;
     margin-bottom: 24px;
@@ -109,8 +112,9 @@
 }
 
 .feature-item span:last-child {
-    color: var(--text-primary);
+    color: #1f2937 !important;
     font-size: 14px;
+    font-weight: 500;
 }
 
 
@@ -130,29 +134,29 @@
 }
 
 .pricing-option {
-    border: 2px solid var(--border-light);
+    border: 2px solid #e5e7eb;
     border-radius: 12px;
     padding: 20px 16px;
     text-align: center;
     position: relative;
     transition: all 0.2s ease;
-    background: var(--bg-secondary);
+    background: #f9fafb !important;
 }
 
 .pricing-option:hover {
-    border-color: var(--primary);
+    border-color: #667eea;
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
 }
 
 .pricing-option--popular {
-    border-color: var(--primary);
-    background: var(--primary-light);
+    border-color: #667eea !important;
+    background: #f0f4ff !important;
 }
 
 .pricing-option--founder {
-    border-color: var(--accent);
-    background: linear-gradient(135deg, var(--accent-light), var(--bg-secondary));
+    border-color: #f59e0b !important;
+    background: linear-gradient(135deg, #fef3c7, #f9fafb) !important;
 }
 
 .pricing-badge {
@@ -160,8 +164,8 @@
     top: -8px;
     left: 50%;
     transform: translateX(-50%);
-    background: var(--primary);
-    color: white;
+    background: #667eea !important;
+    color: white !important;
     padding: 4px 12px;
     border-radius: 12px;
     font-size: 12px;
@@ -169,13 +173,13 @@
 }
 
 .pricing-option--founder .pricing-badge {
-    background: var(--accent);
+    background: #f59e0b !important;
 }
 
 .pricing-title {
     font-size: 16px;
     font-weight: 600;
-    color: var(--text-primary);
+    color: #1f2937 !important;
     margin-bottom: 8px;
     margin-top: 8px;
 }
@@ -183,17 +187,17 @@
 .pricing-price {
     font-size: 24px;
     font-weight: 700;
-    color: var(--primary);
+    color: #667eea !important;
     margin-bottom: 4px;
 }
 
 .pricing-option--founder .pricing-price {
-    color: var(--accent);
+    color: #f59e0b !important;
 }
 
 .pricing-save {
     font-size: 12px;
-    color: var(--success);
+    color: #10b981 !important;
     font-weight: 600;
     margin-bottom: 16px;
 }
@@ -203,14 +207,51 @@
     margin-top: auto;
 }
 
+.btn--primary {
+    background: #667eea !important;
+    color: white !important;
+    border: none !important;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn--primary:hover {
+    background: #5a67d8 !important;
+    transform: translateY(-1px);
+}
+
+.btn--secondary {
+    background: #6b7280 !important;
+    color: white !important;
+    border: none !important;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn--secondary:hover {
+    background: #4b5563 !important;
+    transform: translateY(-1px);
+}
+
 .btn--founder {
-    background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-    color: white;
-    border: none;
+    background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+    color: white !important;
+    border: none !important;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
 .btn--founder:hover {
-    background: linear-gradient(135deg, var(--accent-dark), var(--accent));
+    background: linear-gradient(135deg, #d97706, #b45309) !important;
     transform: translateY(-1px);
 }
 
@@ -219,16 +260,17 @@
 
 .upgrade-prompt__footer {
     padding: 16px 24px;
-    border-top: 1px solid var(--border-light);
+    border-top: 1px solid #e2e8f0;
     display: flex;
     gap: 16px;
     justify-content: center;
+    background: #ffffff;
 }
 
 .btn--text {
-    background: none;
-    border: none;
-    color: var(--text-secondary);
+    background: none !important;
+    border: none !important;
+    color: #6b7280 !important;
     cursor: pointer;
     padding: 8px 16px;
     border-radius: 6px;
@@ -237,8 +279,8 @@
 }
 
 .btn--text:hover {
-    background: var(--bg-secondary);
-    color: var(--text-primary);
+    background: #f8fafc !important;
+    color: #1f2937 !important;
 }
 
 
@@ -249,30 +291,31 @@
 }
 
 .license-activation h4 {
-    color: var(--text-primary);
+    color: #1f2937 !important;
     margin-bottom: 16px;
     font-size: 20px;
 }
 
 .license-activation p {
     margin-bottom: 16px;
+    color: #4b5563 !important;
 }
 
 .license-hint {
-    background: var(--bg-secondary);
+    background: #f0f4ff !important;
     padding: 12px;
     border-radius: 8px;
-    border-left: 4px solid var(--primary);
+    border-left: 4px solid #667eea;
     margin-bottom: 24px !important;
     text-align: left;
 }
 
 .license-hint code {
-    background: var(--primary-light);
+    background: #e0e7ff !important;
     padding: 2px 6px;
     border-radius: 4px;
     font-family: 'Monaco', 'Consolas', monospace;
-    color: var(--primary);
+    color: #4338ca !important;
     font-weight: 600;
 }
 
@@ -288,21 +331,22 @@
 .license-input {
     flex: 1;
     padding: 12px 16px;
-    border: 2px solid var(--border-light);
+    border: 2px solid #e5e7eb;
     border-radius: 8px;
-    background: var(--bg-primary);
-    color: var(--text-primary);
+    background: #ffffff !important;
+    color: #1f2937 !important;
     font-size: 14px;
     transition: border-color 0.2s ease;
 }
 
 .license-input:focus {
     outline: none;
-    border-color: var(--primary);
+    border-color: #667eea !important;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .license-input::placeholder {
-    color: var(--text-tertiary);
+    color: #9ca3af !important;
 }
 
 .license-status {
@@ -311,11 +355,12 @@
 }
 
 .license-status .error {
-    color: var(--danger);
-    background: var(--danger-light);
+    color: #dc2626 !important;
+    background: #fef2f2 !important;
     padding: 8px 12px;
     border-radius: 6px;
     font-size: 14px;
+    border: 1px solid #fecaca;
 }
 
 
@@ -348,13 +393,40 @@
 }
 
 .activation-success h4 {
-    color: var(--success);
+    color: #10b981 !important;
     font-size: 24px;
     margin-bottom: 16px;
 }
 
 .activation-success p {
     margin-bottom: 16px;
+    color: #4b5563 !important;
+}
+
+.pro-features-active {
+    background: #ecfdf5;
+    padding: 16px;
+    border-radius: 8px;
+    margin-top: 16px;
+}
+
+.pro-features-active h5 {
+    color: #065f46 !important;
+    margin-bottom: 12px;
+    font-size: 16px;
+}
+
+.pro-features-active ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.pro-features-active li {
+    color: #047857 !important;
+    font-size: 14px;
+    margin-bottom: 8px;
+    padding: 4px 0;
 }
 
 
@@ -386,20 +458,40 @@
 }
 
 
-/* Dark mode support */
+/* Dark theme override (for dark mode browsers) */
 
 @media (prefers-color-scheme: dark) {
-    .upgrade-prompt-overlay {
-        background: rgba(0, 0, 0, 0.8);
-    }
     .upgrade-prompt {
-        background: var(--bg-primary);
-        border-color: var(--border-dark);
+        background: #1f2937 !important;
+        border-color: #374151 !important;
+    }
+    .upgrade-prompt__header,
+    .upgrade-prompt__content,
+    .upgrade-prompt__footer {
+        background: #1f2937 !important;
+    }
+    .upgrade-prompt__header h3 {
+        color: #f9fafb !important;
+    }
+    .upgrade-prompt__content p {
+        color: #d1d5db !important;
+    }
+    .feature-item span:last-child {
+        color: #f9fafb !important;
+    }
+    .pricing-title {
+        color: #f9fafb !important;
     }
     .pricing-option {
-        background: var(--bg-tertiary);
+        background: #374151 !important;
+        border-color: #4b5563 !important;
     }
     .pricing-option--popular {
-        background: var(--primary-dark);
+        background: #1e3a8a !important;
+    }
+    .license-input {
+        background: #374151 !important;
+        color: #f9fafb !important;
+        border-color: #4b5563 !important;
     }
 }

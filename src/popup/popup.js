@@ -4,6 +4,8 @@
 import { SHEPERD_EVENTS } from "../utils/constants.js";
 import { tabsManager } from "../utils/tabs.js";
 import { tabCategorizer } from "../utils/categorizer.js";
+import { licenseManager } from "../utils/license.js";
+import { upgradePrompt } from "./components/upgrade-prompt.js";
 
 import { headerComponent } from "./components/header.js";
 import { sheperdMeterComponent } from "./components/sheperd-meter.js";
@@ -936,15 +938,59 @@ class SheperdPopupApp {
     }
 
     /**
-     * Open upgrade page
+     * Open upgrade page or dialog
      */
     openUpgrade() {
-        // Open upgrade page (would be actual URL in production)
-        const upgradeUrl = "https://Sheperd-tabs.com/upgrade";
-        const api =
-            typeof browser !== "undefined" && browser.runtime ? browser : chrome;
-        api.tabs.create({ url: upgradeUrl });
-        window.close();
+        console.log("💎 Opening upgrade options...");
+
+        // Check current license status
+        const licenseStatus = licenseManager.getLicenseStatus();
+
+        if (licenseStatus.isPro) {
+            // User already has Pro, show status
+            this.showProStatus(licenseStatus);
+        } else {
+            // Show upgrade prompt
+            upgradePrompt.show('general', document.body);
+        }
+    }
+
+    /**
+     * Show Pro status for existing Pro users
+     */
+    showProStatus(licenseStatus) {
+        const statusModal = document.createElement('div');
+        statusModal.className = 'upgrade-prompt-overlay';
+
+        statusModal.innerHTML = `
+            <div class="upgrade-prompt">
+                <div class="upgrade-prompt__header">
+                    <h3>🎉 Sheperd Pro Active</h3>
+                    <button class="upgrade-prompt__close" onclick="this.closest('.upgrade-prompt-overlay').remove()">×</button>
+                </div>
+                <div class="upgrade-prompt__content">
+                    <div class="activation-success">
+                        <div class="success-icon">🐑</div>
+                        <h4>You're all set with Sheperd Pro!</h4>
+                        <p>License: ${licenseStatus.isFounder ? 'Founder\'s Edition' : 'Pro'}</p>
+                        <div class="pro-features-active">
+                            <h5>Active Features:</h5>
+                            <ul>
+                                <li>✅ ${licenseStatus.features.categories}</li>
+                                <li>✅ ${licenseStatus.features.tabs}</li>
+                                <li>✅ ${licenseStatus.features.analytics}</li>
+                                <li>✅ ${licenseStatus.features.export}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(statusModal);
+        requestAnimationFrame(() => {
+            statusModal.classList.add('upgrade-prompt-overlay--visible');
+        });
     }
 
     /**
