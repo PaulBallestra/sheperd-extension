@@ -147,6 +147,13 @@ export const TAB_CATEGORIES = {
             "grammarly.com",
             "notion.ai",
             "github.com/copilot",
+            "leonardo.ai",
+            "photopea.com",
+            "remove.bg",
+            "loom.ai",
+            "descript.com",
+            "synthesia.io",
+            "tome.app",
 
             // AI News & Communities
             "aibreakfast.com",
@@ -191,6 +198,11 @@ export const TAB_CATEGORIES = {
             "signal.org",
             "mastodon.social",
             "threads.net",
+            "clubhouse.com",
+            "bereal.com",
+            "vero.co",
+            "minds.com",
+            "gab.com",
 
             // Dating & Social
             "tinder.com",
@@ -299,6 +311,15 @@ export const TAB_CATEGORIES = {
             "uniqlo.com",
             "gap.com",
             "oldnavy.com",
+            "lululemon.com",
+            "athleta.com",
+            "patagonia.com",
+            "northface.com",
+            "asos.com",
+            "boohoo.com",
+            "prettylittlething.com",
+            "revolve.com",
+            "ssense.com",
 
             // Deal Sites
             "slickdeals.net",
@@ -339,6 +360,12 @@ export const TAB_CATEGORIES = {
             "funimation.com",
             "tubi.tv",
             "roku.com",
+            "appletv.com",
+            "discovery.com",
+            "starz.com",
+            "showtime.com",
+            "amc.com",
+            "fxnetworks.com",
 
             // Music Streaming
             "spotify.com",
@@ -348,6 +375,9 @@ export const TAB_CATEGORIES = {
             "pandora.com",
             "deezer.com",
             "tidal.com",
+            "bandcamp.com",
+            "last.fm",
+            "audiomack.com",
 
             // Gaming
             "twitch.tv",
@@ -649,6 +679,238 @@ export const TAB_CATEGORIES = {
             "frommers.com",
         ],
         patterns: [/travel/i, /trip/i, /hotel/i, /flight/i, /map/i, /navigation/i],
+    },
+
+    "Gaming": {
+        icon: "🎮",
+        color: "#8B5CF6",
+        keywords: [
+            // Gaming Platforms
+            "steam.com",
+            "steamcommunity.com",
+            "epicgames.com",
+            "gog.com",
+            "battle.net",
+            "ubisoft.com",
+            "ea.com",
+            "origin.com",
+            "xbox.com",
+            "playstation.com",
+            "nintendo.com",
+
+            // Cloud Gaming
+            "stadia.google.com",
+            "geforce.nvidia.com",
+            "xbox.com/play",
+            "amazon.com/luna",
+
+            // Gaming Communities
+            "reddit.com/r/gaming",
+            "gamefaqs.com",
+            "ign.com",
+            "gamespot.com",
+            "polygon.com",
+            "kotaku.com",
+            "pcgamer.com",
+            "rockpapershotgun.com",
+
+            // Esports & Streaming
+            "twitch.tv",
+            "youtube.com/gaming",
+            "mixer.com",
+
+            // Game Development
+            "unity.com",
+            "unrealengine.com",
+            "godotengine.org",
+            "itch.io",
+
+            // Gaming Tools
+            "steamdb.info",
+            "protondb.com",
+            "nexusmods.com",
+        ],
+        patterns: [
+            /gaming/i,
+            /game/i,
+            /steam/i,
+            /twitch/i,
+            /esports/i,
+            /minecraft/i,
+            /fortnite/i,
+        ],
+    },
+
+    "Design & Creative": {
+        icon: "🎨",
+        color: "#EC4899",
+        keywords: [
+            // Design Tools
+            "figma.com",
+            "sketch.com",
+            "adobe.com",
+            "canva.com",
+            "invision.com",
+            "framer.com",
+            "principle.design",
+            "zeplin.io",
+            "marvel.app",
+
+            // Creative Platforms
+            "behance.net",
+            "dribbble.com",
+            "deviantart.com",
+            "artstation.com",
+            "creativemarket.com",
+            "shutterstock.com",
+            "unsplash.com",
+            "pexels.com",
+
+            // 3D & Animation
+            "blender.org",
+            "autodesk.com",
+            "cinema4d.com",
+            "sketchfab.com",
+
+            // Color & Typography
+            "coolors.co",
+            "color.adobe.com",
+            "fonts.google.com",
+            "typeface.com",
+            "fontawesome.com",
+
+            // Inspiration
+            "awwwards.com",
+            "siteinspire.com",
+            "ui-patterns.com",
+            "mobbin.design",
+        ],
+        patterns: [
+            /design/i,
+            /creative/i,
+            /graphics/i,
+            /illustration/i,
+            /typography/i,
+            /branding/i,
+            /ui.ux/i,
+        ],
+    },
+
+    "Productivity & Tools": {
+        icon: "⚡",
+        color: "#059669",
+        keywords: [
+            // Note Taking & Docs
+            "notion.so",
+            "obsidian.md",
+            "roamresearch.com",
+            "logseq.com",
+            "bear.app",
+            "typora.io",
+
+            // Task Management
+            "todoist.com",
+            "any.do",
+            "asana.com",
+            "monday.com",
+            "clickup.com",
+            "basecamp.com",
+            "linear.app",
+
+            // Time Tracking
+            "toggl.com",
+            "harvest.com",
+            "clockify.com",
+            "rescuetime.com",
+
+            // File Management
+            "dropbox.com",
+            "onedrive.com",
+            "box.com",
+            "wetransfer.com",
+
+            // Communication Tools
+            "loom.com",
+            "calendly.com",
+            "doodle.com",
+            "when2meet.com",
+
+            // Automation
+            "zapier.com",
+            "ifttt.com",
+            "integromat.com",
+
+            // Password Management
+            "1password.com",
+            "lastpass.com",
+            "bitwarden.com",
+            "dashlane.com",
+        ],
+        patterns: [
+            /productivity/i,
+            /workflow/i,
+            /organize/i,
+            /manage/i,
+            /calendar/i,
+            /schedule/i,
+            /todo/i,
+        ],
+    },
+
+    "Food & Cooking": {
+        icon: "🍳",
+        color: "#F97316",
+        keywords: [
+            // Recipe Sites
+            "allrecipes.com",
+            "foodnetwork.com",
+            "epicurious.com",
+            "food.com",
+            "tasty.co",
+            "buzzfeed.com/tasty",
+            "seriouseats.com",
+            "bonappetit.com",
+
+            // Food Delivery
+            "doordash.com",
+            "ubereats.com",
+            "grubhub.com",
+            "postmates.com",
+            "seamless.com",
+            "menulog.com",
+            "justeat.com",
+
+            // Meal Planning
+            "mealime.com",
+            "plantoeat.com",
+            "emeals.com",
+            "yummly.com",
+
+            // Grocery & Shopping
+            "instacart.com",
+            "shipt.com",
+            "fresh.amazon.com",
+            "peapod.com",
+
+            // Restaurant Discovery
+            "yelp.com",
+            "zomato.com",
+            "opentable.com",
+            "resy.com",
+
+            // Cooking YouTube Channels
+            "youtube.com/c/BingingWithBabish",
+            "youtube.com/c/joshuaweissman",
+        ],
+        patterns: [
+            /food/i,
+            /cooking/i,
+            /recipe/i,
+            /restaurant/i,
+            /delivery/i,
+            /kitchen/i,
+            /chef/i,
+        ],
     },
 };
 
