@@ -239,6 +239,9 @@ export class CategoriesComponent {
                     this.element.appendChild(categoryElement);
                 }
 
+                // Use consistent category addition animation
+                this.animateCategoryAddition(categoryElement);
+
                 console.log(`✅ Created new category '${category}' for tab ${newTab.id}`);
             } else {
                 // Add tab to existing category
@@ -249,17 +252,9 @@ export class CategoriesComponent {
                     tempDiv.innerHTML = tabHtml;
                     const newTabElement = tempDiv.firstElementChild;
 
-                    // Add with animation
-                    newTabElement.style.opacity = '0';
-                    newTabElement.style.transform = 'translateX(-20px)';
+                    // Add to DOM and animate in
                     tabList.appendChild(newTabElement);
-
-                    // Animate in
-                    setTimeout(() => {
-                        newTabElement.style.transition = 'all 0.3s ease';
-                        newTabElement.style.opacity = '1';
-                        newTabElement.style.transform = 'translateX(0)';
-                    }, 50);
+                    this.animateTabAddition(newTabElement);
 
                     // Update category header count
                     this.updateCategoryHeaderCount(category, categoryElement);
@@ -612,17 +607,9 @@ export class CategoriesComponent {
                 tempDiv.innerHTML = tabHtml;
                 const newTabElement = tempDiv.firstElementChild;
 
-                // Add with animation
-                newTabElement.style.opacity = "0";
-                newTabElement.style.transform = "translateX(-20px)";
+                // Add to DOM and animate in
                 tabList.appendChild(newTabElement);
-
-                // Animate in
-                setTimeout(() => {
-                    newTabElement.style.transition = "all 0.3s ease";
-                    newTabElement.style.opacity = "1";
-                    newTabElement.style.transform = "translateX(0)";
-                }, 50);
+                this.animateTabAddition(newTabElement);
 
                 this.updateCategoryHeaderCount(categoryName, categoryElement);
             }
@@ -630,6 +617,55 @@ export class CategoriesComponent {
 
         // Clear stored data
         this._removedTabData = null;
+    }
+
+    /**
+     * Animate category removal with consistent styling
+     * @param {HTMLElement} categoryElement - Category DOM element
+     * @param {Function} onComplete - Callback when animation completes
+     */
+    animateCategoryRemoval(categoryElement, onComplete) {
+        categoryElement.style.transition = "all 0.4s ease";
+        categoryElement.style.opacity = "0";
+        categoryElement.style.transform = "translateX(-20px)";
+
+        setTimeout(() => {
+            if (onComplete) onComplete();
+        }, 400);
+    }
+
+    /**
+     * Animate category addition with consistent styling
+     * @param {HTMLElement} categoryElement - Category DOM element
+     */
+    animateCategoryAddition(categoryElement) {
+        // Set initial state
+        categoryElement.style.opacity = "0";
+        categoryElement.style.transform = "translateX(-20px)";
+        categoryElement.style.transition = "all 0.4s ease";
+
+        // Animate in
+        setTimeout(() => {
+            categoryElement.style.opacity = "1";
+            categoryElement.style.transform = "translateX(0)";
+        }, 50);
+    }
+
+    /**
+     * Animate tab addition with consistent styling
+     * @param {HTMLElement} tabElement - Tab DOM element
+     */
+    animateTabAddition(tabElement) {
+        // Set initial state
+        tabElement.style.opacity = '0';
+        tabElement.style.transform = 'translateX(-20px)';
+
+        // Animate in
+        setTimeout(() => {
+            tabElement.style.transition = 'all 0.3s ease';
+            tabElement.style.opacity = '1';
+            tabElement.style.transform = 'translateX(0)';
+        }, 50);
     }
 
     /**
@@ -652,14 +688,8 @@ export class CategoriesComponent {
         delete this.categorizedTabs[categoryName];
         this.expandedCategories.delete(categoryName);
 
-        // Animate removal
-        categoryElement.style.transition = "all 0.4s ease";
-        categoryElement.style.opacity = "0";
-        categoryElement.style.transform = "translateX(-20px) scale(0.95)";
-        categoryElement.style.maxHeight = "0px";
-        categoryElement.style.overflow = "hidden";
-
-        setTimeout(() => {
+        // Use consistent category removal animation
+        this.animateCategoryRemoval(categoryElement, () => {
             if (categoryElement.parentNode) {
                 categoryElement.remove();
 
@@ -668,7 +698,7 @@ export class CategoriesComponent {
                     this.renderEmptyState();
                 }
             }
-        }, 400);
+        });
     }
 
     /**
@@ -698,11 +728,6 @@ export class CategoriesComponent {
         // Create and insert the restored category element
         const categoryEl = this.createCategoryElement(categoryName, tabs);
 
-        // Add with animation
-        categoryEl.style.opacity = "0";
-        categoryEl.style.transform = "translateX(-20px) scale(0.95)";
-        categoryEl.style.transition = "all 0.4s ease";
-
         // Insert in correct position (categories are sorted by tab count)
         const existingCategories = Array.from(this.element.querySelectorAll('.category'));
         const insertIndex = this.findInsertionIndex(tabs.length, existingCategories);
@@ -713,11 +738,8 @@ export class CategoriesComponent {
             this.element.appendChild(categoryEl);
         }
 
-        // Animate in
-        setTimeout(() => {
-            categoryEl.style.opacity = "1";
-            categoryEl.style.transform = "translateX(0) scale(1)";
-        }, 50);
+        // Use consistent category addition animation
+        this.animateCategoryAddition(categoryEl);
 
         // Clear stored data
         this._removedCategoryData = null;
@@ -781,12 +803,8 @@ export class CategoriesComponent {
         const remainingTabs = this.categorizedTabs[categoryName];
 
         if (!remainingTabs || remainingTabs.length === 0) {
-            // Remove entire category with animation
-            categoryElement.style.transition = "all 0.4s ease";
-            categoryElement.style.opacity = "0";
-            categoryElement.style.transform = "translateX(-20px)";
-
-            setTimeout(() => {
+            // Use consistent category removal animation (same as bulk closure)
+            this.animateCategoryRemoval(categoryElement, () => {
                 if (categoryElement.parentNode) {
                     categoryElement.remove();
 
@@ -795,7 +813,7 @@ export class CategoriesComponent {
                         this.renderEmptyState();
                     }
                 }
-            }, 400);
+            });
         } else {
             // Update category header count and duplicate counter
             this.updateCategoryHeaderCount(categoryName, categoryElement);
