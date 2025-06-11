@@ -12,6 +12,7 @@ import { sheperdMeterComponent } from "./components/sheperd-meter.js";
 import { analyticsComponent } from "./components/analytics.js";
 import { categoriesComponent } from "./components/categories.js";
 import { quickActionsComponent } from "./components/quick-actions.js";
+import { footerComponent } from "./components/footer.js";
 
 /**
  * Main Sheperd Popup Application
@@ -35,12 +36,12 @@ class SheperdPopupApp {
             analytics: analyticsComponent,
             categories: categoriesComponent,
             quickActions: quickActionsComponent,
+            footer: footerComponent,
         };
 
         // UI elements
         this.loadingElement = null;
         this.errorElement = null;
-        this.footerElement = null;
     }
 
     /**
@@ -103,9 +104,6 @@ class SheperdPopupApp {
         const mainContainer = document.createElement("div");
         mainContainer.className = "sheperd-popup";
 
-        // Create footer
-        this.createFooter();
-
         // Create loading overlay
         this.createLoadingOverlay();
 
@@ -114,38 +112,9 @@ class SheperdPopupApp {
 
         // Append to body
         body.appendChild(mainContainer);
-        body.appendChild(this.footerElement);
+        this.components.footer.init(body); // Initialize the footer
         body.appendChild(this.loadingElement);
         body.appendChild(this.errorElement);
-    }
-
-    /**
-     * Create footer with settings and upgrade buttons
-     */
-    createFooter() {
-        this.footerElement = document.createElement("div");
-        this.footerElement.className = "footer";
-
-        //removed temporarily upgrade and settings buttons
-        // <
-        // button id = "settings-btn"
-        // class = "text-btn"
-        // title = "Open settings" > ⚙️Settings <
-        //     /button> <
-        //     button id = "upgrade-btn"
-        // class = "text-btn premium"
-
-
-        this.footerElement.innerHTML = `
-      
-      <div class="footer-info">
-        <span class="version">v1.0.0</span>
-        <span class="separator">•</span>
-        <a href="https://liberapay.com/Syd/donate" target="_blank" class="footer-link" title="Support the developer">Donate</a>
-        <span class="separator">•</span>
-        <span class="branding">Sheperd</span>
-      </div>
-    `;
     }
 
     /**
@@ -186,16 +155,6 @@ class SheperdPopupApp {
      * Bind global event listeners
      */
     bindEvents() {
-        //removed temporarily upgrade and settings buttons
-        // Footer button events
-        // document.getElementById("settings-btn").addEventListener("click", () => {
-        //     this.openSettings();
-        // });
-
-        // document.getElementById("upgrade-btn").addEventListener("click", () => {
-        //     this.openUpgrade();
-        // });
-
         // Error retry button
         this.errorElement
             .querySelector(".error-retry-btn")

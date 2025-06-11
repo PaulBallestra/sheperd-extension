@@ -210,6 +210,7 @@ sheperd-extension/
 │   ├── popup/                 # Popup interface
 │   │   ├── components/        # Reusable UI components
 │   │   │   ├── header.js      # Header with stats & branding
+│   │   │   ├── footer.js      # Footer with settings, upgrade, version, donate, and brand name
 │   │   │   ├── sheperd-meter.js # Tab level meter (renamed from shame)
 │   │   │   ├── analytics.js   # Performance analytics & optimization
 │   │   │   ├── categories.js  # Category management & display
@@ -220,6 +221,7 @@ sheperd-extension/
 │       ├── main.css          # Global styles & design system
 │       └── components/        # Component-specific stylesheets
 │           ├── header.css     # Header component styles
+│           ├── footer.css     # Footer component styles
 │           ├── sheperd-meter.css # Meter component styles
 │           ├── analytics.css  # Performance analytics styles
 │           ├── categories.css # Categories component styles
@@ -237,7 +239,7 @@ sheperd-extension/
 
 ### Future Structure (Phase 2)
 ```
-Sheperd-platform/
+sheperd-platform/
 ├── sheperd-extension/                 # Chrome extension (Phase 1)
 │   └── [current structure]
 ├── backend/                   # Go API server
