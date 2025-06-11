@@ -153,9 +153,15 @@ export class AnalyticsComponent {
      * Bind event listeners
      */
     bindEvents() {
-        // Listen for tab data updates
+        // Bind real-time state management events
+        this.bindRealTimeEvents();
+
+        // Legacy events for backward compatibility
         document.addEventListener(SHEPERD_EVENTS.TABS_UPDATED, (event) => {
-            this.updateAnalytics(event.detail);
+            const { action } = event.detail;
+            if (action === "refresh") {
+                this.updateAnalytics(event.detail);
+            }
         });
 
         document.addEventListener(SHEPERD_EVENTS.CATEGORIES_UPDATED, (event) => {
@@ -166,6 +172,34 @@ export class AnalyticsComponent {
         this.optimizeButtonElement.addEventListener("click", () => {
             this.performOptimization();
         });
+    }
+
+    /**
+     * Bind real-time state management events
+     */
+    bindRealTimeEvents() {
+        // Listen for real-time analytics updates
+        document.addEventListener(SHEPERD_EVENTS.ANALYTICS_UPDATED, (event) => {
+            const { currentTabs, categorizedTabs, totalCount } = event.detail;
+            this.updateAnalyticsRealtime(currentTabs, categorizedTabs, totalCount);
+        });
+    }
+
+    /**
+     * Update analytics in real-time
+     * @param {Array} tabs - Current tabs array
+     * @param {Object} categorizedTabs - Categorized tabs object
+     * @param {number} totalCount - Total tab count
+     */
+    updateAnalyticsRealtime(tabs, categorizedTabs, totalCount) {
+        this.totalTabs = totalCount;
+        this.tabsByCategory = categorizedTabs;
+        this.loadedTabs = this.calculateLoadedTabs(tabs || []);
+
+        this.updatePerformanceScore();
+        this.updateLoadedRatio();
+        this.updateRecommendations();
+        this.updateOptimizeButton();
     }
 
     /**

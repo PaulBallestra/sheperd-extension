@@ -315,3 +315,111 @@
     background: var(--sheperd-danger);
     color: white;
 }
+
+
+/* Category feedback messages */
+
+.category-feedback {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--background-secondary);
+    color: var(--text-primary);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    pointer-events: none;
+    opacity: 0;
+    animation: feedbackIn 0.2s ease forwards;
+}
+
+.category-feedback.success {
+    background: #10b981;
+    color: white;
+}
+
+.category-feedback.warning {
+    background: #f59e0b;
+    color: white;
+}
+
+.category-feedback.error {
+    background: #ef4444;
+    color: white;
+}
+
+.category-feedback.info {
+    background: var(--primary);
+    color: white;
+}
+
+@keyframes feedbackIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+
+/* Empty state styles */
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-secondary);
+}
+
+.empty-state .empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+.empty-state h3 {
+    margin: 0 0 8px 0;
+    color: var(--text-primary);
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.empty-state p {
+    margin: 0 0 16px 0;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.empty-refresh-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin: 16px 0 8px 0;
+}
+
+.empty-refresh-btn:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+.empty-refresh-btn:active {
+    transform: translateY(0);
+}
+
+.empty-hint {
+    font-size: 12px !important;
+    color: var(--text-tertiary) !important;
+    margin: 8px 0 0 0 !important;
+    opacity: 0.8;
+}
