@@ -10,336 +10,544 @@ import { tabsManager } from "../../utils/tabs.js";
  * Handles the display and management of categorized tabs
  */
 export class CategoriesComponent {
-    constructor() {
-        this.element = null;
-        this.categorizedTabs = {};
-        this.expandedCategories = new Set();
+  constructor() {
+    this.element = null;
+    this.categorizedTabs = {};
+    this.expandedCategories = new Set();
 
-        this.init();
-    }
+    this.init();
+  }
 
-    /**
-     * Initialize the categories component
-     */
-    init() {
-        this.createElement();
-        this.bindEvents();
-    }
+  /**
+   * Initialize the categories component
+   */
+  init() {
+    this.createElement();
+    this.bindEvents();
+  }
 
-    /**
-     * Create the categories container DOM structure
-     */
-    createElement() {
-        this.element = document.createElement("div");
-        this.element.className = "categories-container";
-        this.element.id = "categories-container";
-    }
+  /**
+   * Create the categories container DOM structure
+   */
+  createElement() {
+    this.element = document.createElement("div");
+    this.element.className = "categories-container";
+    this.element.id = "categories-container";
+  }
 
-    /**
-     * Bind event listeners
-     */
-    bindEvents() {
-        // Category header clicks (expand/collapse)
-        this.element.addEventListener("click", (e) => {
-            if (
-                e.target.closest(".category-header") &&
-                !e.target.closest(".category-actions")
-            ) {
-                const categoryName =
-                    e.target.closest(".category-header").dataset.category;
-                this.toggleCategory(categoryName);
-            }
-        });
+  /**
+   * Bind event listeners
+   */
+  bindEvents() {
+    // Category header clicks (expand/collapse)
+    this.element.addEventListener("click", (e) => {
+      if (
+        e.target.closest(".category-header") &&
+        !e.target.closest(".category-actions")
+      ) {
+        const categoryName =
+          e.target.closest(".category-header").dataset.category;
+        this.toggleCategory(categoryName);
+      }
+    });
 
-        // Category action buttons
-        this.element.addEventListener("click", (e) => {
-            const actionBtn = e.target.closest(".category-btn");
-            if (actionBtn) {
-                e.stopPropagation();
-                const action = actionBtn.dataset.action;
-                const category = actionBtn.dataset.category;
+    // Category action buttons
+    this.element.addEventListener("click", (e) => {
+      const actionBtn = e.target.closest(".category-btn");
+      if (actionBtn) {
+        e.stopPropagation();
+        const action = actionBtn.dataset.action;
+        const category = actionBtn.dataset.category;
 
-                this.handleCategoryAction(action, category);
-            }
-        });
+        this.handleCategoryAction(action, category);
+      }
+    });
 
-        // Tab close button clicks
-        this.element.addEventListener("click", (e) => {
-            const closeBtn = e.target.closest(".tab-close-btn");
-            if (closeBtn) {
-                e.stopPropagation();
-                const tabId = parseInt(closeBtn.dataset.tabId);
-                this.handleTabAction(SHEPERD_ACTIONS.CLOSE_TAB, tabId);
-            }
-        });
+    // Tab close button clicks
+    this.element.addEventListener("click", (e) => {
+      const closeBtn = e.target.closest(".tab-close-btn");
+      if (closeBtn) {
+        e.stopPropagation();
+        const tabId = parseInt(closeBtn.dataset.tabId);
+        this.handleTabAction(SHEPERD_ACTIONS.CLOSE_TAB, tabId);
+      }
+    });
 
-        // Tab item clicks (switch to tab)
-        this.element.addEventListener("click", (e) => {
-            const tabItem = e.target.closest(".tab-item");
-            if (tabItem && !e.target.closest(".tab-close-btn")) {
-                const tabId = parseInt(tabItem.dataset.tabId);
-                this.handleTabAction(SHEPERD_ACTIONS.SWITCH_TO_TAB, tabId);
-            }
-        });
+    // Tab item clicks (switch to tab)
+    this.element.addEventListener("click", (e) => {
+      const tabItem = e.target.closest(".tab-item");
+      if (tabItem && !e.target.closest(".tab-close-btn")) {
+        const tabId = parseInt(tabItem.dataset.tabId);
+        this.handleTabAction(SHEPERD_ACTIONS.SWITCH_TO_TAB, tabId);
+      }
+    });
 
-        // Favicon error handling
-        this.element.addEventListener(
-            "error",
-            (e) => {
-                if (e.target.classList.contains("tab-favicon")) {
-                    const defaultFavicon = e.target.dataset.defaultFavicon;
-                    if (defaultFavicon) {
-                        e.target.src = defaultFavicon;
-                    }
-                }
-            },
-            true
-        ); // Use capture phase for error events
-
-        // Listen for tabs updates
-        document.addEventListener(SHEPERD_EVENTS.TABS_UPDATED, (event) => {
-            this.updateCategories(event.detail.categorizedTabs);
-        });
-    }
-
-    /**
-     * Handle category actions (close, bookmark)
-     * @param {string} action - Action type
-     * @param {string} categoryName - Category name
-     */
-    async handleCategoryAction(action, categoryName) {
-        const tabs = this.categorizedTabs[categoryName];
-        if (!tabs || tabs.length === 0) return;
-
-        try {
-            switch (action) {
-                case "close":
-                    await this.closeCategoryTabs(categoryName, tabs);
-                    break;
-                case "bookmark":
-                    await this.bookmarkCategoryTabs(categoryName, tabs);
-                    break;
-                default:
-                    console.warn("Unknown category action:", action);
-            }
-        } catch (error) {
-            console.error("Category action failed:", error);
-            this.dispatchEvent(SHEPERD_EVENTS.ERROR_OCCURRED, {
-                error: error.message,
-                action,
-                category: categoryName,
-            });
+    // Favicon error handling
+    this.element.addEventListener(
+      "error",
+      (e) => {
+        if (e.target.classList.contains("tab-favicon")) {
+          const defaultFavicon = e.target.dataset.defaultFavicon;
+          if (defaultFavicon) {
+            e.target.src = defaultFavicon;
+          }
         }
-    }
+      },
+      true
+    ); // Use capture phase for error events
 
-    /**
-     * Handle individual tab actions
-     * @param {string} action - Action type
-     * @param {number} tabId - Tab ID
-     */
-    async handleTabAction(action, tabId) {
-        try {
-            switch (action) {
-                case SHEPERD_ACTIONS.SWITCH_TO_TAB:
-                    await tabsManager.switchToTab(tabId);
-                    // Close popup after switching
-                    window.close();
-                    break;
-                case SHEPERD_ACTIONS.CLOSE_TAB:
-                    await tabsManager.closeTabs([tabId]);
-                    // Update badge and refresh categories
-                    await tabsManager.requestBadgeUpdate();
-                    this.dispatchEvent(SHEPERD_EVENTS.TABS_UPDATED, {
-                        action: "tab_closed",
-                        tabId: tabId,
-                    });
-                    break;
-                default:
-                    console.warn("Unknown tab action:", action);
-            }
-        } catch (error) {
-            console.error("Tab action failed:", error);
-            this.dispatchEvent(SHEPERD_EVENTS.ERROR_OCCURRED, {
-                error: error.message,
-                action,
-                tabId,
-            });
+    // Listen for tabs updates
+    document.addEventListener(SHEPERD_EVENTS.TABS_UPDATED, (event) => {
+      const { action, categorizedTabs } = event.detail;
+
+      // For single tab actions, we've already updated the UI optimistically
+      // Only do full refresh for major changes
+      if (action === "tab_closed" || action === "restore_failed") {
+        // Tab close is handled optimistically, no need for full refresh
+        // Only refresh if we have new categorized data or on restore failure
+        if (categorizedTabs || action === "restore_failed") {
+          this.updateCategories(categorizedTabs);
         }
+      } else {
+        // For other actions (category_closed, full refresh, etc.), do full update
+        this.updateCategories(categorizedTabs);
+      }
+    });
+  }
+
+  /**
+   * Handle category actions (close, bookmark)
+   * @param {string} action - Action type
+   * @param {string} categoryName - Category name
+   */
+  async handleCategoryAction(action, categoryName) {
+    const tabs = this.categorizedTabs[categoryName];
+    if (!tabs || tabs.length === 0) return;
+
+    try {
+      switch (action) {
+        case "close":
+          await this.closeCategoryTabs(categoryName, tabs);
+          break;
+        case "bookmark":
+          await this.bookmarkCategoryTabs(categoryName, tabs);
+          break;
+        default:
+          console.warn("Unknown category action:", action);
+      }
+    } catch (error) {
+      console.error("Category action failed:", error);
+      this.dispatchEvent(SHEPERD_EVENTS.ERROR_OCCURRED, {
+        error: error.message,
+        action,
+        category: categoryName,
+      });
     }
+  }
 
-    /**
-     * Close all tabs in a category
-     * @param {string} categoryName - Category name
-     * @param {Array} tabs - Category tabs
-     */
-    async closeCategoryTabs(categoryName, tabs) {
-        const confirmed = confirm(
-            `Close all ${tabs.length} tabs in "${categoryName}"?`
-        );
-        if (!confirmed) return;
+  /**
+   * Handle individual tab actions
+   * @param {string} action - Action type
+   * @param {number} tabId - Tab ID
+   */
+  async handleTabAction(action, tabId) {
+    try {
+      switch (action) {
+        case SHEPERD_ACTIONS.SWITCH_TO_TAB:
+          await tabsManager.switchToTab(tabId);
+          // Close popup after switching
+          window.close();
+          break;
+        case SHEPERD_ACTIONS.CLOSE_TAB:
+          // Optimistic UI update - remove tab immediately
+          this.removeTabFromUI(tabId);
 
-        this.dispatchEvent(SHEPERD_EVENTS.LOADING_STARTED, {
-            action: "closing_category",
-        });
-
-        try {
-            const tabIds = tabs.map((tab) => tab.id);
-            await tabsManager.closeTabs(tabIds);
-
+          try {
+            await tabsManager.closeTabs([tabId]);
             // Update badge
             await tabsManager.requestBadgeUpdate();
 
+            // Calculate current tab count after removal
+            const currentTabCount = this.getTotalTabCount();
+
+            // Dispatch lightweight update event with tab count
             this.dispatchEvent(SHEPERD_EVENTS.TABS_UPDATED, {
-                action: "category_closed",
-                category: categoryName,
-                count: tabs.length,
+              action: "tab_closed",
+              tabId: tabId,
+              count: currentTabCount,
             });
-        } finally {
-            this.dispatchEvent(SHEPERD_EVENTS.LOADING_FINISHED);
-        }
+          } catch (error) {
+            // If tab close failed, restore the tab in UI
+            console.error("Failed to close tab, restoring UI:", error);
+            this.restoreTabInUI(tabId);
+            throw error;
+          }
+          break;
+        default:
+          console.warn("Unknown tab action:", action);
+      }
+    } catch (error) {
+      console.error("Tab action failed:", error);
+      this.dispatchEvent(SHEPERD_EVENTS.ERROR_OCCURRED, {
+        error: error.message,
+        action,
+        tabId,
+      });
     }
+  }
 
-    /**
-     * Bookmark all tabs in a category
-     * @param {string} categoryName - Category name
-     * @param {Array} tabs - Category tabs
-     */
-    async bookmarkCategoryTabs(categoryName, tabs) {
-        this.dispatchEvent(SHEPERD_EVENTS.LOADING_STARTED, {
-            action: "bookmarking_category",
-        });
+  /**
+   * Close all tabs in a category
+   * @param {string} categoryName - Category name
+   * @param {Array} tabs - Category tabs
+   */
+  async closeCategoryTabs(categoryName, tabs) {
+    const confirmed = confirm(
+      `Close all ${tabs.length} tabs in "${categoryName}"?`
+    );
+    if (!confirmed) return;
 
-        try {
-            const result = await tabsManager.bookmarkTabs(tabs, categoryName);
+    this.dispatchEvent(SHEPERD_EVENTS.LOADING_STARTED, {
+      action: "closing_category",
+    });
 
-            if (result.success) {
-                // Show success feedback
-                this.showCategoryFeedback(
-                    categoryName,
-                    `✅ ${result.bookmarksCount} tabs bookmarked!`
-                );
-            }
-        } finally {
-            this.dispatchEvent(SHEPERD_EVENTS.LOADING_FINISHED);
-        }
+    try {
+      const tabIds = tabs.map((tab) => tab.id);
+      await tabsManager.closeTabs(tabIds);
+
+      // Update badge
+      await tabsManager.requestBadgeUpdate();
+
+      this.dispatchEvent(SHEPERD_EVENTS.TABS_UPDATED, {
+        action: "category_closed",
+        category: categoryName,
+        count: this.getTotalTabCount(),
+        closedTabsCount: tabs.length,
+      });
+    } finally {
+      this.dispatchEvent(SHEPERD_EVENTS.LOADING_FINISHED);
     }
+  }
 
-    /**
-     * Toggle category expansion with smooth animation
-     * @param {string} categoryName - Category name
-     */
-    toggleCategory(categoryName) {
-        const categoryEl = this.element.querySelector(
-            `[data-category="${categoryName}"]`
+  /**
+   * Bookmark all tabs in a category
+   * @param {string} categoryName - Category name
+   * @param {Array} tabs - Category tabs
+   */
+  async bookmarkCategoryTabs(categoryName, tabs) {
+    this.dispatchEvent(SHEPERD_EVENTS.LOADING_STARTED, {
+      action: "bookmarking_category",
+    });
+
+    try {
+      const result = await tabsManager.bookmarkTabs(tabs, categoryName);
+
+      if (result.success) {
+        // Show success feedback
+        this.showCategoryFeedback(
+          categoryName,
+          `✅ ${result.bookmarksCount} tabs bookmarked!`
         );
-        if (!categoryEl) return;
+      }
+    } finally {
+      this.dispatchEvent(SHEPERD_EVENTS.LOADING_FINISHED);
+    }
+  }
 
-        const content = categoryEl.querySelector(".category-content");
-        const toggleIcon = categoryEl.querySelector(".toggle-icon");
-        const isExpanded = this.expandedCategories.has(categoryName);
+  /**
+   * Toggle category expansion with smooth animation
+   * @param {string} categoryName - Category name
+   */
+  toggleCategory(categoryName) {
+    const categoryEl = this.element.querySelector(
+      `[data-category="${categoryName}"]`
+    );
+    if (!categoryEl) return;
 
-        if (isExpanded) {
-            // Collapse
-            content.style.maxHeight = '0px';
-            content.classList.remove("expanded");
-            categoryEl.classList.remove("expanded");
-            this.expandedCategories.delete(categoryName);
+    const content = categoryEl.querySelector(".category-content");
+    const toggleIcon = categoryEl.querySelector(".toggle-icon");
+    const isExpanded = this.expandedCategories.has(categoryName);
 
-            this.dispatchEvent(SHEPERD_EVENTS.CATEGORY_COLLAPSED, {
-                category: categoryName,
-            });
-        } else {
-            // Expand with dynamic height
-            const dynamicHeight = this.calculateCategoryHeight(categoryName);
-            content.style.maxHeight = `${dynamicHeight}px`;
-            content.classList.add("expanded");
-            categoryEl.classList.add("expanded");
-            this.expandedCategories.add(categoryName);
+    if (isExpanded) {
+      // Collapse
+      content.style.maxHeight = "0px";
+      content.classList.remove("expanded");
+      categoryEl.classList.remove("expanded");
+      this.expandedCategories.delete(categoryName);
 
-            this.dispatchEvent(SHEPERD_EVENTS.CATEGORY_EXPANDED, {
-                category: categoryName,
-            });
-        }
+      this.dispatchEvent(SHEPERD_EVENTS.CATEGORY_COLLAPSED, {
+        category: categoryName,
+      });
+    } else {
+      // Expand with dynamic height
+      const dynamicHeight = this.calculateCategoryHeight(categoryName);
+      content.style.maxHeight = `${dynamicHeight}px`;
+      content.classList.add("expanded");
+      categoryEl.classList.add("expanded");
+      this.expandedCategories.add(categoryName);
+
+      this.dispatchEvent(SHEPERD_EVENTS.CATEGORY_EXPANDED, {
+        category: categoryName,
+      });
+    }
+  }
+
+  /**
+   * Calculate the appropriate height for a category based on its content
+   * @param {string} categoryName - Category name
+   * @returns {number} - Calculated height in pixels
+   */
+  calculateCategoryHeight(categoryName) {
+    const tabs = this.categorizedTabs[categoryName] || [];
+    const tabCount = tabs.length;
+
+    // Base padding and border height
+    const baseHeight = 24; // padding top + bottom (12px each)
+
+    // Each tab item height (approximately 44px including margins)
+    const tabHeight = 44;
+
+    // Calculate total height with a small buffer
+    const totalHeight = baseHeight + tabCount * tabHeight + 8; // 8px buffer
+
+    // No height limit - let it expand for infinite tabs!
+    return totalHeight;
+  }
+
+  /**
+   * Update categories display
+   * @param {Object} categorizedTabs - Categorized tabs object
+   */
+  updateCategories(categorizedTabs) {
+    this.categorizedTabs = categorizedTabs || {};
+    this.renderCategories();
+  }
+
+  /**
+   * Remove a tab from the UI without full re-render (optimistic update)
+   * @param {number} tabId - Tab ID to remove
+   */
+  removeTabFromUI(tabId) {
+    const tabElement = this.element.querySelector(`[data-tab-id="${tabId}"]`);
+    if (!tabElement) return;
+
+    // Find which category this tab belongs to
+    const categoryElement = tabElement.closest(".category");
+    if (!categoryElement) return;
+
+    const categoryName = categoryElement.dataset.category;
+
+    // Store tab data for potential restoration
+    const tabData = this.findTabInCategories(tabId);
+    if (tabData) {
+      // Store for potential restoration
+      this._removedTabData = { tabId, tabData, categoryName };
     }
 
-    /**
-     * Calculate the appropriate height for a category based on its content
-     * @param {string} categoryName - Category name
-     * @returns {number} - Calculated height in pixels
-     */
-    calculateCategoryHeight(categoryName) {
-        const tabs = this.categorizedTabs[categoryName] || [];
-        const tabCount = tabs.length;
+    // Remove from internal state
+    this.removeTabFromState(tabId, categoryName);
 
-        // Base padding and border height
-        const baseHeight = 24; // padding top + bottom (12px each)
+    // Animate removal
+    tabElement.style.transition = "all 0.3s ease";
+    tabElement.style.opacity = "0";
+    tabElement.style.transform = "translateX(-20px)";
 
-        // Each tab item height (approximately 44px including margins)
-        const tabHeight = 44;
+    setTimeout(() => {
+      if (tabElement.parentNode) {
+        tabElement.remove();
+        this.updateCategoryAfterTabRemoval(categoryName, categoryElement);
+      }
+    }, 300);
+  }
 
-        // Calculate total height with a small buffer
-        const totalHeight = baseHeight + (tabCount * tabHeight) + 8; // 8px buffer
-
-        // No height limit - let it expand for infinite tabs!
-        return totalHeight;
+  /**
+   * Restore a tab in the UI if the close operation failed
+   * @param {number} tabId - Tab ID to restore
+   */
+  restoreTabInUI(tabId) {
+    if (!this._removedTabData || this._removedTabData.tabId !== tabId) {
+      // Fallback: trigger full refresh
+      this.dispatchEvent(SHEPERD_EVENTS.TABS_UPDATED, {
+        action: "restore_failed",
+        tabId: tabId,
+        count: this.getTotalTabCount(),
+      });
+      return;
     }
 
-    /**
-     * Update categories display
-     * @param {Object} categorizedTabs - Categorized tabs object
-     */
-    updateCategories(categorizedTabs) {
-        this.categorizedTabs = categorizedTabs || {};
-        this.renderCategories();
+    const { tabData, categoryName } = this._removedTabData;
+
+    // Restore to internal state
+    if (!this.categorizedTabs[categoryName]) {
+      this.categorizedTabs[categoryName] = [];
+    }
+    this.categorizedTabs[categoryName].push(tabData);
+
+    // Find category element and restore tab
+    const categoryElement = this.element.querySelector(
+      `[data-category="${categoryName}"]`
+    );
+    if (categoryElement) {
+      const tabList = categoryElement.querySelector(".tab-list");
+      if (tabList) {
+        const tabHtml = this.createTabElement(tabData);
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = tabHtml;
+        const newTabElement = tempDiv.firstElementChild;
+
+        // Add with animation
+        newTabElement.style.opacity = "0";
+        newTabElement.style.transform = "translateX(-20px)";
+        tabList.appendChild(newTabElement);
+
+        // Animate in
+        setTimeout(() => {
+          newTabElement.style.transition = "all 0.3s ease";
+          newTabElement.style.opacity = "1";
+          newTabElement.style.transform = "translateX(0)";
+        }, 50);
+
+        this.updateCategoryHeaderCount(categoryName, categoryElement);
+      }
     }
 
-    /**
-     * Render all categories
-     */
-    renderCategories() {
-        if (!this.element) return;
+    // Clear stored data
+    this._removedTabData = null;
+  }
 
-        this.element.innerHTML = "";
+  /**
+   * Find tab data in categories by ID
+   * @param {number} tabId - Tab ID to find
+   * @returns {Object|null} - Tab data or null if not found
+   */
+  findTabInCategories(tabId) {
+    for (const [categoryName, tabs] of Object.entries(this.categorizedTabs)) {
+      const tab = tabs.find((tab) => tab.id === tabId);
+      if (tab) return tab;
+    }
+    return null;
+  }
 
-        // Sort categories by tab count (descending)
-        const sortedCategories = Object.entries(this.categorizedTabs).sort(
-            ([, a], [, b]) => b.length - a.length
-        );
+  /**
+   * Remove tab from internal state
+   * @param {number} tabId - Tab ID to remove
+   * @param {string} categoryName - Category name
+   */
+  removeTabFromState(tabId, categoryName) {
+    if (!this.categorizedTabs[categoryName]) return;
 
-        if (sortedCategories.length === 0) {
+    this.categorizedTabs[categoryName] = this.categorizedTabs[
+      categoryName
+    ].filter((tab) => tab.id !== tabId);
+
+    // Remove category if empty
+    if (this.categorizedTabs[categoryName].length === 0) {
+      delete this.categorizedTabs[categoryName];
+    }
+  }
+
+  /**
+   * Update category display after tab removal
+   * @param {string} categoryName - Category name
+   * @param {HTMLElement} categoryElement - Category DOM element
+   */
+  updateCategoryAfterTabRemoval(categoryName, categoryElement) {
+    const remainingTabs = this.categorizedTabs[categoryName];
+
+    if (!remainingTabs || remainingTabs.length === 0) {
+      // Remove entire category with animation
+      categoryElement.style.transition = "all 0.4s ease";
+      categoryElement.style.opacity = "0";
+      categoryElement.style.transform = "translateX(-20px)";
+
+      setTimeout(() => {
+        if (categoryElement.parentNode) {
+          categoryElement.remove();
+
+          // Check if we need to show empty state
+          if (Object.keys(this.categorizedTabs).length === 0) {
             this.renderEmptyState();
-            return;
+          }
         }
+      }, 400);
+    } else {
+      // Update category header count
+      this.updateCategoryHeaderCount(categoryName, categoryElement);
 
-        sortedCategories.forEach(([categoryName, tabs]) => {
-            const categoryEl = this.createCategoryElement(categoryName, tabs);
-            this.element.appendChild(categoryEl);
-        });
+      // Update expanded height if category is expanded
+      if (this.expandedCategories.has(categoryName)) {
+        const content = categoryElement.querySelector(".category-content");
+        if (content && content.classList.contains("expanded")) {
+          const newHeight = this.calculateCategoryHeight(categoryName);
+          content.style.maxHeight = `${newHeight}px`;
+        }
+      }
+    }
+  }
+
+  /**
+   * Update category header count display
+   * @param {string} categoryName - Category name
+   * @param {HTMLElement} categoryElement - Category DOM element
+   */
+  updateCategoryHeaderCount(categoryName, categoryElement) {
+    const countElement = categoryElement.querySelector(".category-count");
+    const tabs = this.categorizedTabs[categoryName] || [];
+
+    if (countElement) {
+      countElement.textContent = tabs.length.toString();
+    }
+  }
+
+  /**
+   * Render all categories
+   */
+  renderCategories() {
+    if (!this.element) return;
+
+    this.element.innerHTML = "";
+
+    // Sort categories by tab count (descending)
+    const sortedCategories = Object.entries(this.categorizedTabs).sort(
+      ([, a], [, b]) => b.length - a.length
+    );
+
+    if (sortedCategories.length === 0) {
+      this.renderEmptyState();
+      return;
     }
 
-    /**
-     * Create a single category element
-     * @param {string} categoryName - Category name
-     * @param {Array} tabs - Category tabs
-     * @returns {HTMLElement} - Category DOM element
-     */
-    createCategoryElement(categoryName, tabs) {
-            const categoryDiv = document.createElement("div");
-            categoryDiv.className = "category";
-            categoryDiv.dataset.category = categoryName;
+    sortedCategories.forEach(([categoryName, tabs]) => {
+      const categoryEl = this.createCategoryElement(categoryName, tabs);
+      this.element.appendChild(categoryEl);
+    });
+  }
 
-            const icon = tabCategorizer.getCategoryIcon(categoryName);
-            const color = tabCategorizer.getCategoryColor(categoryName);
-            const duplicateCount = tabs.filter((tab) => tab.isDuplicate).length;
-            const isExpanded = this.expandedCategories.has(categoryName);
+  /**
+   * Create a single category element
+   * @param {string} categoryName - Category name
+   * @param {Array} tabs - Category tabs
+   * @returns {HTMLElement} - Category DOM element
+   */
+  createCategoryElement(categoryName, tabs) {
+    const categoryDiv = document.createElement("div");
+    categoryDiv.className = "category";
+    categoryDiv.dataset.category = categoryName;
 
-            // Restore expanded state
-            if (isExpanded) {
-                categoryDiv.classList.add("expanded");
-            }
+    const icon = tabCategorizer.getCategoryIcon(categoryName);
+    const color = tabCategorizer.getCategoryColor(categoryName);
+    const duplicateCount = tabs.filter((tab) => tab.isDuplicate).length;
+    const isExpanded = this.expandedCategories.has(categoryName);
 
-            categoryDiv.innerHTML = `
-        <div class="category-header" data-category="${categoryName}" ${color ? `data-category-color="${color}"` : ''}>
+    // Restore expanded state
+    if (isExpanded) {
+      categoryDiv.classList.add("expanded");
+    }
+
+    categoryDiv.innerHTML = `
+        <div class="category-header" data-category="${categoryName}" ${
+      color ? `data-category-color="${color}"` : ""
+    }>
           <div class="category-title">
             <span class="category-icon">${icon}</span>
             <span class="category-name">${categoryName}</span>
@@ -387,7 +595,7 @@ export class CategoriesComponent {
     const header = categoryDiv.querySelector(".category-header");
     if (header && color) {
       header.style.borderLeftColor = color;
-      header.style.setProperty('--category-color', color);
+      header.style.setProperty("--category-color", color);
     }
 
     return categoryDiv;
@@ -413,11 +621,15 @@ export class CategoriesComponent {
           <span class="tab-title">${title}</span>
         </div>
         <div class="tab-actions">
-          ${tab.isDuplicate ? `<span class="tab-duplicate" title="Duplicate tab">
+          ${
+            tab.isDuplicate
+              ? `<span class="tab-duplicate" title="Duplicate tab">
             <svg width="12" height="12" max-width="12" max-height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M12 2L13.09 8.26L19 7L17.74 13.26L22 15L15.74 16.09L17 22L10.74 20.74L9 25L7.91 18.74L2 20L3.26 13.74L-1 12L5.26 10.91L4 5L10.26 6.26L12 2Z" fill="currentColor"/>
             </svg>
-          </span>` : ""}
+          </span>`
+              : ""
+          }
           <button class="tab-close-btn" title="Close this tab" data-tab-id="${
             tab.id
           }">
@@ -471,13 +683,13 @@ export class CategoriesComponent {
    * @returns {string} - Favicon URL or data URL
    */
   getTabFavicon(tab) {
-    const url = tab.url || '';
-    
+    const url = tab.url || "";
+
     // Handle browser internal pages
     if (this.isBrowserInternalUrl(url)) {
       return this.getBrowserInternalFavicon(url);
     }
-    
+
     return tab.favIconUrl || this.getDefaultFavicon();
   }
 
@@ -487,14 +699,14 @@ export class CategoriesComponent {
    * @returns {string} - Clean, truncated title
    */
   getTabTitle(tab) {
-    const url = tab.url || '';
+    const url = tab.url || "";
     const rawTitle = tab.title || "Untitled";
-    
+
     // Handle browser internal pages
     if (this.isBrowserInternalUrl(url)) {
       return this.getBrowserInternalTitle(url, rawTitle);
     }
-    
+
     // Clean and truncate regular titles
     const cleanTitle = this.escapeHtml(rawTitle);
     return this.truncateTitle(cleanTitle);
@@ -507,17 +719,17 @@ export class CategoriesComponent {
    */
   isBrowserInternalUrl(url) {
     const internalProtocols = [
-      'chrome://',
-      'chrome-extension://',
-      'edge://',
-      'moz-extension://',
-      'about:',
-      'opera://',
-      'vivaldi://',
-      'brave://'
+      "chrome://",
+      "chrome-extension://",
+      "edge://",
+      "moz-extension://",
+      "about:",
+      "opera://",
+      "vivaldi://",
+      "brave://",
     ];
-    
-    return internalProtocols.some(protocol => url.startsWith(protocol));
+
+    return internalProtocols.some((protocol) => url.startsWith(protocol));
   }
 
   /**
@@ -529,37 +741,37 @@ export class CategoriesComponent {
   getBrowserInternalTitle(url, rawTitle) {
     const titleMappings = {
       // Chrome
-      'chrome://extensions/': 'Extensions',
-      'chrome://bookmarks/': 'Bookmarks Manager',
-      'chrome://history/': 'History',
-      'chrome://settings/': 'Settings',
-      'chrome://newtab/': 'New Tab',
-      'chrome://downloads/': 'Downloads',
-      'chrome://flags/': 'Chrome Flags',
-      'chrome://version/': 'About Chrome',
-      'chrome://inspect/': 'DevTools',
-      'chrome://chrome-urls/': 'Chrome URLs',
-      
+      "chrome://extensions/": "Extensions",
+      "chrome://bookmarks/": "Bookmarks Manager",
+      "chrome://history/": "History",
+      "chrome://settings/": "Settings",
+      "chrome://newtab/": "New Tab",
+      "chrome://downloads/": "Downloads",
+      "chrome://flags/": "Chrome Flags",
+      "chrome://version/": "About Chrome",
+      "chrome://inspect/": "DevTools",
+      "chrome://chrome-urls/": "Chrome URLs",
+
       // Edge
-      'edge://extensions/': 'Extensions',
-      'edge://settings/': 'Settings',
-      'edge://history/': 'History',
-      'edge://downloads/': 'Downloads',
-      'edge://newtab/': 'New Tab',
-      'edge://flags/': 'Edge Flags',
-      
+      "edge://extensions/": "Extensions",
+      "edge://settings/": "Settings",
+      "edge://history/": "History",
+      "edge://downloads/": "Downloads",
+      "edge://newtab/": "New Tab",
+      "edge://flags/": "Edge Flags",
+
       // Firefox
-      'about:preferences': 'Preferences',
-      'about:addons': 'Add-ons Manager',
-      'about:downloads': 'Downloads',
-      'about:history': 'History',
-      'about:newtab': 'New Tab',
-      'about:blank': 'Blank Page',
-      
+      "about:preferences": "Preferences",
+      "about:addons": "Add-ons Manager",
+      "about:downloads": "Downloads",
+      "about:history": "History",
+      "about:newtab": "New Tab",
+      "about:blank": "Blank Page",
+
       // Opera/Vivaldi/Brave
-      'opera://settings/': 'Settings',
-      'vivaldi://settings/': 'Settings',
-      'brave://settings/': 'Settings'
+      "opera://settings/": "Settings",
+      "vivaldi://settings/": "Settings",
+      "brave://settings/": "Settings",
     };
 
     // Try exact match first
@@ -577,10 +789,10 @@ export class CategoriesComponent {
     // Fallback: extract meaningful part from URL
     try {
       const urlObj = new URL(url);
-      const pathParts = urlObj.pathname.split('/').filter(part => part);
+      const pathParts = urlObj.pathname.split("/").filter((part) => part);
       if (pathParts.length > 0) {
         const lastPart = pathParts[pathParts.length - 1];
-        return this.capitalizeFirstLetter(lastPart.replace(/[-_]/g, ' '));
+        return this.capitalizeFirstLetter(lastPart.replace(/[-_]/g, " "));
       }
     } catch (e) {
       // Invalid URL, use raw title
@@ -601,34 +813,34 @@ export class CategoriesComponent {
       const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="${color}"/><text x="8" y="12" text-anchor="middle" fill="white" font-size="10" font-weight="bold">${letter}</text></svg>`;
       return `data:image/svg+xml,${encodeURIComponent(svg)}`;
     };
-    
+
     // Browser-specific favicons
-    if (url.startsWith('chrome://')) {
-      return createSvgDataUrl('#4285f4', 'C');
+    if (url.startsWith("chrome://")) {
+      return createSvgDataUrl("#4285f4", "C");
     }
-    
-    if (url.startsWith('edge://')) {
-      return createSvgDataUrl('#0078d4', 'E');
+
+    if (url.startsWith("edge://")) {
+      return createSvgDataUrl("#0078d4", "E");
     }
-    
-    if (url.startsWith('about:') || url.startsWith('moz-extension://')) {
-      return createSvgDataUrl('#ff9500', 'F');
+
+    if (url.startsWith("about:") || url.startsWith("moz-extension://")) {
+      return createSvgDataUrl("#ff9500", "F");
     }
-    
-    if (url.startsWith('opera://')) {
-      return createSvgDataUrl('#ff1b2d', 'O');
+
+    if (url.startsWith("opera://")) {
+      return createSvgDataUrl("#ff1b2d", "O");
     }
-    
-    if (url.startsWith('vivaldi://')) {
-      return createSvgDataUrl('#ef3939', 'V');
+
+    if (url.startsWith("vivaldi://")) {
+      return createSvgDataUrl("#ef3939", "V");
     }
-    
-    if (url.startsWith('brave://')) {
-      return createSvgDataUrl('#fb542b', 'B');
+
+    if (url.startsWith("brave://")) {
+      return createSvgDataUrl("#fb542b", "B");
     }
 
     // Default browser icon for unknown internal pages
-    return createSvgDataUrl('#666', '?');
+    return createSvgDataUrl("#666", "?");
   }
 
   /**
@@ -641,8 +853,8 @@ export class CategoriesComponent {
     if (!title || title.length <= maxLength) {
       return title;
     }
-    
-    return title.substring(0, maxLength - 3) + '...';
+
+    return title.substring(0, maxLength - 3) + "...";
   }
 
   /**
@@ -660,7 +872,8 @@ export class CategoriesComponent {
    * @returns {string} - Default favicon data URL
    */
   getDefaultFavicon() {
-    const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><rect width="16" height="16" fill="#ddd" rx="2"/><circle cx="8" cy="8" r="2" fill="#999"/></svg>';
+    const svg =
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><rect width="16" height="16" fill="#ddd" rx="2"/><circle cx="8" cy="8" r="2" fill="#999"/></svg>';
     return `data:image/svg+xml,${encodeURIComponent(svg)}`;
   }
 
@@ -670,15 +883,15 @@ export class CategoriesComponent {
    * @returns {string} - Cleaned and escaped text
    */
   escapeHtml(text) {
-    if (!text || typeof text !== 'string') {
-      return '';
+    if (!text || typeof text !== "string") {
+      return "";
     }
-    
+
     // Remove HTML tags and decode HTML entities for a cleaner display
     const tempDiv = document.createElement("div");
     tempDiv.innerHTML = text;
-    const cleanText = tempDiv.textContent || tempDiv.innerText || '';
-    
+    const cleanText = tempDiv.textContent || tempDiv.innerText || "";
+
     // Escape the cleaned text for safe display
     const div = document.createElement("div");
     div.textContent = cleanText;
@@ -701,6 +914,17 @@ export class CategoriesComponent {
    */
   getExpandedCategories() {
     return new Set(this.expandedCategories);
+  }
+
+  /**
+   * Get total tab count across all categories
+   * @returns {number} - Total number of tabs
+   */
+  getTotalTabCount() {
+    return Object.values(this.categorizedTabs).reduce(
+      (total, tabs) => total + tabs.length,
+      0
+    );
   }
 
   /**

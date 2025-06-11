@@ -17,7 +17,7 @@
     border-radius: var(--radius-lg);
     margin-bottom: var(--space-md);
     overflow: hidden;
-    transition: all var(--transition-normal);
+    transition: all var(--transition-normal), opacity 0.4s ease, transform 0.4s ease;
 }
 
 .category:hover {
@@ -227,7 +227,7 @@
     padding: var(--space-sm) var(--space-lg);
     border-bottom: 1px solid var(--border-light);
     cursor: pointer;
-    transition: all var(--transition-fast);
+    transition: all var(--transition-fast), opacity 0.3s ease, transform 0.3s ease;
     border: 1px solid transparent;
     border-radius: var(--radius-md);
     margin-bottom: 2px;

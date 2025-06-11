@@ -1,7 +1,35 @@
-// background.js - Service Worker for Sheperd Tab Manager
-// Manifest V3 Compatible Service Worker
+// background-unified.js - Unified Background Script for Chrome & Firefox
+// Works with both Manifest V3 (Chrome) and Manifest V2 (Firefox)
 
 "use strict";
+
+// Browser detection and API unification
+const isFirefox = typeof browser !== 'undefined' && browser.runtime;
+const isChrome = typeof chrome !== 'undefined' && chrome.runtime;
+
+// Unified browser API
+const api = (() => {
+    if (isFirefox) {
+        return browser;
+    } else if (isChrome) {
+        return chrome;
+    } else {
+        throw new Error('Unsupported browser environment');
+    }
+})();
+
+// Browser-specific action API
+const getActionAPI = () => {
+    if (isFirefox) {
+        return api.browserAction;
+    } else if (isChrome) {
+        return api.action || api.browserAction;
+    }
+    throw new Error('Action API not available');
+};
+
+// Log browser environment
+console.log('🐑 Sheperd Background Script - Browser:', isFirefox ? 'Firefox' : 'Chrome');
 
 // Constants
 const DEFAULT_SETTINGS = {
@@ -16,13 +44,13 @@ const CLEANUP_ALARM_NAME = "cleanupAccessTimes";
 const CLEANUP_INTERVAL_MINUTES = 1440; // 24 hours
 
 // Installation and startup handlers
-chrome.runtime.onInstalled.addListener(async(details) => {
+api.runtime.onInstalled.addListener(async(details) => {
     console.log("Sheperd extension installed/updated");
 
     try {
         if (details.reason === "install") {
             // Set default settings on first install
-            await chrome.storage.sync.set({ settings: DEFAULT_SETTINGS });
+            await api.storage.sync.set({ settings: DEFAULT_SETTINGS });
             console.log("Default settings initialized");
         }
 
@@ -33,7 +61,7 @@ chrome.runtime.onInstalled.addListener(async(details) => {
     }
 });
 
-chrome.runtime.onStartup.addListener(async() => {
+api.runtime.onStartup.addListener(async() => {
     console.log("Sheperd extension started");
     await initializeExtension();
 });
@@ -54,9 +82,9 @@ async function initializeExtension() {
 }
 
 // Tab event listeners for tracking and analytics
-chrome.tabs.onCreated.addListener(async(tab) => {
+api.tabs.onCreated.addListener(async(tab) => {
     try {
-        console.log("New tab created:", tab.url || "chrome://");
+        console.log("New tab created:", tab.url || "about:blank");
         await updateTabCountBadge();
         await updateTabAccessTime(tab.id);
 
@@ -67,7 +95,7 @@ chrome.tabs.onCreated.addListener(async(tab) => {
     }
 });
 
-chrome.tabs.onRemoved.addListener(async(tabId, removeInfo) => {
+api.tabs.onRemoved.addListener(async(tabId, removeInfo) => {
     try {
         console.log("Tab closed:", tabId);
         await updateTabCountBadge();
@@ -80,7 +108,7 @@ chrome.tabs.onRemoved.addListener(async(tabId, removeInfo) => {
     }
 });
 
-chrome.tabs.onUpdated.addListener(async(tabId, changeInfo, tab) => {
+api.tabs.onUpdated.addListener(async(tabId, changeInfo, tab) => {
     try {
         if (changeInfo.status === "complete" && tab.url) {
             // Track tab access time for "old tabs" feature
@@ -94,7 +122,7 @@ chrome.tabs.onUpdated.addListener(async(tabId, changeInfo, tab) => {
     }
 });
 
-chrome.tabs.onMoved.addListener(async(tabId, moveInfo) => {
+api.tabs.onMoved.addListener(async(tabId, moveInfo) => {
     try {
         // Notify popup about tab changes
         await notifyPopupOfTabChanges('tab_moved', { tabId, moveInfo });
@@ -103,7 +131,7 @@ chrome.tabs.onMoved.addListener(async(tabId, moveInfo) => {
     }
 });
 
-chrome.tabs.onActivated.addListener(async(activeInfo) => {
+api.tabs.onActivated.addListener(async(activeInfo) => {
     try {
         await updateTabAccessTime(activeInfo.tabId);
 
@@ -115,7 +143,7 @@ chrome.tabs.onActivated.addListener(async(activeInfo) => {
 });
 
 // Window event listeners for badge updates
-chrome.windows.onCreated.addListener(async() => {
+api.windows.onCreated.addListener(async() => {
     try {
         await updateTabCountBadge();
     } catch (error) {
@@ -123,7 +151,7 @@ chrome.windows.onCreated.addListener(async() => {
     }
 });
 
-chrome.windows.onRemoved.addListener(async() => {
+api.windows.onRemoved.addListener(async() => {
     try {
         await updateTabCountBadge();
     } catch (error) {
@@ -134,12 +162,12 @@ chrome.windows.onRemoved.addListener(async() => {
 // Tab access time tracking
 async function updateTabAccessTime(tabId) {
     try {
-        const result = await chrome.storage.local.get(["tabAccessTimes"]);
+        const result = await api.storage.local.get(["tabAccessTimes"]);
         const accessTimes = result.tabAccessTimes || {};
 
         accessTimes[tabId] = Date.now();
 
-        await chrome.storage.local.set({ tabAccessTimes: accessTimes });
+        await api.storage.local.set({ tabAccessTimes: accessTimes });
     } catch (error) {
         console.error("Error updating tab access time:", error);
     }
@@ -148,12 +176,12 @@ async function updateTabAccessTime(tabId) {
 // Clean up specific tab access time
 async function cleanupTabAccessTime(tabId) {
     try {
-        const result = await chrome.storage.local.get(["tabAccessTimes"]);
+        const result = await api.storage.local.get(["tabAccessTimes"]);
         const accessTimes = result.tabAccessTimes || {};
 
         if (accessTimes[tabId]) {
             delete accessTimes[tabId];
-            await chrome.storage.local.set({ tabAccessTimes: accessTimes });
+            await api.storage.local.set({ tabAccessTimes: accessTimes });
         }
     } catch (error) {
         console.error("Error cleaning up tab access time:", error);
@@ -164,35 +192,37 @@ async function cleanupTabAccessTime(tabId) {
 async function updateTabCountBadge() {
     try {
         // Check if badge is enabled in settings
-        const settingsData = await chrome.storage.sync.get(["settings"]);
+        const settingsData = await api.storage.sync.get(["settings"]);
         const settings = settingsData.settings || DEFAULT_SETTINGS;
 
+        const actionAPI = getActionAPI();
+
         if (!settings.badgeEnabled) {
-            await chrome.action.setBadgeText({ text: "" });
+            await actionAPI.setBadgeText({ text: "" });
             return;
         }
 
-        const tabs = await chrome.tabs.query({});
+        const tabs = await api.tabs.query({});
         const count = tabs.length;
 
         // Set badge text
         const badgeText = count > 99 ? "99+" : count.toString();
-        await chrome.action.setBadgeText({ text: badgeText });
+        await actionAPI.setBadgeText({ text: badgeText });
 
-        // Set badge color based on tab count (shame-o-meter)
+        // Set badge color based on tab count (Sheperd-o-meter)
         let badgeColor = "#10B981"; // Green for low count
         if (count > 50) badgeColor = "#EF4444"; // Red for high count
         else if (count > 35) badgeColor = "#F59E0B"; // Amber for medium-high
         else if (count > 20) badgeColor = "#3B82F6"; // Blue for medium
 
-        await chrome.action.setBadgeBackgroundColor({ color: badgeColor });
+        await actionAPI.setBadgeBackgroundColor({ color: badgeColor });
     } catch (error) {
         console.error("Error updating badge:", error);
     }
 }
 
 // Alarm handlers
-chrome.alarms.onAlarm.addListener(async(alarm) => {
+api.alarms.onAlarm.addListener(async(alarm) => {
     try {
         if (alarm.name === CLEANUP_ALARM_NAME) {
             console.log("Running scheduled cleanup");
@@ -206,99 +236,88 @@ chrome.alarms.onAlarm.addListener(async(alarm) => {
 // Setup cleanup alarm
 async function setupCleanupAlarm() {
     try {
-        // Clear existing alarm first
-        await chrome.alarms.clear(CLEANUP_ALARM_NAME);
+        // Clear existing alarm
+        await api.alarms.clear(CLEANUP_ALARM_NAME);
 
-        // Create new alarm
-        await chrome.alarms.create(CLEANUP_ALARM_NAME, {
+        // Create new periodic alarm
+        await api.alarms.create(CLEANUP_ALARM_NAME, {
             delayInMinutes: CLEANUP_INTERVAL_MINUTES,
             periodInMinutes: CLEANUP_INTERVAL_MINUTES,
         });
 
-        console.log("Cleanup alarm set up successfully");
+        console.log("Cleanup alarm set for every 24 hours");
     } catch (error) {
-        console.error("Error setting up cleanup alarm:", error);
+        console.error("Failed to setup cleanup alarm:", error);
     }
 }
 
 // Clean up old access times
 async function cleanupOldAccessTimes() {
     try {
-        const result = await chrome.storage.local.get(["tabAccessTimes"]);
+        const result = await api.storage.local.get(["tabAccessTimes"]);
         const accessTimes = result.tabAccessTimes || {};
-        const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
 
-        // Remove access times older than 7 days
+        // Get current tab IDs
+        const currentTabs = await api.tabs.query({});
+        const currentTabIds = new Set(currentTabs.map(tab => tab.id));
+
+        // Remove access times for closed tabs
         const cleanedTimes = {};
-        let cleanupCount = 0;
-
-        Object.entries(accessTimes).forEach(([tabId, time]) => {
-            if (time > sevenDaysAgo) {
-                cleanedTimes[tabId] = time;
-            } else {
-                cleanupCount++;
+        Object.keys(accessTimes).forEach(tabId => {
+            const id = parseInt(tabId);
+            if (currentTabIds.has(id)) {
+                cleanedTimes[tabId] = accessTimes[tabId];
             }
         });
 
-        await chrome.storage.local.set({ tabAccessTimes: cleanedTimes });
-        console.log(`Cleaned up ${cleanupCount} old tab access records`);
+        await api.storage.local.set({ tabAccessTimes: cleanedTimes });
+
+        const removedCount = Object.keys(accessTimes).length - Object.keys(cleanedTimes).length;
+        console.log(`Cleaned up ${removedCount} old tab access times`);
     } catch (error) {
-        console.error("Error during cleanup:", error);
+        console.error("Failed to cleanup old access times:", error);
     }
 }
 
-// Notify popup about tab changes for real-time updates
+// Notify popup of tab changes
 async function notifyPopupOfTabChanges(eventType, data) {
     try {
-        // Check if popup is open by trying to send a message
-        chrome.runtime.sendMessage({
-            action: 'tab_change_notification',
-            eventType: eventType,
-            data: data
-        }, (response) => {
-            // Handle response or ignore if popup is closed
-            if (chrome.runtime.lastError) {
-                // Popup is likely closed, ignore the error
-                return;
+        // Send message to popup if it's open
+        api.runtime.sendMessage({
+            type: 'TAB_CHANGE',
+            eventType,
+            data
+        }).catch(() => {
+            // Popup might not be open, ignore the error
+            if (api.runtime.lastError) {
+                // Clear the error
             }
         });
     } catch (error) {
-        // Popup is not open, that's fine
-        console.debug("Popup not available for notification:", error.message);
+        // Ignore messaging errors when popup is closed
     }
 }
 
-// Message handler for communication with popup
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+// Message listener for communication with popup
+api.runtime.onMessage.addListener((message, sender, sendResponse) => {
     (async() => {
         try {
-            switch (message.action) {
-                case "updateBadge":
-                    await updateTabCountBadge();
-                    sendResponse({ success: true });
-                    break;
+            if (message.action === "updateBadge") {
+                await updateTabCountBadge();
+                sendResponse({ success: true });
+            } else if (message.action === "getTabStats") {
+                const tabs = await api.tabs.query({});
+                const result = await api.storage.local.get(["tabAccessTimes"]);
 
-                case "getTabStats":
-                    const tabs = await chrome.tabs.query({});
-                    const result = await chrome.storage.local.get(["tabAccessTimes"]);
-                    const accessTimes = result.tabAccessTimes || {};
-
-                    sendResponse({
-                        success: true,
-                        data: {
-                            totalTabs: tabs.length,
-                            accessTimes: accessTimes,
-                        },
-                    });
-                    break;
-
-                case "tab_change_notification":
-                    // Acknowledge the tab change notification
-                    sendResponse({ success: true });
-                    break;
-
-                default:
-                    sendResponse({ success: false, error: "Unknown action" });
+                sendResponse({
+                    success: true,
+                    data: {
+                        totalTabs: tabs.length,
+                        accessTimes: result.tabAccessTimes || {}
+                    }
+                });
+            } else {
+                sendResponse({ success: false, error: "Unknown action" });
             }
         } catch (error) {
             console.error("Message handler error:", error);
@@ -306,13 +325,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         }
     })();
 
-    // Return true to indicate we'll respond asynchronously
+    // Return true to indicate async response
     return true;
 });
-
-// Error handling for unhandled promise rejections
-self.addEventListener("unhandledrejection", (event) => {
-    console.error("Unhandled promise rejection in service worker:", event.reason);
-});
-
-console.log("Sheperd background service worker loaded successfully");
