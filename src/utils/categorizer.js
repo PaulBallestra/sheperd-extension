@@ -3,8 +3,8 @@
 
 import {
     TAB_CATEGORIES,
-    Sheperd_METER_LEVELS,
-    Sheperd_CONFIG,
+    SHEPERD_METER_LEVELS,
+    SHEPERD_CONFIG,
 } from "./constants.js";
 
 /**
@@ -14,7 +14,7 @@ import {
 export class TabCategorizer {
     constructor() {
         this.categories = TAB_CATEGORIES;
-        this.meterLevels = Sheperd_METER_LEVELS;
+        this.meterLevels = SHEPERD_METER_LEVELS;
     }
 
     /**
@@ -287,7 +287,7 @@ export class TabCategorizer {
      * @param {number} daysThreshold - Days to consider a tab old
      * @returns {Array} - Array of old tab IDs
      */
-    findOldTabs(tabs, daysThreshold = Sheperd_CONFIG.OLD_TAB_THRESHOLD_DAYS) {
+    findOldTabs(tabs, daysThreshold = SHEPERD_CONFIG.OLD_TAB_THRESHOLD_DAYS) {
         const cutoffTime = Date.now() - daysThreshold * 24 * 60 * 60 * 1000;
 
         return tabs

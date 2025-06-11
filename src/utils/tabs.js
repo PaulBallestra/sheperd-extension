@@ -1,7 +1,7 @@
 // src/utils/tabs.js
 // Cross-Browser Tabs API Utilities with modern async/await patterns
 
-import { Sheperd_CONFIG, Sheperd_STORAGE_KEYS } from "./constants.js";
+import { SHEPERD_CONFIG, SHEPERD_STORAGE_KEYS } from "./constants.js";
 import { unifiedAPI, BROWSER_INFO, browserUtils } from "./browser-compatibility.js";
 
 /**
@@ -141,9 +141,9 @@ export class TabsManager {
     async getTabAccessTimes() {
         try {
             const result = await this.api.storage.local.get([
-                Sheperd_STORAGE_KEYS.TAB_ACCESS_TIMES,
+                SHEPERD_STORAGE_KEYS.TAB_ACCESS_TIMES,
             ]);
-            return result[Sheperd_STORAGE_KEYS.TAB_ACCESS_TIMES] || {};
+            return result[SHEPERD_STORAGE_KEYS.TAB_ACCESS_TIMES] || {};
         } catch (error) {
             console.error("Failed to get tab access times:", error);
             return {};
@@ -162,7 +162,7 @@ export class TabsManager {
             accessTimes[tabId] = timestamp;
 
             await this.api.storage.local.set({
-                [Sheperd_STORAGE_KEYS.TAB_ACCESS_TIMES]: accessTimes,
+                [SHEPERD_STORAGE_KEYS.TAB_ACCESS_TIMES]: accessTimes,
             });
 
             return true;
@@ -180,7 +180,7 @@ export class TabsManager {
      */
     async findOldTabs(
         tabs,
-        daysThreshold = Sheperd_CONFIG.OLD_TAB_THRESHOLD_DAYS
+        daysThreshold = SHEPERD_CONFIG.OLD_TAB_THRESHOLD_DAYS
     ) {
         if (!Array.isArray(tabs)) {
             return [];
