@@ -2,31 +2,31 @@
 // Footer component for Sheperd
 
 class FooterComponent {
-    constructor() {
-        this.element = null;
-    }
+  constructor() {
+    this.element = null;
+  }
 
-    /**
-     * Initialize and render the footer component
-     * @param {HTMLElement} container - The container to append the footer to.
-     */
-    init(container) {
-        if (!container) {
-            console.error("FooterComponent requires a container to render.");
-            return;
-        }
-        this.render(container);
-        this.bindEvents();
+  /**
+   * Initialize and render the footer component
+   * @param {HTMLElement} container - The container to append the footer to.
+   */
+  init(container) {
+    if (!container) {
+      console.error("FooterComponent requires a container to render.");
+      return;
     }
+    this.render(container);
+    this.bindEvents();
+  }
 
-    /**
-     * Render the footer component
-     * @param {HTMLElement} container - The container to append the footer to.
-     */
-    render(container) {
-        this.element = document.createElement("div");
-        this.element.className = "footer";
-        this.element.innerHTML = `
+  /**
+   * Render the footer component
+   * @param {HTMLElement} container - The container to append the footer to.
+   */
+  render(container) {
+    this.element = document.createElement("div");
+    this.element.className = "footer";
+    this.element.innerHTML = `
             <!-- Future buttons can be added here -->
             
             <!--
@@ -37,28 +37,27 @@ class FooterComponent {
             <div class="footer-info">
                 <span class="version">v1.0.0</span>
                 <span class="separator">•</span>
-                <a href="https://liberapay.com/Syd/donate" target="_blank" class="footer-link" title="Support the developer">Donate</a>
+                <a href="http://localhost:3000/support" target="_blank" class="footer-link" title="Support the developer">Donate</a>
                 <span class="separator">•</span>
                 <span class="branding">Sheperd</span>
             </div>
         `;
-        container.appendChild(this.element);
-    }
+    container.appendChild(this.element);
+  }
 
-    /**
-     * Bind events for the footer component
-     */
-    bindEvents() {
-        // No interactive elements in the footer yet, but this is here for future use.
-        // Footer button events
-        // document.getElementById("settings-btn").addEventListener("click", () => {
-        //     this.openSettings();
-        // });
-
-        // document.getElementById("upgrade-btn").addEventListener("click", () => {
-        //     this.openUpgrade();
-        // });
-    }
+  /**
+   * Bind events for the footer component
+   */
+  bindEvents() {
+    // No interactive elements in the footer yet, but this is here for future use.
+    // Footer button events
+    // document.getElementById("settings-btn").addEventListener("click", () => {
+    //     this.openSettings();
+    // });
+    // document.getElementById("upgrade-btn").addEventListener("click", () => {
+    //     this.openUpgrade();
+    // });
+  }
 }
 
 // Create and export a singleton instance
