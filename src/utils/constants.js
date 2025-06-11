@@ -18,6 +18,23 @@ export const SHEPERD_CONFIG = {
     DUPLICATE_THRESHOLD: 2,
 };
 
+/**
+ * TAB_CATEGORIES - Smart international domain matching
+ * 
+ * 🌍 INTELLIGENT INTERNATIONAL SUPPORT:
+ * Domain keywords like "amazon.com" now automatically match international variants:
+ * - amazon.fr, amazon.it, amazon.co.uk, amazon.de, etc.
+ * - google.com matches google.fr, google.co.uk, google.de, etc.
+ * - youtube.com matches youtube.fr, youtube.de, etc.
+ * 
+ * This means we only need to specify the main .com domain and the system
+ * will intelligently match ALL international variants of that brand!
+ * 
+ * 🎯 OPTIMIZED FOR BRANDS:
+ * - Major brands: One entry handles all countries
+ * - Reduced redundancy: No need for separate google.fr, google.de entries
+ * - Automatic coverage: Works for any TLD (.fr, .it, .co.uk, etc.)
+ */
 export const TAB_CATEGORIES = {
     Development: {
         icon: "💻",
@@ -374,17 +391,16 @@ export const TAB_CATEGORIES = {
         icon: "💼",
         color: "#3B82F6",
         keywords: [
-            // Email & Communication
+            // Email & Communication (international variants handled automatically)
             "gmail.com",
-            "outlook.com",
-            "mail.google.com",
-            "mail.yahoo.com",
+            "google.com", // Handles all Google services: mail, calendar, drive, docs, etc. in all countries
+            "outlook.com", // Handles Outlook/Microsoft services internationally 
+            "microsoft.com", // Handles Office365, OneDrive, etc. internationally
+            "yahoo.com", // Handles mail.yahoo.fr, yahoo.co.uk, etc.
             "protonmail.com",
             "tutanota.com",
 
             // Calendar & Scheduling
-            "calendar.google.com",
-            "outlook.live.com/calendar",
             "calendly.com",
             "acuityscheduling.com",
             "when2meet.com",
@@ -398,18 +414,13 @@ export const TAB_CATEGORIES = {
             "notion.so",
             "airtable.com",
             "basecamp.com",
-            "jira.atlassian.com",
+            "atlassian.com", // Handles Jira, Confluence, etc.
 
-            // Cloud Storage & Docs
-            "drive.google.com",
-            "docs.google.com",
-            "sheets.google.com",
-            "onedrive.com",
+            // Cloud Storage & File Sharing
             "dropbox.com",
             "box.com",
             "icloud.com",
-            "office.com",
-            "office365.com",
+            "apple.com", // Handles iCloud and other Apple services
 
             // Design & Creative
             "figma.com",

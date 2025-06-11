@@ -181,50 +181,54 @@ export class TabCategorizer {
 
         // Define which query parameters are content-defining for different sites
         const contentParams = {
-            // Google Search
-            "google.com": ["q"],
-            "google.co.uk": ["q"],
-            "google.ca": ["q"],
-            "google.fr": ["q"],
-            "google.de": ["q"],
+            // Search engines - brand-based matching will handle international versions
+            "google": ["q"],
+            "bing": ["q"],
+            "duckduckgo": ["q"],
+            "yahoo": ["p"],
+            "yandex": ["text"],
+            "baidu": ["wd"],
 
-            // Other search engines
-            "bing.com": ["q"],
-            "duckduckgo.com": ["q"],
-            "yahoo.com": ["p"],
-            "yandex.com": ["text"],
-            "baidu.com": ["wd"],
-
-            // YouTube
-            "youtube.com": ["v", "list"],
+            // Video platforms
+            "youtube": ["v", "list"],
             "youtu.be": ["v"],
 
             // Social media
-            "twitter.com": ["q"],
+            "twitter": ["q"],
             "x.com": ["q"],
-            "reddit.com": ["q"],
+            "reddit": ["q"],
 
-            // Shopping
-            "amazon.com": ["k", "s"],
-            "ebay.com": ["_nkw"],
-            "etsy.com": ["search_query"],
+            // Shopping platforms - brand-based matching will handle international versions
+            "amazon": ["k", "s"],
+            "ebay": ["_nkw"],
+            "etsy": ["search_query"],
 
-            // Documentation/Stack Overflow
-            "stackoverflow.com": ["q"],
-            "github.com": ["q"],
+            // Documentation/Development
+            "stackoverflow": ["q"],
+            "github": ["q"],
 
             // News sites
-            "news.google.com": ["q"],
-            "bbc.com": ["q"],
-            "cnn.com": ["q"],
+            "bbc": ["q"],
+            "cnn": ["q"],
         };
 
-        // Find matching content parameters for this hostname
+        // Find matching content parameters using intelligent brand matching
         let relevantParams = [];
-        for (const [domain, params] of Object.entries(contentParams)) {
-            if (hostname.includes(domain)) {
-                relevantParams = params;
-                break;
+        for (const [brandOrDomain, params] of Object.entries(contentParams)) {
+            // If the key contains a dot, it's a full domain - use exact matching
+            if (brandOrDomain.includes('.')) {
+                if (hostname.includes(brandOrDomain)) {
+                    relevantParams = params;
+                    break;
+                }
+            } else {
+                // If the key doesn't contain a dot, it's a brand - use brand matching
+                const domainBrand = this.extractBrandFromDomain(hostname);
+                if (domainBrand === brandOrDomain.toLowerCase()) {
+                    relevantParams = params;
+                    console.log(`🌍 International query params match: ${hostname} -> ${brandOrDomain} (params: ${params.join(', ')})`);
+                    break;
+                }
             }
         }
 
@@ -340,6 +344,97 @@ export class TabCategorizer {
     }
 
     /**
+     * Extract the brand name from a domain (removes TLD and country codes)
+     * @param {string} domain - Domain to extract brand from (e.g., 'amazon.fr' -> 'amazon')
+     * @returns {string} - Brand name
+     */
+    extractBrandFromDomain(domain) {
+        // Remove protocol and www prefix
+        let cleanDomain = domain.replace(/^(https?:\/\/)?(www\.)?/i, '');
+
+        // Split by dots
+        const parts = cleanDomain.split('.');
+
+        // If only one part, return it
+        if (parts.length === 1) {
+            return parts[0].toLowerCase();
+        }
+
+        // Common international TLD patterns to ignore
+        const ignoredSuffixes = [
+            // Generic TLDs
+            'com', 'org', 'net', 'edu', 'gov', 'mil', 'int',
+
+            // Country code TLDs  
+            'co.uk', 'co.jp', 'co.kr', 'co.za', 'co.nz', 'co.in',
+            'com.au', 'com.br', 'com.mx', 'com.ar', 'com.tr', 'com.sg',
+
+            // European TLDs
+            'fr', 'de', 'it', 'es', 'nl', 'be', 'at', 'ch', 'se', 'no', 'dk', 'fi',
+            'pl', 'cz', 'sk', 'hu', 'ro', 'bg', 'hr', 'si', 'lt', 'lv', 'ee',
+            'pt', 'gr', 'ie', 'lu', 'mt', 'cy',
+
+            // Asian TLDs
+            'jp', 'kr', 'cn', 'tw', 'hk', 'sg', 'my', 'th', 'ph', 'vn', 'id', 'in',
+
+            // Other common TLDs
+            'ca', 'au', 'nz', 'za', 'br', 'mx', 'ar', 'cl', 'co', 'pe', 'uy',
+            'ru', 'ua', 'by', 'kz', 'uz', 'tr', 'il', 'ae', 'sa', 'eg'
+        ];
+
+        // Start with the first part as the brand
+        let brand = parts[0].toLowerCase();
+
+        // Handle special cases like subdomain brands
+        if (parts.length >= 3) {
+            // Check if this looks like a subdomain pattern (e.g., fr.amazon.com)
+            const possibleBrand = parts[1].toLowerCase();
+            const suffix = parts.slice(2).join('.');
+
+            // If the suffix is a known pattern and first part is a country code, use second part
+            if (parts[0].length === 2 && ignoredSuffixes.includes(suffix)) {
+                brand = possibleBrand;
+            }
+        }
+
+        return brand;
+    }
+
+    /**
+     * Check if a domain matches a brand keyword with intelligent international matching
+     * @param {string} url - Full URL to check
+     * @param {string} keyword - Brand keyword (e.g., 'amazon.com')
+     * @returns {boolean} - True if matches
+     */
+    matchesBrandKeyword(url, keyword) {
+        try {
+            // Extract domain from URL
+            const urlObj = new URL(url);
+            const domain = urlObj.hostname.toLowerCase();
+
+            // If exact match, return true immediately
+            if (domain.includes(keyword.toLowerCase())) {
+                return true;
+            }
+
+            // Extract brand from both the keyword and the domain
+            const keywordBrand = this.extractBrandFromDomain(keyword);
+            const domainBrand = this.extractBrandFromDomain(domain);
+
+            // Check if brands match
+            if (keywordBrand === domainBrand && keywordBrand.length > 2) {
+                console.log(`🌍 International brand match: ${domain} -> ${keywordBrand} (from keyword ${keyword})`);
+                return true;
+            }
+
+            return false;
+        } catch (error) {
+            // If URL parsing fails, fall back to simple includes check
+            return url.toLowerCase().includes(keyword.toLowerCase());
+        }
+    }
+
+    /**
      * Private method to check if a tab matches a category
      * @param {string} url - Normalized URL
      * @param {string} title - Normalized title
@@ -347,12 +442,17 @@ export class TabCategorizer {
      * @returns {boolean} - True if matches
      */
     _matchesCategory(url, title, config) {
-        // Check keywords
-        const hasKeyword = config.keywords.some(
-            (keyword) =>
-            url.includes(keyword.toLowerCase()) ||
-            title.includes(keyword.toLowerCase())
-        );
+        // Check keywords with intelligent international domain matching
+        const hasKeyword = config.keywords.some((keyword) => {
+            // For domain-like keywords, use smart brand matching
+            if (keyword.includes('.')) {
+                return this.matchesBrandKeyword(url, keyword);
+            }
+
+            // For non-domain keywords, use traditional includes matching
+            return url.includes(keyword.toLowerCase()) ||
+                title.includes(keyword.toLowerCase());
+        });
 
         if (hasKeyword) {
             return true;
