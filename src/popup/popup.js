@@ -126,15 +126,22 @@ class SheperdPopupApp {
         this.footerElement = document.createElement("div");
         this.footerElement.className = "footer";
 
+        //removed temporarily upgrade and settings buttons
+        // <
+        // button id = "settings-btn"
+        // class = "text-btn"
+        // title = "Open settings" > ⚙️Settings <
+        //     /button> <
+        //     button id = "upgrade-btn"
+        // class = "text-btn premium"
+
+
         this.footerElement.innerHTML = `
-      <button id="settings-btn" class="text-btn" title="Open settings">
-        ⚙️ Settings
-      </button>
-      <button id="upgrade-btn" class="text-btn premium" title="Upgrade to Pro">
-        ✨ Upgrade
-      </button>
+      
       <div class="footer-info">
         <span class="version">v1.0.0</span>
+        <span class="separator">•</span>
+        <a href="https://liberapay.com/Syd/donate" target="_blank" class="footer-link" title="Support the developer">Donate</a>
         <span class="separator">•</span>
         <span class="branding">Sheperd</span>
       </div>
@@ -179,14 +186,15 @@ class SheperdPopupApp {
      * Bind global event listeners
      */
     bindEvents() {
+        //removed temporarily upgrade and settings buttons
         // Footer button events
-        document.getElementById("settings-btn").addEventListener("click", () => {
-            this.openSettings();
-        });
+        // document.getElementById("settings-btn").addEventListener("click", () => {
+        //     this.openSettings();
+        // });
 
-        document.getElementById("upgrade-btn").addEventListener("click", () => {
-            this.openUpgrade();
-        });
+        // document.getElementById("upgrade-btn").addEventListener("click", () => {
+        //     this.openUpgrade();
+        // });
 
         // Error retry button
         this.errorElement
