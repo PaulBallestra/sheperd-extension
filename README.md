@@ -153,7 +153,6 @@
 ├── background.js                # Real-time service worker with Chrome event monitoring
 ├── manifest-chrome.json        # V3 for Chrome/Edge with real-time permissions
 ├── manifest-firefox.json       # V2 for Firefox
-└── Real-Time Event System       # 23 events for instant synchronization
 
 ```
 

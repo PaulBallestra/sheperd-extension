@@ -19,6 +19,84 @@ export const SHEPERD_CONFIG = {
 };
 
 /**
+ * LICENSING & MONETIZATION CONFIGURATION
+ * 
+ * 🎯 FREEMIUM MODEL:
+ * - Free version: Limited categories and features
+ * - Pro version: Full features + advanced analytics
+ * - Early access: Founder's edition pricing
+ */
+export const SHEPERD_LICENSE = {
+    // License Types
+    FREE: 'free',
+    PRO: 'pro',
+    FOUNDER: 'founder',
+
+    // Pro Features
+    PRO_FEATURES: {
+        ALL_CATEGORIES: true,
+        UNLIMITED_TABS: true,
+        ADVANCED_ANALYTICS: true,
+        CUSTOM_THEMES: true,
+        BACKUP_RESTORE: true,
+        PRIORITY_SUPPORT: true,
+        EXPORT_BOOKMARKS: true,
+        PERFORMANCE_OPTIMIZATION: true,
+    },
+
+    // Free Version Limitations
+    FREE_LIMITS: {
+        MAX_CATEGORIES: 6, // Only show 6 most popular categories
+        MAX_TABS_MANAGED: 50, // Limit tab management to 50 tabs
+        BASIC_ANALYTICS_ONLY: true,
+    },
+
+    // Pricing
+    PRICING: {
+        PRO_MONTHLY: 2.99,
+        PRO_YEARLY: 29.99, // 2 months free
+        PRO_LIFETIME: 49.99,
+        FOUNDER_EDITION: 19.99, // Limited time, lifetime access
+    },
+
+    // Free tier categories (most popular ones)
+    FREE_CATEGORIES: [
+        'Work & Productivity',
+        'Media & Entertainment',
+        'Shopping & E-commerce',
+        'Social & Communication',
+        'Development',
+        'News & Information'
+    ],
+};
+
+/**
+ * MONETIZATION EVENTS
+ * Track user interactions for conversion optimization
+ */
+export const MONETIZATION_EVENTS = {
+    // Upgrade prompts
+    UPGRADE_PROMPT_SHOWN: 'upgrade_prompt_shown',
+    UPGRADE_PROMPT_CLICKED: 'upgrade_prompt_clicked',
+    UPGRADE_PROMPT_DISMISSED: 'upgrade_prompt_dismissed',
+
+    // Feature limitations hit
+    CATEGORY_LIMIT_HIT: 'category_limit_hit',
+    TAB_LIMIT_HIT: 'tab_limit_hit',
+    PREMIUM_FEATURE_ATTEMPTED: 'premium_feature_attempted',
+
+    // Conversions
+    UPGRADE_INITIATED: 'upgrade_initiated',
+    UPGRADE_COMPLETED: 'upgrade_completed',
+    TRIAL_STARTED: 'trial_started',
+
+    // Engagement
+    ANALYTICS_VIEWED: 'analytics_viewed',
+    BULK_ACTION_USED: 'bulk_action_used',
+    CATEGORY_CUSTOMIZED: 'category_customized',
+};
+
+/**
  * TAB_CATEGORIES - Smart international domain matching
  * 
  * 🌍 INTELLIGENT INTERNATIONAL SUPPORT:

@@ -1,0 +1,405 @@
+/* src/styles/components/upgrade-prompt.css */
+
+
+/* Upgrade prompt styling for Sheperd Pro */
+
+.upgrade-prompt-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.upgrade-prompt-overlay--visible {
+    opacity: 1;
+}
+
+.upgrade-prompt {
+    background: var(--bg-primary);
+    border-radius: 16px;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.2);
+    max-width: 600px;
+    width: 100%;
+    max-height: 90vh;
+    overflow: hidden;
+    transform: scale(0.9) translateY(20px);
+    transition: transform 0.3s ease;
+    border: 1px solid var(--border-light);
+}
+
+.upgrade-prompt-overlay--visible .upgrade-prompt {
+    transform: scale(1) translateY(0);
+}
+
+.upgrade-prompt__header {
+    padding: 24px 24px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border-light);
+    margin-bottom: 0;
+    padding-bottom: 16px;
+}
+
+.upgrade-prompt__header h3 {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.upgrade-prompt__close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.upgrade-prompt__close:hover {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.upgrade-prompt__content {
+    padding: 24px;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.upgrade-prompt__content p {
+    color: var(--text-secondary);
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 24px;
+}
+
+
+/* Features List */
+
+.upgrade-prompt__features {
+    margin-bottom: 32px;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    padding: 8px 0;
+}
+
+.feature-icon {
+    font-size: 18px;
+    width: 24px;
+    text-align: center;
+}
+
+.feature-item span:last-child {
+    color: var(--text-primary);
+    font-size: 14px;
+}
+
+
+/* Pricing Options */
+
+.upgrade-prompt__pricing {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+@media (min-width: 500px) {
+    .upgrade-prompt__pricing {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.pricing-option {
+    border: 2px solid var(--border-light);
+    border-radius: 12px;
+    padding: 20px 16px;
+    text-align: center;
+    position: relative;
+    transition: all 0.2s ease;
+    background: var(--bg-secondary);
+}
+
+.pricing-option:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.pricing-option--popular {
+    border-color: var(--primary);
+    background: var(--primary-light);
+}
+
+.pricing-option--founder {
+    border-color: var(--accent);
+    background: linear-gradient(135deg, var(--accent-light), var(--bg-secondary));
+}
+
+.pricing-badge {
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--primary);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.pricing-option--founder .pricing-badge {
+    background: var(--accent);
+}
+
+.pricing-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    margin-top: 8px;
+}
+
+.pricing-price {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 4px;
+}
+
+.pricing-option--founder .pricing-price {
+    color: var(--accent);
+}
+
+.pricing-save {
+    font-size: 12px;
+    color: var(--success);
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.pricing-option .btn {
+    width: 100%;
+    margin-top: auto;
+}
+
+.btn--founder {
+    background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+    color: white;
+    border: none;
+}
+
+.btn--founder:hover {
+    background: linear-gradient(135deg, var(--accent-dark), var(--accent));
+    transform: translateY(-1px);
+}
+
+
+/* Footer */
+
+.upgrade-prompt__footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border-light);
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+}
+
+.btn--text {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    font-size: 14px;
+}
+
+.btn--text:hover {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+
+/* License Activation */
+
+.license-activation {
+    text-align: center;
+}
+
+.license-activation h4 {
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    font-size: 20px;
+}
+
+.license-activation p {
+    margin-bottom: 16px;
+}
+
+.license-hint {
+    background: var(--bg-secondary);
+    padding: 12px;
+    border-radius: 8px;
+    border-left: 4px solid var(--primary);
+    margin-bottom: 24px !important;
+    text-align: left;
+}
+
+.license-hint code {
+    background: var(--primary-light);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Monaco', 'Consolas', monospace;
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.license-input-group {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.license-input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 2px solid var(--border-light);
+    border-radius: 8px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 14px;
+    transition: border-color 0.2s ease;
+}
+
+.license-input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.license-input::placeholder {
+    color: var(--text-tertiary);
+}
+
+.license-status {
+    margin-top: 16px;
+    min-height: 24px;
+}
+
+.license-status .error {
+    color: var(--danger);
+    background: var(--danger-light);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+
+/* Activation Success */
+
+.activation-success {
+    text-align: center;
+    padding: 24px 0;
+}
+
+.success-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    animation: bounce 0.5s ease;
+}
+
+@keyframes bounce {
+    0%,
+    20%,
+    60%,
+    100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    80% {
+        transform: translateY(-5px);
+    }
+}
+
+.activation-success h4 {
+    color: var(--success);
+    font-size: 24px;
+    margin-bottom: 16px;
+}
+
+.activation-success p {
+    margin-bottom: 16px;
+}
+
+
+/* Responsive Design */
+
+@media (max-width: 500px) {
+    .upgrade-prompt {
+        margin: 10px;
+        max-width: calc(100vw - 20px);
+    }
+    .upgrade-prompt__header,
+    .upgrade-prompt__content,
+    .upgrade-prompt__footer {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+    .pricing-option {
+        padding: 16px 12px;
+    }
+    .pricing-title {
+        font-size: 14px;
+    }
+    .pricing-price {
+        font-size: 20px;
+    }
+    .license-input-group {
+        flex-direction: column;
+    }
+}
+
+
+/* Dark mode support */
+
+@media (prefers-color-scheme: dark) {
+    .upgrade-prompt-overlay {
+        background: rgba(0, 0, 0, 0.8);
+    }
+    .upgrade-prompt {
+        background: var(--bg-primary);
+        border-color: var(--border-dark);
+    }
+    .pricing-option {
+        background: var(--bg-tertiary);
+    }
+    .pricing-option--popular {
+        background: var(--primary-dark);
+    }
+}
