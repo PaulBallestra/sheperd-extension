@@ -1,7 +1,14 @@
 // src/popup/components/upgrade-prompt.js
-// Upgrade prompt component for Sheperd Pro
+// Simplified upgrade prompt for a one-time purchase model.
 
 import { licenseManager, MONETIZATION_EVENTS } from '../../utils/license.js';
+
+// Configuration for the payment link
+const PAYMENT_CONFIG = {
+    // Replace this with your actual payment link from Stripe, Lemon Squeezy, or Gumroad
+    PAYMENT_URL: 'https://buy.stripe.com/your-test-link',
+    LEARN_MORE_URL: 'https://sheperd-tabs.com/pro-features' // A page explaining the pro features
+};
 
 class UpgradePrompt {
     constructor() {
@@ -41,64 +48,42 @@ class UpgradePrompt {
         this.element.innerHTML = `
             <div class="upgrade-prompt">
                 <div class="upgrade-prompt__header">
-                    <h3>${promptData.title}</h3>
+                    <h3>Unlock Advanced Analytics & Support Sheperd</h3>
                     <button class="upgrade-prompt__close" data-action="dismiss">×</button>
                 </div>
                 
                 <div class="upgrade-prompt__content">
-                    <p>${promptData.message}</p>
+                    <p>
+                        Supercharge your productivity with historical insights and help support the future development of Sheperd.
+                    </p>
                     
                     <div class="upgrade-prompt__features">
                         <div class="feature-item">
-                            <span class="feature-icon">🎯</span>
-                            <span>All 12+ categories unlocked</span>
+                            <span class="feature-icon">📈</span>
+                            <span>Track browsing habits over time</span>
                         </div>
                         <div class="feature-item">
-                            <span class="feature-icon">⚡</span>
-                            <span>Unlimited tab management</span>
+                            <span class="feature-icon">🧠</span>
+                            <span>Get personalized productivity scores</span>
                         </div>
                         <div class="feature-item">
-                            <span class="feature-icon">📊</span>
-                            <span>Advanced analytics & insights</span>
+                            <span class="feature-icon">💾</span>
+                            <span>Secure cloud backup & sync of your settings</span>
                         </div>
-                        <div class="feature-item">
-                            <span class="feature-icon">📤</span>
-                            <span>Export to bookmarks/Notion</span>
-                        </div>
-                        <div class="feature-item">
-                            <span class="feature-icon">🎨</span>
-                            <span>Custom themes & settings</span>
+                         <div class="feature-item">
+                            <span class="feature-icon">❤️</span>
+                            <span>Directly support an independent developer</span>
                         </div>
                     </div>
                     
-                    <div class="upgrade-prompt__pricing">
-                        <div class="pricing-option pricing-option--popular">
-                            <div class="pricing-badge">Most Popular</div>
-                            <div class="pricing-title">Pro Monthly</div>
-                            <div class="pricing-price">$${promptData.pricing.PRO_MONTHLY}/month</div>
-                            <button class="btn btn--primary" data-action="upgrade" data-plan="monthly">
-                                Start Pro Monthly
-                            </button>
-                        </div>
-                        
-                        <div class="pricing-option">
-                            <div class="pricing-title">Pro Yearly</div>
-                            <div class="pricing-price">$${promptData.pricing.PRO_YEARLY}/year</div>
-                            <div class="pricing-save">Save 17%</div>
-                            <button class="btn btn--secondary" data-action="upgrade" data-plan="yearly">
-                                Start Pro Yearly
-                            </button>
-                        </div>
-                        
-                        <div class="pricing-option pricing-option--founder">
-                            <div class="pricing-badge">Limited Time</div>
-                            <div class="pricing-title">Founder's Edition</div>
-                            <div class="pricing-price">$${promptData.pricing.FOUNDER_EDITION}</div>
-                            <div class="pricing-save">Lifetime Access</div>
-                            <button class="btn btn--founder" data-action="upgrade" data-plan="founder">
-                                Get Founder's Edition
-                            </button>
-                        </div>
+                    <div class="upgrade-prompt__cta">
+                        <button class="btn btn--primary btn--full" data-action="purchase">
+                            Unlock Pro Features (One-Time Payment)
+                        </button>
+                    </div>
+
+                     <div class="upgrade-prompt__activate">
+                        <a href="#" data-action="activate">Already have a license key?</a>
                     </div>
                 </div>
                 
@@ -151,8 +136,11 @@ class UpgradePrompt {
      */
     handleAction(action, plan = null) {
         switch (action) {
-            case 'upgrade':
-                this.handleUpgrade(plan);
+            case 'purchase':
+                this.handlePurchase();
+                break;
+            case 'activate':
+                this.showLicenseKeyInput();
                 break;
             case 'learn_more':
                 this.handleLearnMore();
@@ -164,56 +152,26 @@ class UpgradePrompt {
     }
 
     /**
-     * Handle upgrade action
+     * Handle the one-time purchase action
      */
-    handleUpgrade(plan) {
-        licenseManager.trackEvent(MONETIZATION_EVENTS.UPGRADE_PROMPT_CLICKED, { plan });
+    handlePurchase() {
+        licenseManager.trackEvent(MONETIZATION_EVENTS.UPGRADE_PROMPT_CLICKED, { type: 'one_time_purchase' });
 
-        if (plan === 'founder') {
-            // Special handling for founder's edition
-            this.showFounderActivation();
-        } else {
-            // Open payment page or show payment form
-            this.openPaymentPage(plan);
-        }
-    }
-
-    /**
-     * Show founder's edition activation
-     */
-    showFounderActivation() {
-        const founderKey = licenseManager.generateFounderKey();
-
-        // For MVP, auto-activate founder's edition
-        // In production, you'd collect payment first
-        licenseManager.activatePro(founderKey, 'founder').then(result => {
-            if (result.success) {
-                this.showActivationSuccess('Founder\'s Edition activated! 🎉');
-            } else {
-                this.showActivationError(result.message);
-            }
-        });
-    }
-
-    /**
-     * Open payment page
-     */
-    openPaymentPage(plan) {
-        // For MVP, show simple license key input
-        // In production, integrate with Stripe/payment processor
-        this.showLicenseKeyInput(plan);
+        // Open the payment link in a new tab
+        chrome.tabs.create({ url: PAYMENT_CONFIG.PAYMENT_URL });
+        this.hide();
     }
 
     /**
      * Show license key input (MVP version)
      */
-    showLicenseKeyInput(plan) {
+    showLicenseKeyInput() {
         const content = this.element.querySelector('.upgrade-prompt__content');
         content.innerHTML = `
             <div class="license-activation">
                 <h4>Activate Sheperd Pro</h4>
-                <p>For early access, use any key starting with "SHEPERD_"</p>
-                <p class="license-hint">Try: <code>SHEPERD_EARLY_ACCESS</code></p>
+                <p>Enter the license key you received after your purchase.</p>
+                <p class="license-hint">Your key starts with "SHEPERDPRO_".</p>
                 
                 <div class="license-input-group">
                     <input 
@@ -228,6 +186,9 @@ class UpgradePrompt {
                 </div>
                 
                 <div class="license-status" id="license-status"></div>
+                <div class="upgrade-prompt__activate">
+                    <a href="#" data-action="back">Back to purchase options</a>
+                </div>
             </div>
         `;
 
@@ -260,6 +221,12 @@ class UpgradePrompt {
                 activateBtn.click();
             }
         });
+
+        // Handle 'back' link
+        content.querySelector('[data-action="back"]').addEventListener('click', (e) => {
+            e.preventDefault();
+            this.show('general', this.element.parentElement);
+        });
     }
 
     /**
@@ -291,16 +258,6 @@ class UpgradePrompt {
     }
 
     /**
-     * Show activation error
-     */
-    showActivationError(message) {
-        const statusDiv = this.element.querySelector('#license-status');
-        if (statusDiv) {
-            statusDiv.innerHTML = `<div class="error">${message}</div>`;
-        }
-    }
-
-    /**
      * Handle learn more action
      */
     handleLearnMore() {
@@ -308,7 +265,7 @@ class UpgradePrompt {
 
         // Open features page or show more details
         chrome.tabs.create({
-            url: 'https://sheperd-tabs.com/pro-features' // Update with your actual URL
+            url: PAYMENT_CONFIG.LEARN_MORE_URL
         });
 
         this.hide();
