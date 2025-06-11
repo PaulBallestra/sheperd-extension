@@ -1,0 +1,43 @@
+{
+    "manifest_version": 2,
+    "name": "Sheperd - Smart Tab Manager",
+    "version": "1.0.0",
+    "description": "Organize and manage your browser tabs with smart categorization and bulk actions",
+    "author": "Sheperd Team",
+
+    "permissions": [
+        "tabs",
+        "storage",
+        "bookmarks",
+        "activeTab",
+        "alarms",
+        "*://*/*"
+    ],
+
+    "browser_action": {
+        "default_popup": "src/popup/popup.html",
+        "default_title": "Sheperd Tab Manager - Organize Your Chaos",
+        "default_icon": {
+            "16": "src/assets/icons/icon16.jpeg",
+            "48": "src/assets/icons/icon48.jpeg",
+            "128": "src/assets/icons/icon128.jpeg"
+        }
+    },
+
+    "background": {
+        "scripts": ["background.js"],
+        "persistent": false
+    },
+
+    "icons": {
+        "16": "src/assets/icons/icon16.jpeg",
+        "48": "src/assets/icons/icon48.jpeg",
+        "128": "src/assets/icons/icon128.jpeg"
+    },
+
+    "content_security_policy": "script-src 'self'; object-src 'self'",
+
+    "web_accessible_resources": [
+        "src/assets/icons/*.jpeg"
+    ]
+}

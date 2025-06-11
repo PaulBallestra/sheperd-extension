@@ -132,7 +132,13 @@
 │       ├── quick-actions.css                # Quick actions css of quick-actions component
 │       ├── sheperd-meter.css                # SheperdMeter css of sheperd-meter component
 ├── background.js                # Service worker with badge system
+├── manifest-chrome.json    (V3 for Chrome/Edge)
+├── manifest-firefox.json   (V2 for Firefox)
+└── build-scripts/
+│   ├── build-chrome.js    (Copy manifest-chrome.json → manifest.json)
+│   └── build-firefox.js   (Copy manifest-firefox.json → manifest.json)
 └── Chrome Storage + Events      # Modern data & event handling
+
 ```
 
 ### Phase 2: SaaS Platform (Planned)
