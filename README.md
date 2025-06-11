@@ -242,7 +242,7 @@ sheperd-extension/
 sheperd-platform/
 ├── sheperd-extension/                 # Chrome extension (Phase 1)
 │   └── [current structure]
-├── backend/                   # Go API server
+├── sheperd-backend/                   # Go API server
 │   ├── cmd/
 │   │   └── server/
 │   │       └── main.go
@@ -254,10 +254,11 @@ sheperd-platform/
 │   ├── migrations/
 │   ├── docker-compose.yml
 │   └── Dockerfile
-├── dashboard/                 # React web dashboard
+├── sheperd-dashboard/                 # React web dashboard
 │   ├── src/
 │   │   ├── components/
 │   │   ├── pages/
+│   │   │   └── support.js
 │   │   ├── hooks/
 │   │   └── utils/
 │   ├── public/
