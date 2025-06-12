@@ -133,7 +133,8 @@
 │   │   ├── sheperd-meter.js    # Real-time level meter with animations
 │   │   ├── analytics.js        # Live performance monitoring & optimization
 │   │   ├── categories.js       # Real-time categorization with optimistic updates
-│   │   └── quick-actions.js    # Bulk operations with instant feedback
+│   │   ├── quick-actions.js    # Bulk operations with instant feedback
+│   │   └── upgrade-prompt.js    # Upgrades for plans (for now it's commented)
 │   ├── popup.js                # Real-time state orchestrator & event dispatcher
 │   └── popup.html              # Clean HTML structure
 ├── src/utils/                   # Real-time business logic
@@ -150,6 +151,7 @@
 │       ├── header.css          # Live counter styling
 │       ├── quick-actions.css   # Bulk action feedback styling
 │       ├── sheperd-meter.css   # Real-time meter animations
+│       ├── upgrade-prompt.css   # Upgrades for plans page css (for now it's commented)
 ├── background.js                # Real-time service worker with Chrome event monitoring
 ├── manifest-chrome.json        # V3 for Chrome/Edge with real-time permissions
 ├── manifest-firefox.json       # V2 for Firefox
