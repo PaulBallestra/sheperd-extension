@@ -42,6 +42,6 @@
 }
 
 .footer-link:hover {
-    color: var(--primary);
+    color: var(--sheperd-primary);
     text-decoration: underline;
 }

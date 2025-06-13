@@ -14,30 +14,73 @@
 /* CSS Variables - Design System */
 
 :root {
-    /* Colors */
-    --sheperd-primary: #667eea;
-    --sheperd-primary-dark: #5a67d8;
-    --sheperd-success: #10b981;
-    --sheperd-warning: #f59e0b;
-    --sheperd-danger: #ef4444;
-    --sheperd-info: #3b82f6;
-    /* Category Colors */
-    --category-development: #10B981;
-    --category-social: #F59E0B;
-    --category-shopping: #EF4444;
-    --category-entertainment: #8B5CF6;
-    --category-work: #3B82F6;
-    --category-research: #6B7280;
-    --category-other: #6B7280;
-    /* UI Colors */
-    --background: #ffffff;
-    --background-secondary: #f8fafc;
-    --background-tertiary: #f1f5f9;
-    --border: #e2e8f0;
-    --border-light: #f1f5f9;
-    --text-primary: #1f2937;
-    --text-secondary: #6b7280;
-    --text-muted: #9ca3af;
+    /* Primary Brand Colors - Updated to match landing page */
+    --sheperd-primary: rgb(37 99 235);
+    --sheperd-primary-dark: rgb(29 78 216);
+    --sheperd-primary-light: rgb(59 130 246);
+    --sheperd-success: rgb(22 163 74);
+    --sheperd-warning: rgb(217 119 6);
+    --sheperd-danger: rgb(220 38 38);
+    --sheperd-info: rgb(37 99 235);
+    /* Category Colors - Enhanced with landing page palette */
+    --category-development: rgb(22 163 74);
+    --category-social: rgb(217 119 6);
+    --category-shopping: rgb(220 38 38);
+    --category-entertainment: rgb(147 51 234);
+    --category-work: rgb(37 99 235);
+    --category-research: rgb(99 102 241);
+    --category-other: rgb(71 85 105);
+    /* UI Colors - Updated to match landing page semantic colors */
+    --background: rgb(255 255 255);
+    --background-secondary: rgb(248 250 252);
+    --background-tertiary: rgb(241 245 249);
+    --background-elevated: rgb(255 255 255);
+    --border: rgb(226 232 240);
+    --border-light: rgb(241 245 249);
+    --border-muted: rgb(226 232 240);
+    /* Text Colors - Updated to match landing page text hierarchy */
+    --text-primary: rgb(15 23 42);
+    --text-secondary: rgb(71 85 105);
+    --text-muted: rgb(148 163 184);
+    --foreground: rgb(15 23 42);
+    /* Surface Colors */
+    --surface: rgb(248 250 252);
+    --surface-elevated: rgb(255 255 255);
+    /* Button Colors - Updated to match landing page buttons */
+    --button-primary-bg: rgb(37 99 235);
+    --button-primary-hover: rgb(29 78 216);
+    --button-primary-text: rgb(255 255 255);
+    --button-secondary-bg: transparent;
+    --button-secondary-border: rgb(203 213 225);
+    --button-secondary-hover-border: rgb(148 163 184);
+    --button-secondary-hover-bg: rgb(248 250 252);
+    --button-secondary-text: rgb(51 65 85);
+    --button-focus-ring: rgb(37 99 235);
+    /* Feature Colors - Enhanced semantic colors */
+    --success-bg: rgb(240 253 244);
+    --success-text: rgb(22 163 74);
+    --warning-bg: rgb(255 251 235);
+    --warning-text: rgb(217 119 6);
+    --error-bg: rgb(254 242 242);
+    --error-text: rgb(220 38 38);
+    --info-bg: rgb(239 246 255);
+    --info-text: rgb(37 99 235);
+    /* Feature Icon Colors - Matching landing page feature colors */
+    --feature-blue-bg: rgb(239 246 255);
+    --feature-blue-text: rgb(37 99 235);
+    --feature-green-bg: rgb(240 253 244);
+    --feature-green-text: rgb(22 163 74);
+    --feature-red-bg: rgb(254 242 242);
+    --feature-red-text: rgb(220 38 38);
+    --feature-indigo-bg: rgb(238 242 255);
+    --feature-indigo-text: rgb(99 102 241);
+    --feature-purple-bg: rgb(250 245 255);
+    --feature-purple-text: rgb(147 51 234);
+    /* Navigation Colors - For future use */
+    --nav-bg: rgb(255 255 255);
+    --nav-text: rgb(71 85 105);
+    --nav-text-hover: rgb(15 23 42);
+    --nav-border: rgb(226 232 240);
     /* Spacing */
     --space-xs: 4px;
     --space-sm: 8px;
@@ -140,7 +183,7 @@ body {
 }
 
 .text-btn.premium:hover {
-    color: white;
+    color: var(--button-primary-text);
     background: var(--sheperd-primary);
 }
 
@@ -280,8 +323,8 @@ body {
 }
 
 .error-retry-btn {
-    background: var(--sheperd-primary);
-    color: white;
+    background: var(--button-primary-bg);
+    color: var(--button-primary-text);
     border: none;
     padding: var(--space-sm) var(--space-lg);
     border-radius: var(--radius-md);
@@ -291,5 +334,5 @@ body {
 }
 
 .error-retry-btn:hover {
-    background: var(--sheperd-primary-dark);
+    background: var(--button-primary-hover);
 }

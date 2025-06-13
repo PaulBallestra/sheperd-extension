@@ -26,7 +26,7 @@
 }
 
 .upgrade-prompt {
-    background: #ffffff !important;
+    background: var(--background) !important;
     border-radius: 16px;
     box-shadow: 0 24px 48px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
     max-width: 600px;
@@ -35,7 +35,7 @@
     overflow: hidden;
     transform: scale(0.9) translateY(20px);
     transition: transform 0.3s ease;
-    border: 1px solid #e2e8f0 !important;
+    border: 1px solid var(--border) !important;
 }
 
 .upgrade-prompt-overlay--visible .upgrade-prompt {
@@ -47,15 +47,15 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid #e2e8f0;
+    border-bottom: 1px solid var(--border);
     margin-bottom: 0;
     padding-bottom: 16px;
-    background: #ffffff;
+    background: var(--background);
 }
 
 .upgrade-prompt__header h3 {
     margin: 0;
-    color: #1f2937 !important;
+    color: var(--text-primary) !important;
     font-size: 24px;
     font-weight: 600;
 }
@@ -64,7 +64,7 @@
     background: none;
     border: none;
     font-size: 24px;
-    color: #6b7280 !important;
+    color: var(--text-secondary) !important;
     cursor: pointer;
     padding: 4px;
     border-radius: 4px;
@@ -72,15 +72,15 @@
 }
 
 .upgrade-prompt__close:hover {
-    background: #f8fafc;
-    color: #1f2937 !important;
+    background: var(--background-secondary);
+    color: var(--text-primary) !important;
 }
 
 .upgrade-prompt__content {
     padding: 24px;
     max-height: 60vh;
     overflow-y: auto;
-    background: #ffffff;
+    background: var(--background);
 }
 
 .upgrade-prompt__content p {
@@ -144,14 +144,14 @@
 }
 
 .pricing-option:hover {
-    border-color: #667eea;
+    border-color: var(--sheperd-primary);
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
 }
 
 .pricing-option--popular {
-    border-color: #667eea !important;
-    background: #f0f4ff !important;
+    border-color: var(--sheperd-primary) !important;
+    background: var(--info-bg) !important;
 }
 
 .pricing-option--founder {
@@ -164,8 +164,8 @@
     top: -8px;
     left: 50%;
     transform: translateX(-50%);
-    background: #667eea !important;
-    color: white !important;
+    background: var(--sheperd-primary) !important;
+    color: var(--button-primary-text) !important;
     padding: 4px 12px;
     border-radius: 12px;
     font-size: 12px;
@@ -173,7 +173,7 @@
 }
 
 .pricing-option--founder .pricing-badge {
-    background: #f59e0b !important;
+    background: var(--sheperd-warning) !important;
 }
 
 .pricing-title {
@@ -187,12 +187,12 @@
 .pricing-price {
     font-size: 24px;
     font-weight: 700;
-    color: #667eea !important;
+    color: var(--sheperd-primary) !important;
     margin-bottom: 4px;
 }
 
 .pricing-option--founder .pricing-price {
-    color: #f59e0b !important;
+    color: var(--sheperd-warning) !important;
 }
 
 .pricing-save {
@@ -208,8 +208,8 @@
 }
 
 .btn--primary {
-    background: #667eea !important;
-    color: white !important;
+    background: var(--button-primary-bg) !important;
+    color: var(--button-primary-text) !important;
     border: none !important;
     padding: 12px 20px;
     border-radius: 8px;
@@ -219,7 +219,7 @@
 }
 
 .btn--primary:hover {
-    background: #5a67d8 !important;
+    background: var(--button-primary-hover) !important;
     transform: translateY(-1px);
 }
 

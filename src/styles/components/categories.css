@@ -149,7 +149,7 @@
 
 .category-btn.danger:hover {
     background: var(--sheperd-danger);
-    color: white;
+    color: var(--button-primary-text);
     border-color: var(--sheperd-danger);
     transform: translateY(-1px);
 }
@@ -313,7 +313,7 @@
 
 .tab-close-btn:hover {
     background: var(--sheperd-danger);
-    color: white;
+    color: var(--button-primary-text);
 }
 
 
@@ -338,23 +338,23 @@
 }
 
 .category-feedback.success {
-    background: #10b981;
-    color: white;
+    background: var(--sheperd-success);
+    color: var(--button-primary-text);
 }
 
 .category-feedback.warning {
-    background: #f59e0b;
-    color: white;
+    background: var(--sheperd-warning);
+    color: var(--button-primary-text);
 }
 
 .category-feedback.error {
-    background: #ef4444;
-    color: white;
+    background: var(--sheperd-danger);
+    color: var(--button-primary-text);
 }
 
 .category-feedback.info {
-    background: var(--primary);
-    color: white;
+    background: var(--sheperd-info);
+    color: var(--button-primary-text);
 }
 
 @keyframes feedbackIn {
@@ -396,8 +396,8 @@
 }
 
 .empty-refresh-btn {
-    background: var(--primary);
-    color: white;
+    background: var(--button-primary-bg);
+    color: var(--button-primary-text);
     border: none;
     padding: 8px 16px;
     border-radius: 6px;
@@ -409,7 +409,7 @@
 }
 
 .empty-refresh-btn:hover {
-    background: var(--primary-hover);
+    background: var(--button-primary-hover);
     transform: translateY(-1px);
 }
 

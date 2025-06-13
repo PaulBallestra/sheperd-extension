@@ -184,15 +184,15 @@
     height: 100%;
     border-radius: 3px;
     transition: all 0.5s ease;
-    background: linear-gradient(90deg, var(--sheperd-success) 0%, #48bb78 100%);
+    background: linear-gradient(90deg, var(--sheperd-success) 0%, rgb(34 197 94) 100%);
 }
 
 .ratio-fill.medium {
-    background: linear-gradient(90deg, var(--sheperd-warning) 0%, #fbbf24 100%);
+    background: linear-gradient(90deg, var(--sheperd-warning) 0%, rgb(251 191 36) 100%);
 }
 
 .ratio-fill.high {
-    background: linear-gradient(90deg, var(--sheperd-danger) 0%, #f87171 100%);
+    background: linear-gradient(90deg, var(--sheperd-danger) 0%, rgb(248 113 113) 100%);
 }
 
 .analytics-recommendations {
@@ -221,22 +221,22 @@
 
 .recommendation-item.high {
     border-left: 4px solid var(--sheperd-danger);
-    background: rgba(239, 68, 68, 0.05);
+    background: var(--error-bg);
 }
 
 .recommendation-item.medium {
     border-left: 4px solid var(--sheperd-warning);
-    background: rgba(245, 158, 11, 0.05);
+    background: var(--warning-bg);
 }
 
 .recommendation-item.low {
     border-left: 4px solid var(--sheperd-info);
-    background: rgba(59, 130, 246, 0.05);
+    background: var(--info-bg);
 }
 
 .recommendation-item.info {
     border-left: 4px solid var(--sheperd-success);
-    background: rgba(16, 185, 129, 0.05);
+    background: var(--success-bg);
 }
 
 .rec-icon {
@@ -278,19 +278,19 @@
     background: var(--background-tertiary);
     border-color: var(--sheperd-primary);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
 }
 
 .optimize-btn.active {
     background: linear-gradient(135deg, var(--sheperd-primary) 0%, var(--sheperd-primary-dark) 100%);
     border-color: var(--sheperd-primary);
-    color: white;
+    color: var(--button-primary-text);
 }
 
 .optimize-btn.active:hover {
     background: linear-gradient(135deg, var(--sheperd-primary-dark) 0%, var(--sheperd-primary) 100%);
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.25);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
 }
 
 .optimize-btn:disabled {

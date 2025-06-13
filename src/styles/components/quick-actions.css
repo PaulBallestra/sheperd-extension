@@ -68,7 +68,7 @@
 
 .action-btn.secondary:hover:not(:disabled) {
     background: var(--sheperd-primary);
-    color: white;
+    color: var(--button-primary-text);
 }
 
 .action-btn.danger {
@@ -78,7 +78,7 @@
 
 .action-btn.danger:hover:not(:disabled) {
     background: var(--sheperd-danger);
-    color: white;
+    color: var(--button-primary-text);
 }
 
 .btn-icon {
@@ -159,22 +159,22 @@
 
 .quick-actions-feedback.success {
     background: var(--sheperd-success);
-    color: white;
+    color: var(--button-primary-text);
 }
 
 .quick-actions-feedback.warning {
     background: var(--sheperd-warning);
-    color: white;
+    color: var(--button-primary-text);
 }
 
 .quick-actions-feedback.error {
     background: var(--sheperd-danger);
-    color: white;
+    color: var(--button-primary-text);
 }
 
 .quick-actions-feedback.info {
     background: var(--sheperd-info);
-    color: white;
+    color: var(--button-primary-text);
 }
 
 

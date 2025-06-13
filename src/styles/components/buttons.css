@@ -32,7 +32,7 @@
 }
 
 .text-btn.premium:hover {
-    color: white;
+    color: var(--button-primary-text);
     background: var(--sheperd-primary);
 }
 
@@ -40,8 +40,8 @@
 /* Primary Buttons */
 
 .primary-btn {
-    background: var(--sheperd-primary);
-    color: white;
+    background: var(--button-primary-bg);
+    color: var(--button-primary-text);
     border: none;
     padding: var(--space-sm) var(--space-lg);
     border-radius: var(--radius-md);
@@ -56,7 +56,7 @@
 }
 
 .primary-btn:hover {
-    background: var(--sheperd-primary-dark);
+    background: var(--button-primary-hover);
     transform: translateY(-1px);
     box-shadow: var(--shadow-sm);
 }
@@ -75,9 +75,9 @@
 /* Secondary Buttons */
 
 .secondary-btn {
-    background: var(--background);
+    background: var(--button-secondary-bg);
     color: var(--sheperd-primary);
-    border: 1px solid var(--sheperd-primary);
+    border: 1px solid var(--button-secondary-border);
     padding: var(--space-sm) var(--space-lg);
     border-radius: var(--radius-md);
     font-size: var(--font-size-sm);
@@ -91,8 +91,9 @@
 }
 
 .secondary-btn:hover {
-    background: var(--sheperd-primary);
-    color: white;
+    background: var(--button-secondary-hover-bg);
+    border-color: var(--button-secondary-hover-border);
+    color: var(--button-secondary-text);
     transform: translateY(-1px);
     box-shadow: var(--shadow-sm);
 }
@@ -112,7 +113,7 @@
 
 .danger-btn {
     background: var(--sheperd-danger);
-    color: white;
+    color: var(--button-primary-text);
     border: none;
     padding: var(--space-sm) var(--space-lg);
     border-radius: var(--radius-md);
@@ -127,7 +128,8 @@
 }
 
 .danger-btn:hover {
-    background: #dc2626;
+    background: rgb(185 28 28);
+    /* Darker red for hover */
     transform: translateY(-1px);
     box-shadow: var(--shadow-sm);
 }
