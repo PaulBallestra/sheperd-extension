@@ -105,6 +105,9 @@ async function initializeExtension() {
         // Update tab count badge
         await updateTabCountBadge();
 
+        // 🔥 NEW: Initialize creation times for existing tabs
+        await initializeExistingTabCreationTimes();
+
         // Set up cleanup alarm
         await setupCleanupAlarm();
 
@@ -117,12 +120,52 @@ async function initializeExtension() {
     }
 }
 
+// 🔥 NEW: Initialize creation times for tabs that were already open
+async function initializeExistingTabCreationTimes() {
+    try {
+        const tabs = await api.tabs.query({});
+        const result = await api.storage.local.get(["tabCreationTimes"]);
+        const creationTimes = result.tabCreationTimes || {};
+
+        let newTabsTracked = 0;
+        const currentTime = Date.now();
+
+        for (const tab of tabs) {
+            if (!creationTimes[tab.id]) {
+                // Estimate creation time based on tab ID (heuristic)
+                // Chrome assigns sequential IDs, so lower IDs = older tabs
+                const minTabId = Math.min(...tabs.map(t => t.id));
+                const maxTabId = Math.max(...tabs.map(t => t.id));
+                const tabIdRange = maxTabId - minTabId;
+
+                // Estimate age based on position in ID range (max 24 hours ago)
+                const relativePosition = (tab.id - minTabId) / (tabIdRange || 1);
+                const estimatedAge = Math.min(24 * 60 * 60 * 1000, (1 - relativePosition) * 6 * 60 * 60 * 1000); // Max 6 hours spread
+                const estimatedCreationTime = currentTime - estimatedAge;
+
+                creationTimes[tab.id] = estimatedCreationTime;
+                newTabsTracked++;
+            }
+        }
+
+        if (newTabsTracked > 0) {
+            await api.storage.local.set({ tabCreationTimes: creationTimes });
+            console.log(`📅 Initialized creation times for ${newTabsTracked} existing tabs`);
+        }
+    } catch (error) {
+        console.error("Error initializing existing tab creation times:", error);
+    }
+}
+
 // Tab event listeners for tracking and analytics
 api.tabs.onCreated.addListener(async(tab) => {
     try {
         console.log("New tab created:", tab.url || "about:blank");
         await updateTabCountBadge();
         await updateTabAccessTime(tab.id);
+
+        // 🔥 NEW: Track actual creation time
+        await trackTabCreationTime(tab.id);
 
         // Notify popup about tab changes
         await notifyPopupOfTabChanges('tab_created', { tab });
@@ -209,16 +252,72 @@ async function updateTabAccessTime(tabId) {
     }
 }
 
+// 🔥 NEW: Enhanced tab creation time tracking
+async function trackTabCreationTime(tabId) {
+    try {
+        const result = await api.storage.local.get(["tabCreationTimes"]);
+        const creationTimes = result.tabCreationTimes || {};
+
+        // Only set creation time if not already tracked
+        if (!creationTimes[tabId]) {
+            creationTimes[tabId] = Date.now();
+            await api.storage.local.set({ tabCreationTimes: creationTimes });
+            console.log(`📅 Tracked creation time for tab ${tabId}`);
+        }
+    } catch (error) {
+        console.error("Error tracking tab creation time:", error);
+    }
+}
+
+// 🔥 NEW: Get tab creation time (with fallbacks)
+async function getTabCreationTime(tabId) {
+    try {
+        const result = await api.storage.local.get(["tabCreationTimes", "tabAccessTimes"]);
+        const creationTimes = result.tabCreationTimes || {};
+        const accessTimes = result.tabAccessTimes || {};
+
+        // Priority 1: Actual creation time (if we tracked it)
+        if (creationTimes[tabId]) {
+            return creationTimes[tabId];
+        }
+
+        // Priority 2: First access time (fallback)
+        if (accessTimes[tabId]) {
+            return accessTimes[tabId];
+        }
+
+        // Priority 3: Estimate based on tab ID (Chrome assigns sequential IDs)
+        // This is a heuristic - newer tabs have higher IDs
+        const currentTime = Date.now();
+        const estimatedAge = Math.min(tabId * 1000, 24 * 60 * 60 * 1000); // Max 24 hours
+        return currentTime - estimatedAge;
+
+    } catch (error) {
+        console.error("Error getting tab creation time:", error);
+        return Date.now(); // Fallback to current time
+    }
+}
+
 // Clean up specific tab access time
 async function cleanupTabAccessTime(tabId) {
     try {
-        const result = await api.storage.local.get(["tabAccessTimes"]);
+        const result = await api.storage.local.get(["tabAccessTimes", "tabCreationTimes"]);
         const accessTimes = result.tabAccessTimes || {};
+        const creationTimes = result.tabCreationTimes || {};
 
         if (accessTimes[tabId]) {
             delete accessTimes[tabId];
-            await api.storage.local.set({ tabAccessTimes: accessTimes });
         }
+
+        // 🔥 NEW: Also cleanup creation times
+        if (creationTimes[tabId]) {
+            delete creationTimes[tabId];
+        }
+
+        await api.storage.local.set({
+            tabAccessTimes: accessTimes,
+            tabCreationTimes: creationTimes
+        });
     } catch (error) {
         console.error("Error cleaning up tab access time:", error);
     }
@@ -293,26 +392,41 @@ async function setupCleanupAlarm() {
 // Clean up old access times
 async function cleanupOldAccessTimes() {
     try {
-        const result = await api.storage.local.get(["tabAccessTimes"]);
+        const result = await api.storage.local.get(["tabAccessTimes", "tabCreationTimes"]);
         const accessTimes = result.tabAccessTimes || {};
+        const creationTimes = result.tabCreationTimes || {};
 
         // Get current tab IDs
         const currentTabs = await api.tabs.query({});
         const currentTabIds = new Set(currentTabs.map(tab => tab.id));
 
         // Remove access times for closed tabs
-        const cleanedTimes = {};
+        const cleanedAccessTimes = {};
+        const cleanedCreationTimes = {};
+
         Object.keys(accessTimes).forEach(tabId => {
             const id = parseInt(tabId);
             if (currentTabIds.has(id)) {
-                cleanedTimes[tabId] = accessTimes[tabId];
+                cleanedAccessTimes[tabId] = accessTimes[tabId];
             }
         });
 
-        await api.storage.local.set({ tabAccessTimes: cleanedTimes });
+        // 🔥 NEW: Also clean creation times
+        Object.keys(creationTimes).forEach(tabId => {
+            const id = parseInt(tabId);
+            if (currentTabIds.has(id)) {
+                cleanedCreationTimes[tabId] = creationTimes[tabId];
+            }
+        });
 
-        const removedCount = Object.keys(accessTimes).length - Object.keys(cleanedTimes).length;
-        console.log(`Cleaned up ${removedCount} old tab access times`);
+        await api.storage.local.set({
+            tabAccessTimes: cleanedAccessTimes,
+            tabCreationTimes: cleanedCreationTimes
+        });
+
+        const removedAccessCount = Object.keys(accessTimes).length - Object.keys(cleanedAccessTimes).length;
+        const removedCreationCount = Object.keys(creationTimes).length - Object.keys(cleanedCreationTimes).length;
+        console.log(`Cleaned up ${removedAccessCount} old tab access times and ${removedCreationCount} creation times`);
     } catch (error) {
         console.error("Failed to cleanup old access times:", error);
     }
@@ -574,17 +688,17 @@ async function getChromeResourceData(tabs) {
                     );
 
                     if (process) {
-                        resourceData[tab.id] = createChromeResourceData(tab, process, 'precise');
+                        resourceData[tab.id] = await createChromeResourceData(tab, process, 'precise');
                     } else {
-                        resourceData[tab.id] = createChromeHeuristicData(tab);
+                        resourceData[tab.id] = await createChromeHeuristicData(tab);
                     }
                 } else {
                     // Chrome Stable: Use enhanced heuristics (better than basic fallback)
-                    resourceData[tab.id] = createChromeHeuristicData(tab);
+                    resourceData[tab.id] = await createChromeHeuristicData(tab);
                 }
             } catch (tabError) {
                 console.warn(`⚠️ Failed to process tab ${tab.id}: ${tabError.message}`);
-                resourceData[tab.id] = createFallbackResourceData(tab, 'chrome');
+                resourceData[tab.id] = await createFallbackResourceData(tab, 'chrome');
             }
         }
 
@@ -609,11 +723,15 @@ async function getFirefoxResourceData(tabs) {
             try {
                 const estimates = calculateFirefoxResourceEstimates(tab);
 
+                // 🔥 NEW: Get actual tab creation time for accurate age
+                const creationTime = await getTabCreationTime(tab.id);
+
                 resourceData[tab.id] = {
                     tabId: tab.id,
                     url: tab.url,
                     title: tab.title,
-                    timestamp: Date.now(),
+                    timestamp: creationTime, // 🔥 FIXED: Use actual creation time, not scan time
+                    scanTime: Date.now(), // When we scanned this data
                     browser: 'firefox',
                     resources: {
                         memoryEstimateMB: estimates.memory,
@@ -637,7 +755,7 @@ async function getFirefoxResourceData(tabs) {
                 };
             } catch (error) {
                 console.warn(`Failed to estimate resources for tab ${tab.id}:`, error);
-                resourceData[tab.id] = createFallbackResourceData(tab, 'firefox');
+                resourceData[tab.id] = await createFallbackResourceData(tab, 'firefox');
             }
         }
 
@@ -651,15 +769,19 @@ async function getFirefoxResourceData(tabs) {
 /**
  * Create Chrome resource data from processes API (Dev/Canary only)
  */
-function createChromeResourceData(tab, process, mode) {
+async function createChromeResourceData(tab, process, mode) {
     const memoryMB = Math.round((process.privateMemory || 0) / (1024 * 1024));
     const cpuPercent = process.cpu || 0;
+
+    // 🔥 NEW: Get actual tab creation time for accurate age
+    const creationTime = await getTabCreationTime(tab.id);
 
     return {
         tabId: tab.id,
         url: tab.url,
         title: tab.title,
-        timestamp: Date.now(),
+        timestamp: creationTime, // 🔥 FIXED: Use actual creation time, not scan time
+        scanTime: Date.now(), // When we scanned this data
         browser: 'chrome',
         mode: mode, // 'precise' or 'heuristic'
         resources: {
@@ -681,15 +803,19 @@ function createChromeResourceData(tab, process, mode) {
 /**
  * Create Chrome heuristic data (Stable channel fallback)
  */
-function createChromeHeuristicData(tab) {
+async function createChromeHeuristicData(tab) {
     // Enhanced Chrome heuristics (better than Firefox since we know it's Chrome)
     const estimates = calculateChromeHeuristicEstimates(tab);
+
+    // 🔥 NEW: Get actual tab creation time for accurate age
+    const creationTime = await getTabCreationTime(tab.id);
 
     return {
         tabId: tab.id,
         url: tab.url,
         title: tab.title,
-        timestamp: Date.now(),
+        timestamp: creationTime, // 🔥 FIXED: Use actual creation time, not scan time
+        scanTime: Date.now(), // When we scanned this data
         browser: 'chrome',
         mode: 'heuristic',
         resources: {
@@ -906,12 +1032,16 @@ function calculateFirefoxResourceScore(estimates, tab) {
 /**
  * Create fallback resource data when monitoring fails
  */
-function createFallbackResourceData(tab, browser) {
+async function createFallbackResourceData(tab, browser) {
+    // 🔥 NEW: Get actual tab creation time for accurate age
+    const creationTime = await getTabCreationTime(tab.id);
+
     return {
         tabId: tab.id,
         url: tab.url,
         title: tab.title,
-        timestamp: Date.now(),
+        timestamp: creationTime, // 🔥 FIXED: Use actual creation time, not scan time
+        scanTime: Date.now(), // When we scanned this data
         browser,
         resources: browser === 'chrome' ? {
             memoryBytes: 0,

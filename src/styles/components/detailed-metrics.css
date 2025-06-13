@@ -85,12 +85,63 @@
 }
 
 .metrics-content.expanded {
-    max-height: 1200px;
-    /* Increased for comprehensive per-tab metrics */
+    /* max-height: 80vh; */
+    /* 🔥 IMPROVED: Use viewport height for better responsiveness */
+    height: auto;
+    /* Allow natural height expansion */
     opacity: 1;
     padding: var(--space-lg);
     transform: translateY(0);
     box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.05);
+    overflow-y: auto;
+    /* Smooth scrolling for many tabs */
+    overflow-x: hidden;
+    /* Prevent horizontal scroll */
+    /* 🔥 NEW: Smooth scrolling and better scroll styling */
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+}
+
+
+/* 🔥 NEW: Custom scrollbar styling for WebKit browsers */
+
+.metrics-content.expanded::-webkit-scrollbar {
+    width: 6px;
+}
+
+.metrics-content.expanded::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.metrics-content.expanded::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 3px;
+    transition: background 0.2s ease;
+}
+
+.metrics-content.expanded::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
+}
+
+
+/* 🔥 NEW: Scroll indicator for better UX */
+
+.metrics-content.expanded::after {
+    content: '';
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    background: linear-gradient(transparent, rgba(255, 255, 255, 0.8));
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.metrics-content.expanded.has-scroll::after {
+    opacity: 1;
 }
 
 
@@ -102,6 +153,11 @@
     background: var(--background);
     border-radius: var(--radius-md);
     border: 1px solid var(--border-light);
+    /* 🔥 NEW: Sticky summary for better UX when scrolling */
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .summary-stats {
@@ -138,6 +194,11 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-md);
+    /* 🔥 NEW: Ensure proper spacing and no overflow issues */
+    min-height: 0;
+    /* Allow flex shrinking */
+    flex: 1;
+    /* Take available space */
 }
 
 
@@ -147,7 +208,7 @@
     background: var(--background);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
-    padding: var(--space-md);
+    padding: 0;
     transition: all var(--transition-normal);
     position: relative;
     overflow: hidden;
@@ -195,7 +256,110 @@
 }
 
 
-/* Tab Header */
+/* 🔥 NEW: Collapsible Tab Toggle */
+
+.tab-metric-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background: transparent;
+    border: none;
+    padding: var(--space-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    text-align: left;
+}
+
+.tab-metric-toggle:hover {
+    background: rgba(102, 126, 234, 0.05);
+}
+
+.tab-metric-toggle.expanded {
+    background: rgba(102, 126, 234, 0.1);
+    border-bottom: 1px solid var(--border-light);
+}
+
+.tab-summary {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.summary-metrics {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.summary-metric {
+    padding: var(--space-xs) var(--space-sm);
+    background: var(--background-tertiary);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+}
+
+.summary-metric.memory {
+    color: var(--sheperd-info);
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.summary-metric.cpu {
+    color: var(--sheperd-warning);
+    background: rgba(245, 158, 11, 0.1);
+}
+
+.summary-metric.impact.light {
+    color: var(--sheperd-success);
+    background: rgba(16, 185, 129, 0.1);
+}
+
+.summary-metric.impact.medium {
+    color: var(--sheperd-warning);
+    background: rgba(245, 158, 11, 0.1);
+}
+
+.summary-metric.impact.heavy {
+    color: var(--sheperd-danger);
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.tab-metric-toggle .toggle-arrow {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.tab-metric-toggle.expanded .toggle-arrow {
+    transform: rotate(180deg);
+}
+
+
+/* 🔥 NEW: Collapsible Tab Content */
+
+.tab-metric-content {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateY(-8px);
+}
+
+.tab-metric-content.expanded {
+    max-height: 800px;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.tab-metric-content .tab-metric-body {
+    padding: var(--space-md);
+    padding-top: 0;
+}
+
+
+/* Tab Header (Legacy - now using tab-metric-toggle) */
 
 .tab-metric-header {
     display: flex;
@@ -308,7 +472,7 @@
 /* Tab Metric Body */
 
 .tab-metric-body {
-    margin-bottom: var(--space-md);
+    margin-bottom: 0;
 }
 
 .metric-row {
@@ -380,16 +544,83 @@
 }
 
 
-/* Advanced Metrics */
+/* Advanced Metrics Container */
+
+.advanced-metrics-container {
+    margin-top: var(--space-md);
+}
+
+.advanced-metrics-toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    width: 100%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(248, 250, 252, 0.9) 100%);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    padding: var(--space-xs) var(--space-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.advanced-metrics-toggle:hover {
+    border-color: var(--sheperd-primary);
+    color: var(--text-primary);
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(255, 255, 255, 0.9) 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+}
+
+.advanced-metrics-toggle.expanded {
+    background: linear-gradient(135deg, var(--sheperd-primary) 0%, rgba(102, 126, 234, 0.8) 100%);
+    color: white;
+    border-color: var(--sheperd-primary);
+}
+
+.toggle-icon {
+    font-size: 12px;
+}
+
+.toggle-label {
+    flex: 1;
+    text-align: left;
+}
+
+.toggle-arrow {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 10px;
+}
+
+.advanced-metrics-toggle.expanded .toggle-arrow {
+    transform: rotate(180deg);
+}
+
+
+/* Advanced Metrics Content */
 
 .advanced-metrics {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-sm);
-    padding: var(--space-sm);
+    padding: 0;
     background: var(--background-secondary);
     border-radius: var(--radius-md);
-    margin-top: var(--space-sm);
+    margin-top: var(--space-xs);
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateY(-8px);
+}
+
+.advanced-metrics.expanded {
+    max-height: 200px;
+    opacity: 1;
+    padding: var(--space-sm);
+    transform: translateY(0);
 }
 
 .advanced-metric {
@@ -563,6 +794,76 @@
 
 
 /* Responsive Design */
+
+
+/* 🔥 ENHANCED: Smooth state restoration animations */
+
+.tab-metric-content.expanded {
+    animation: expandContent 0.3s ease-out;
+}
+
+.advanced-metrics.expanded {
+    animation: expandAdvanced 0.25s ease-out;
+}
+
+
+/* Enhanced toggle animations */
+
+.tab-metric-toggle .toggle-arrow {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s ease;
+}
+
+.tab-metric-toggle.expanded .toggle-arrow {
+    transform: rotate(180deg);
+    color: var(--sheperd-primary);
+}
+
+
+/* Keyframes for smooth expansion */
+
+@keyframes expandContent {
+    from {
+        max-height: 0;
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        max-height: 400px;
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes expandAdvanced {
+    from {
+        max-height: 0;
+        opacity: 0.5;
+        transform: scale(0.98);
+    }
+    to {
+        max-height: 200px;
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+
+/* Smooth refresh transition */
+
+.tab-metrics-list {
+    animation: refreshFade 0.4s ease-out;
+}
+
+@keyframes refreshFade {
+    from {
+        opacity: 0.8;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
 @media (max-width: 380px) {
     .summary-stats {
