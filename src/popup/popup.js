@@ -13,6 +13,7 @@ import { analyticsComponent } from "./components/analytics.js";
 import { categoriesComponent } from "./components/categories.js";
 import { quickActionsComponent } from "./components/quick-actions.js";
 import { footerComponent } from "./components/footer.js";
+import { detailedMetricsComponent } from "./components/detailed-metrics.js";
 
 /**
  * Main Sheperd Popup Application
@@ -34,6 +35,7 @@ class SheperdPopupApp {
             header: headerComponent,
             sheperdMeter: sheperdMeterComponent,
             analytics: analyticsComponent,
+            detailedMetrics: detailedMetricsComponent,
             categories: categoriesComponent,
             quickActions: quickActionsComponent,
             footer: footerComponent,
@@ -62,7 +64,6 @@ class SheperdPopupApp {
             this.bindEvents();
 
             // Load and categorize tabs
-            // Load and categorize tabs
             await this.loadTabs();
 
             // Render all components
@@ -74,7 +75,7 @@ class SheperdPopupApp {
             setTimeout(() => {
                 this.dispatchRealTimeUpdates({
                     type: 'post_render_update',
-                    components: ['header', 'sheperd-meter', 'analytics', 'quick-actions']
+                    components: ['header', 'sheperd-meter', 'analytics', 'detailed-metrics', 'quick-actions']
                 });
             }, 100);
 
@@ -601,7 +602,7 @@ class SheperdPopupApp {
             // This ensures all components get properly initialized with current data
             this.dispatchRealTimeUpdates({
                 type: 'initial_load',
-                components: ['header', 'sheperd-meter', 'analytics', 'quick-actions', 'categories']
+                components: ['header', 'sheperd-meter', 'analytics', 'detailed-metrics', 'quick-actions', 'categories']
             });
 
             console.log(
@@ -630,6 +631,8 @@ class SheperdPopupApp {
         this.components.sheperdMeter.render(mainContainer);
         this.components.categories.render(mainContainer);
         this.components.analytics.render(mainContainer);
+        this.components.detailedMetrics.render(mainContainer);
+
         this.components.quickActions.render(mainContainer);
     }
 

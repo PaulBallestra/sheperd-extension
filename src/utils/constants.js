@@ -1077,6 +1077,14 @@ export const SHEPERD_EVENTS = {
     HEADER_UPDATED: "header_updated",
     QUICK_ACTIONS_UPDATED: "quick_actions_updated",
     SHEPERD_METER_UPDATED: "sheperd_meter_updated",
+
+    // Resource monitoring events
+    RESOURCE_DATA_UPDATED: "resource_data_updated",
+    TAB_RESOURCE_UPDATED: "tab_resource_updated",
+    SYSTEM_RESOURCE_UPDATED: "system_resource_updated",
+    RESOURCE_SCAN_STARTED: "resource_scan_started",
+    RESOURCE_SCAN_COMPLETED: "resource_scan_completed",
+    RESOURCE_ALERT_TRIGGERED: "resource_alert_triggered",
 };
 
 export const DEFAULT_SETTINGS = {
@@ -1094,4 +1102,7 @@ export const SHEPERD_STORAGE_KEYS = {
     TAB_ACCESS_TIMES: "SHEPERD_TAB_ACCESS_TIMES",
     EXPANDED_CATEGORIES: "SHEPERD_EXPANDED_CATEGORIES",
     USER_PREFERENCES: "SHEPERD_USER_PREFERENCES",
+    TAB_RESOURCE_DATA: "SHEPERD_TAB_RESOURCE_DATA",
+    SYSTEM_RESOURCE_DATA: "SHEPERD_SYSTEM_RESOURCE_DATA",
+    RESOURCE_HISTORY: "SHEPERD_RESOURCE_HISTORY",
 };

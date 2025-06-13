@@ -11,6 +11,8 @@
         "bookmarks",
         "activeTab",
         "alarms",
+        "webRequest",
+        "webRequestBlocking",
         "*://*/*"
     ],
 

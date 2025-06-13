@@ -79,23 +79,90 @@
 | 🎨 Modern UI | ✅ | Smooth animations and real-time state transitions |
 | ⚡ Performance | ✅ | Optimized for 100+ tabs with instant updates |
 
-### 🔥 **REAL-TIME** Performance Analytics System
-| Metric | Details | Smart Actions |
-|--------|---------|---------------|
-| 📊 **Live Resource Impact** | Real-time Light/Medium/Heavy scoring as you browse | Dynamic optimization suggestions |
-| 🔋 **Live Loaded vs Total** | Instant active resource tracking (12/47 loaded updates live) | Real-time tab suspension recommendations |
-| 🎯 **Domain Intelligence** | Live heavy sites detection (YouTube, Figma, etc.) | Category-based estimates update instantly |
-| ⚡ **Instant Optimization** | "Close 5 idle tabs to save ~200MB RAM" updates as you browse | One-click performance improvements |
-| 🧠 **Dynamic Recommendations** | Context-aware suggestions that change as you browse | Live personalized tab management tips |
+### 🔥 **REAL-TIME** Performance Analytics System - Per-Tab Resource Monitoring
+| Metric | Chrome (Precise) | Firefox (Intelligent) | Live Updates |
+|--------|------------------|----------------------|-------------|
+| 💾 **Memory Usage** | `chrome.processes` API - actual MB per tab | Heuristic estimation based on DOM complexity + domain intelligence | Updates every 3 seconds in real-time |
+| ⚡ **CPU Usage** | Process-level CPU percentage per tab | Network activity + tab state inference | Live percentage display with smooth animations |
+| 🌐 **Network Activity** | Request counting + bytes transferred | Network request monitoring via background script | Real-time network activity indicators |
+| ⏱️ **Tab Age & Activity** | Precise timestamps since tab creation/last focus | Identical cross-browser tab lifecycle tracking | Live age counters and activity status |
+| 🔋 **Resource Impact Score** | Calculated from actual memory + CPU data | Smart scoring from heuristics + domain patterns | Dynamic Light/Medium/Heavy scoring |
+| 📊 **System Impact** | Chrome: `chrome.system.memory` for total RAM usage | Firefox: Browser-level resource estimates | Live system impact warnings |
+| 🎯 **Smart Optimization** | "Close 3 tabs to save 287MB RAM" with precise calculations | "Suspend 4 resource-heavy tabs" with intelligent estimates | Context-aware recommendations update live |
+
+### 🚀 **Resource Monitoring Features** (Cross-Browser Parity)
+| Feature | Chrome Implementation | Firefox Implementation | User Value |
+|---------|----------------------|----------------------|-------------|
+| **Per-Tab Memory Tracking** | Chrome processes API (actual MB) | DOM complexity + heavy domain heuristics | See exactly which tabs consume most memory |
+| **Live CPU Monitoring** | Process CPU percentage | Network + state-based CPU estimation | Real-time CPU usage per tab with smooth graphs |
+| **Resource History** | 24h memory/CPU timeline per tab | 24h estimated resource usage patterns | Track tab performance over time |
+| **Smart Suspend Suggestions** | Based on actual resource consumption | Based on intelligent resource estimation | Data-driven tab management decisions |
+| **Performance Alerts** | "Tab X using 500MB+" notifications | "Heavy resource usage detected" alerts | Proactive resource management |
+| **Optimization Analytics** | Precise "Saved 1.2GB by closing 5 tabs" | "Estimated 800MB+ saved" with confidence scores | Quantified performance improvements |
+
+### 🔬 **ADVANCED RESOURCE MONITORING TECHNICAL ARCHITECTURE**
+
+#### **Cross-Browser Resource Tracking Implementation**
+```javascript
+// Chrome - Precise Resource Monitoring
+const tabResourceData = {
+  tabId: 123,
+  timestamp: Date.now(),
+  resources: {
+    // Chrome processes API - ACTUAL data
+    memoryBytes: 157286400,      // 150MB actual RAM usage
+    cpuPercent: 12.5,            // Actual CPU percentage
+    networkBytesReceived: 2048576, // 2MB transferred
+    networkRequestCount: 45,      // Actual network requests
+    gpuMemoryBytes: 25165824     // 24MB GPU memory (if available)
+  },
+  performance: {
+    domNodes: 1500,              // DOM complexity
+    loadTime: 2340,              // Page load time in ms
+    renderingFrames: 60,         // Rendering performance
+    scriptExecutionTime: 234     // JS execution time
+  }
+};
+
+// Firefox - Intelligent Resource Estimation
+const tabResourceEstimate = {
+  tabId: 123,
+  timestamp: Date.now(),
+  resources: {
+    // Heuristic-based estimation
+    memoryEstimateMB: 145,       // DOM complexity + domain patterns
+    cpuEstimatePercent: 10,      // Network activity + tab state
+    networkBytesEstimate: 1950000, // Request monitoring
+    networkRequestCount: 42,      // Actual count (available)
+    resourceScore: "medium"       // Overall resource impact
+  },
+  heuristics: {
+    domComplexity: "high",       // DOM node counting
+    heavyDomainMatch: true,      // youtube.com, figma.com, etc.
+    activeLoadingState: false,   // Currently loading content
+    tabStateScore: 7.5           // Combined heuristic score
+  }
+};
+```
+
+#### **Real-Time Monitoring System**
+| Component | Chrome | Firefox | Update Frequency |
+|-----------|--------|---------|------------------|
+| **Background Resource Scanner** | `chrome.processes.getProcessInfo()` every 3s | Heuristic calculation every 3s | Real-time with 3s intervals |
+| **Memory Tracking** | Process memory via native API | DOM complexity + domain intelligence | Live memory graphs |
+| **CPU Monitoring** | Process CPU percentage | Network activity + tab state inference | Smooth animated CPU meters |
+| **Network Activity** | Tab-level request monitoring | Background script request counting | Real-time network indicators |
+| **Performance Scoring** | Precise resource-based scoring | Smart heuristic-based scoring | Dynamic impact level updates |
 
 ### 🚀 **REAL-TIME ARCHITECTURE HIGHLIGHTS**
 | Component | Real-Time Feature | Technical Achievement |
 |-----------|------------------|----------------------|
-| ⚡ **Event System** | 23 real-time events for instant updates | Zero-latency optimistic UI updates |
+| ⚡ **Event System** | 25+ real-time events including resource monitoring | Zero-latency optimistic UI updates with resource data |
 | 🔄 **State Management** | Advanced rollback system for failed operations | Bulletproof error recovery with snapshots |
 | 📊 **Smart Dispatching** | Component-specific updates (no full refresh) | Maximum efficiency, minimal resource usage |
 | 🎯 **Background Sync** | Chrome tab events instantly trigger extension updates | True browser-extension synchronization |
 | 🚀 **Optimistic UI** | Actions appear instantly, then confirm in background | Netflix-level smooth user experience |
+| 💾 **Resource Monitoring** | Per-tab memory/CPU tracking with 3s precision | Cross-browser parity with intelligent estimates |
 
 ### Sheperd Level System (Updates Live!)
 | Tab Count | Status | Message | Real-Time Behavior |
@@ -489,10 +556,47 @@ cd backend && go run cmd/server/main.go
 ```
 
 ### Installation Requirements
+
+#### **Core Requirements**
 - ✅ **Chrome Browser**: Version 88+ (Manifest V3 support)
-- 🔐 **Permissions**: tabs, storage, bookmarks, activeTab
-- 💾 **Storage**: <5MB local storage for settings
-- ⚡ **Performance**: Works smoothly with 100+ tabs
+- 🦊 **Firefox Browser**: Version 109+ (Manifest V2 support)
+- 💾 **Storage**: <5MB local storage for settings + resource history
+- ⚡ **Performance**: Works smoothly with 100+ tabs + resource monitoring
+
+#### **Permissions Required**
+```json
+// Chrome Manifest V3
+{
+  "permissions": [
+    "tabs",              // Tab management & monitoring
+    "storage",           // Settings & resource data storage
+    "bookmarks",         // Bookmark management
+    "activeTab",         // Active tab interaction
+    "processes",         // Resource monitoring (Chrome only)
+    "system.memory",     // System memory info (Chrome only)
+    "alarms"             // Background resource scanning
+  ]
+}
+
+// Firefox Manifest V2
+{
+  "permissions": [
+    "tabs",              // Tab management & monitoring  
+    "storage",           // Settings & resource data storage
+    "bookmarks",         // Bookmark management
+    "activeTab",         // Active tab interaction
+    "alarms",            // Background resource scanning
+    "webRequest",        // Network monitoring for heuristics
+    "webRequestBlocking" // Network request analysis
+  ]
+}
+```
+
+#### **Resource Monitoring Capabilities**
+| Browser | Memory Tracking | CPU Monitoring | Network Analysis | System Info |
+|---------|----------------|----------------|------------------|-------------|
+| **Chrome** | ✅ Precise MB per tab | ✅ Process CPU % | ✅ Request counting | ✅ Total system RAM |
+| **Firefox** | 🧠 Intelligent estimates | 🧠 Heuristic-based | ✅ Request monitoring | 🧠 Browser-level estimates |
 
 ---
 

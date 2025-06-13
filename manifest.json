@@ -5,7 +5,7 @@
     "description": "Organize and manage your browser tabs with smart categorization and bulk actions",
     "author": "Sheperd Team",
 
-    "permissions": ["tabs", "storage", "bookmarks", "activeTab", "alarms"],
+    "permissions": ["tabs", "storage", "bookmarks", "activeTab", "alarms", "processes", "system.memory"],
 
     "host_permissions": ["*://*/*"],
 
