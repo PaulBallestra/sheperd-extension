@@ -135,7 +135,7 @@ export class AnalyticsComponent {
         </div>
         
         <!-- 🔥 ENHANCED: Real-time resource usage display -->
-        <div class="resource-usage" id="resource-usage">
+        <!-- <div class="resource-usage" id="resource-usage">
           <div class="usage-header">
             <span class="usage-icon">📈</span>
             <span class="usage-label">Live Resource Monitor</span>
@@ -173,6 +173,7 @@ export class AnalyticsComponent {
             </div>
           </div>
         </div>
+        -->
         
         <!-- 🔥 ENHANCED: Smart recommendations with priority -->
         <div class="smart-recommendations" id="recommendations">
